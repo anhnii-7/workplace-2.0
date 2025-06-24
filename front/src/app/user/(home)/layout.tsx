@@ -9,7 +9,7 @@ export default function DashboardLayout({
 }) {
   return (
     <section>
-      <div className=" bg-blue-50 w-full h-full">
+      <div className=" bg-blue-50 w-full h-full p-10">
         {/* <Header /> */}
         <SidebarProvider>
           <AppSidebar />
