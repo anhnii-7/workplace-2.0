@@ -20,7 +20,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Heart, MapPin, Search, User } from "lucide-react";
+import { Heart, MapPin, MessageSquare, Search, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -47,18 +47,20 @@ export default function WishPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState<any>(null)
-  console.log(currentUser)
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  console.log(currentUser);
   // console.log(users)
   useEffect(() => {
-    const currentUserString = localStorage.getItem('currentUser');
-    setCurrentUser(currentUserString ? JSON.parse(currentUserString) : null)
+    const currentUserString = localStorage.getItem("currentUser");
+    setCurrentUser(currentUserString ? JSON.parse(currentUserString) : null);
     fetchUsers();
   }, []);
 
   useEffect(() => {
-    const filtered = users.filter(user =>
-      currentUser.role === "mentor" ? user.role === "new" : user.role === "mentor"
+    const filtered = users.filter((user) =>
+      currentUser.role === "mentor"
+        ? user.role === "new"
+        : user.role === "mentor"
     );
     setFilteredUsers(filtered);
   }, [users, currentUser]);
@@ -81,26 +83,44 @@ export default function WishPage() {
     }
   };
   if (currentUser === null) {
-    return <div className="flex justify-center items-center h-screen">
-      Loading user data...
-    </div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Loading user data...
+      </div>
+    );
   }
 
   const onChangeValue = (event: any) => {
     // console.log(event.target.value, filteredUsers)
-  }
-
+  };
 
   return (
     <div className="px-10 h-screen w-full">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-stone-800 text-3xl font-semibold py-30 text-center">
+        <h1
+          className={`text-stone-800 text-2xl font-semibold = text-center${
+            currentUser?.role === "mentor"
+              ? ""
+              : " bg-white py-4 px-[33px] mt-10 rounded-xl"
+          }`}
+        >
           {currentUser?.role === "mentor"
-            ? "Таны хүсэлт явуулах боломжтой ажилчид"
-            : "Таны боломжит mentor-ууд"}
+            ? "Шинэ ажилчидтай холбох гүүр тань болж өгье"
+            : "Эргэлзэх зүйл, айх айдасгүй хүссэн асуултаа асуух боломж"}
         </h1>
       </div>
 
+      <div className="flex justify-between">
+        <h2 className="text-stone-800 text-xl font-medium py-9 ">
+          {currentUser?.role === "mentor"
+            ? "Шинэ ажилчдын жагсаалт"
+            : "Ахлах ажилчдын жагсаалт"}
+        </h2>
+        <div className="bg-white rounded-xl p-[10px]">
+          <image></image>
+          <p className="text-slate-700 font-normal text-xl leading-7 ">too</p>
+        </div>
+      </div>
       <div className="grid gap-10">
         <div className="flex gap-3">
           <div className="bg-indigo-50 flex gap-4 px-4 items-center rounded-md">
@@ -108,23 +128,14 @@ export default function WishPage() {
             <Input
               onChange={onChangeValue}
               type="text"
-              placeholder={currentUser?.role === "mentor"
-                ? "Шинэ ажилчдын нэр болон хэлтсээр хайх..."
-                : "Mentor-уудын нэр болон хэлтсээр хайх..."}
+              placeholder={
+                currentUser?.role === "mentor"
+                  ? "Шинэ ажилчдын нэр болон хэлтсээр хайх..."
+                  : "Mentor-уудын нэр болон хэлтсээр хайх..."
+              }
               className="w-[300px] focus:outline-none focus:ring-0 focus:border-0 border-0"
             />
           </div>
-          <Select>
-            <SelectTrigger className="w-[180px] bg-indigo-50">
-              <SelectValue placeholder="Ангилал" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Бүгд</SelectItem>
-              <SelectItem value="design">Дизайн</SelectItem>
-              <SelectItem value="development">Хөгжүүлэлт</SelectItem>
-              <SelectItem value="marketing">Маркетинг</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
         {loading ? (
@@ -133,73 +144,67 @@ export default function WishPage() {
           </div>
         ) : filteredUsers.length === 0 ? (
           <div className="flex justify-center items-center h-64">
-            <p>{currentUser?.role === "mentor"
-              ? "Шинэ ажилчид олдсонгүй"
-              : "Mentor олдсонгүй"}</p>
+            <p>
+              {currentUser?.role === "mentor"
+                ? "Шинэ ажилчид олдсонгүй"
+                : "Mentor олдсонгүй"}
+            </p>
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-5">
               {filteredUsers.map((user) => (
                 <Card key={user._id} className="p-3">
                   <div className="grid grid-cols-2">
                     <div className="flex flex-col items-center gap-4">
-                      <Avatar className="w-16 h-16">
-                        <AvatarImage src={user.name.charAt(0) + user.lastName.charAt(0)} />
+                      <Avatar className="w-[100px] h-[104px] rounded-[8px]">
+                        <AvatarImage
+                          src={user.name.charAt(0) + user.lastName.charAt(0)}
+                        />
                         <AvatarFallback>
-                          {user.name.charAt(0)}{user.lastName.charAt(0)}
+                          {user.name.charAt(0)}
+                          {user.lastName.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
-                      <Badge
-                        variant={"outline"}
-                        className="bg-indigo-50 text-blue-900 text-xs font-medium px-6 py-1"
-                      >
-                        Уулзъя л даа
-                      </Badge>
                     </div>
                     <div className="flex flex-col gap-3">
                       <div className="flex justify-between w-full items-center">
-                        <h2 className="text-lg font-semibold text-stone-700">
-                          {user.name} {user.lastName}
-                        </h2>
-                        <Heart className="cursor-pointer hover:fill-red-500" />
+                        <p className="text-lg font-semibold leading-7 text-slate-700 ">
+                          {user.departmentInfo?.title || "Unknown Department"}
+                        </p>
+                        <p className="text-sm font-normal leading-5 ">jil </p>
                       </div>
                       <div className="flex items-center gap-3">
                         <User />
-                        <p className="text-sm text-stone-500">
-                          {user.departmentInfo?.title || "Unknown Department"}
-                        </p>
+
+                        <h2 className="text-sm font-normal text-stone-700 leading-5">
+                          {user.name} {user.lastName}
+                        </h2>
                       </div>
                       <div className="flex items-center gap-3">
-                        <MapPin />
-                        <p className="text-sm text-stone-500">
+                        <MessageSquare />
+                        <p className="text-sm font-normal leading-5 text-slate-700">
                           {user.hobbyInfo[0]?.title || "No Hobby"}
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  <Button
-                    variant={"outline"}
-                    className="bg-blue-400 text-white text-sm font-medium mt-4 w-full hover:bg-blue-500"
-                  >
-                    Уулзах уу
-                  </Button>
+                  <div>
+                    {" "}
+                    <Button
+                      variant={"outline"}
+                      className="bg-blue-400 text-white text-sm font-medium  w-full hover:bg-blue-500 hover:text-white cursor-pointer"
+                    >
+                      Уулзах уу
+                    </Button>
+                  </div>
                 </Card>
               ))}
             </div>
             <div className="flex justify-between items-center">
-              <Select>
-                <SelectTrigger className="w-[180px] bg-indigo-50">
-                  <SelectValue placeholder="Хүний тоо" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="20">20</SelectItem>
-                  <SelectItem value="50">50</SelectItem>
-                </SelectContent>
-              </Select>
-              <Pagination>
+             
+              {/* <Pagination>
                 <PaginationContent>
                   <PaginationItem>
                     <PaginationPrevious href="#" />
@@ -214,7 +219,7 @@ export default function WishPage() {
                     <PaginationNext href="#" />
                   </PaginationItem>
                 </PaginationContent>
-              </Pagination>
+              </Pagination> */}
             </div>
           </>
         )}
