@@ -33,8 +33,7 @@ export const getRequests = async (req: Request, res: Response) => {
 
 export const createRequest = async (req: Request, res: Response) => {
     try {
-        const { from, to, message } = req.body;
-        
+        const { from, to, message, selectedSchedule } = req.body;
         
         const [fromUser, toUser] = await Promise.all([
             User.findById(from),
@@ -46,13 +45,16 @@ export const createRequest = async (req: Request, res: Response) => {
              return
         }
         
-        
         if (toUser.role !== 'mentor') {
              res.status(400).json({ message: "Can only send requests to mentors" });
              return
         }
         
-       
+        if (!toUser.availableSchedules.includes(selectedSchedule)) {
+            res.status(400).json({ message: "Selected schedule is not available" });
+            return
+        }
+        
         const existingRequest = await RequestModel.findOne({
             from,
             to,
@@ -68,6 +70,7 @@ export const createRequest = async (req: Request, res: Response) => {
             from,
             to,
             message,
+            selectedSchedule,
             status: 'pending'
         });
         

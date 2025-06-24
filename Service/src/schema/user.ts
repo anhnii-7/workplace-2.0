@@ -42,6 +42,10 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
+    availableSchedules: {
+        type: [String],  //  ["06.28", "07.02"]
+        default: []
+    },
 })
 
 const User = mongoose.model("User", userSchema);

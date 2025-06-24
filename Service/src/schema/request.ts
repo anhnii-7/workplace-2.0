@@ -32,7 +32,12 @@ const requestSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         default: false
-    }
+    },
+
+    selectedSchedule: {  // New field for the chosen meeting date
+        type: String,
+        required: true
+    },
 }, { timestamps: true });
 
 const Request = mongoose.model("Request", requestSchema);
