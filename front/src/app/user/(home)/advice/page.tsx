@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
+
 import {
   Dialog,
   DialogClose,
@@ -239,10 +240,10 @@ export default function WishPage() {
   }
 
   return (
-    <div className="flex gap-6 mt-[40px] p-4">
-      {/* Main Content - Users List */}
+    <div className="flex gap-6 mt-[40px] p-4 ">
+      
       <div className="flex-1 ">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-6 ">
           <h1 className={`text-stone-800 text-2xl font-semibold ${currentUser?.role === "mentor" ? "" : "bg-white py-4 px-8 rounded-xl"}`}>
             {currentUser?.role === "mentor"
               ? "Шинэ ажилчидтай холбох гүүр тань болж өгье"
@@ -250,20 +251,20 @@ export default function WishPage() {
           </h1>
         </div>
 
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-stone-800 text-xl font-medium">
+        <div className="flex justify-between items-center mb-6   ">
+          <h2 className="text-stone-800 text-2xl font-medium">
             {currentUser?.role === "mentor"
               ? "Шинэ ажилчдын жагсаалт"
               : "Ахлах ажилчдын жагсаалт"}
           </h2>
-          <div className="bg-white rounded-xl p-3">
+          <div className="bg-white rounded-xl p-3 mr-[40px]">
             <p className="text-slate-700 font-normal">{filteredUsers.length} хүн</p>
           </div>
         </div>
 
-        <div className="grid gap-6">
+        <div className="grid gap-6 ">
           <div className="flex gap-3">
-            <div className="bg-indigo-50 flex gap-4 px-4 items-center rounded-md">
+            <div className="bg-white flex gap-4 px-4 items-center rounded-md w-[379px] h-[38px]">
               <Search />
               <Input
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -273,7 +274,7 @@ export default function WishPage() {
                     ? "Шинэ ажилчдын нэр болон хэлтсээр хайх..."
                     : "Mentor-уудын нэр болон хэлтсээр хайх..."
                 }
-                className="w-[300px] focus:outline-none focus:ring-0 focus:border-0 border-0"
+                className="w-[300px] focus:outline-none focus-visible:ring-0 focus:ring-0 focus:border-0 border-0"
               />
             </div>
           </div>
@@ -291,10 +292,10 @@ export default function WishPage() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 justify-center items-center gap-5 ">
               {filteredUsers.map((user) => (
-                <Card key={user._id} className="p-4 hover:shadow-lg transition-shadow w-[379px] ">
-                  <div className="grid grid-cols-2 gap-4">
+                <Card key={user._id} className="p-4 hover:shadow-lg transition-shadow w-[399px] ">
+                  <div className="flex justify-around gap-4  items-center">
                     <div className="flex flex-col items-center gap-4">
                       <Avatar className="w-24 h-24 rounded-lg">
                         <AvatarImage
@@ -306,14 +307,12 @@ export default function WishPage() {
                         </AvatarFallback>
                       </Avatar>
                     </div>
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3  w-full ">
                       <div className="flex justify-between w-full items-center">
-                       <p className="text-[20px] text-slate-700">
+                       <p className="text-lg font-se text-slate-700">
                           {user.departmentInfo?.jobTitleInfo?.title || "No Position"}
                         </p>
-                        <Badge variant="outline" className="w-[56px] h-[24px] bg-blue-200 rounded-2xl">
-                          {extractDuration(user.experience)}
-                        </Badge>
+                       <p className="text-sm font-normal">  {extractDuration(user.experience)}</p>
                       </div>
                       <div className="flex items-center gap-3">
                         <User className="w-4 h-4" />
@@ -321,7 +320,10 @@ export default function WishPage() {
                           {user.name} {user.lastName}
                         </h2>
                       </div>
-                      <div>Туслалцаа хэрэгтэй байна.</div>
+                      <div className="flex items-center gap-3">
+                        <MessageSquare className="w-[18px] h-[18px]"></MessageSquare>
+                        <p className="text-sm font-normal text-stone-700">12 уулзалт</p>
+                      </div>
                     </div>
                   </div>
 
@@ -478,7 +480,7 @@ export default function WishPage() {
         {/* Requests */}
         <Card className="p-6">
           <CardHeader>
-            <CardTitle className="text-center">Хүсэлтүүд</CardTitle>
+            <CardTitle className="text-center border-b border-black w-[100px] pb-[30px]">Хүсэлтүүд</CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs
