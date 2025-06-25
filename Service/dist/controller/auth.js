@@ -26,11 +26,53 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
             return;
         }
-        const user = yield user_1.default.findOne({ email })
-            .populate('hobby')
-            .populate('department')
-            .populate('currentMentor');
-        console.log(user);
+        // const user = await User.findOne({ email })
+        //     .populate('hobby')
+        //     .populate('department')
+        //     .populate('currentMentor');
+        const userAggregate = yield user_1.default.aggregate([
+            { $match: { email: email } },
+            {
+                $lookup: {
+                    from: "hobbies",
+                    localField: "hobby",
+                    foreignField: "_id",
+                    as: "hobbyInfo"
+                }
+            },
+            {
+                $lookup: {
+                    from: "departments",
+                    localField: "department",
+                    foreignField: "_id",
+                    as: "departmentInfo",
+                    pipeline: [
+                        {
+                            $lookup: {
+                                from: "jobtitles",
+                                localField: "jobTitle",
+                                foreignField: "_id",
+                                as: "jobTitleInfo"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                $unwind: {
+                    path: "$departmentInfo",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $unwind: {
+                    path: "$departmentInfo.jobTitleInfo",
+                    preserveNullAndEmptyArrays: true
+                }
+            }
+        ]);
+        const user = userAggregate[0];
+        // console.log(user)
         if (!user) {
             res.status(404).json({
                 success: false,
@@ -38,7 +80,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
             return;
         }
-        console.log(user.password, "userpass");
+        // console.log(user.password , "userpass")
         if (password !== user.password) {
             res.status(401).json({
                 success: false,
@@ -46,8 +88,9 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
             return;
         }
-        const token = jsonwebtoken_1.default.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
-        const userWithoutPassword = user.toObject();
+        const token = jsonwebtoken_1.default.sign({ userId: user._id, role: user.role, email: user.email, experience: user.experience, department: user.department, lastName: user.lastName, menteesCount: user.menteesCount, name: user.name, availableSchedules: user.availableSchedules }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        // const userWithoutPassword = user;.toObject()
+        const userWithoutPassword = user;
         delete userWithoutPassword.password;
         res.status(200).json({
             success: true,
@@ -56,10 +99,10 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
-        console.error("Login error:", error);
+        // console.error("Login error:", error);
         res.status(500).json({
             success: false,
-            message: "Серверийн алдаа гарлаа"
+            message: `${error}, Серверийн алдаа гарлаа`
         });
     }
 });

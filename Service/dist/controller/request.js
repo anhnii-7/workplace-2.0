@@ -42,7 +42,7 @@ const getRequests = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.getRequests = getRequests;
 const createRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { from, to, message } = req.body;
+        const { from, to, message, selectedSchedule } = req.body;
         const [fromUser, toUser] = yield Promise.all([
             user_1.default.findById(from),
             user_1.default.findById(to)
@@ -53,6 +53,10 @@ const createRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
         if (toUser.role !== 'mentor') {
             res.status(400).json({ message: "Can only send requests to mentors" });
+            return;
+        }
+        if (!toUser.availableSchedules.includes(selectedSchedule)) {
+            res.status(400).json({ message: "Selected schedule is not available" });
             return;
         }
         const existingRequest = yield request_1.default.findOne({
@@ -68,6 +72,7 @@ const createRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             from,
             to,
             message,
+            selectedSchedule,
             status: 'pending'
         });
         res.status(201).json({ success: true, request });

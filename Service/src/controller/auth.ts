@@ -129,7 +129,7 @@ export const loginUser = async (req: Request, res: Response) => {
         // console.error("Login error:", error);
         res.status(500).json({
             success: false,
-            message: "Серверийн алдаа гарлаа"
+            message: `${error}, Серверийн алдаа гарлаа`
         });
     }
 };

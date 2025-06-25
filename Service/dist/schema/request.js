@@ -36,7 +36,11 @@ const requestSchema = new mongoose_1.default.Schema({
     isActive: {
         type: Boolean,
         default: false
-    }
+    },
+    selectedSchedule: {
+        type: String,
+        required: true
+    },
 }, { timestamps: true });
 const Request = mongoose_1.default.model("Request", requestSchema);
 exports.default = Request;

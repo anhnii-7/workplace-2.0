@@ -27,7 +27,7 @@ const userSchema = new mongoose_1.default.Schema({
     },
     role: {
         type: String,
-        enum: ["mentor", "new"],
+        enum: ["mentor", "new", "old"],
         required: true
     },
     experience: {
@@ -45,6 +45,10 @@ const userSchema = new mongoose_1.default.Schema({
     currentMentor: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: "User"
+    },
+    availableSchedules: {
+        type: [String], //  ["06.28", "07.02"]
+        default: []
     },
 });
 const User = mongoose_1.default.model("User", userSchema);

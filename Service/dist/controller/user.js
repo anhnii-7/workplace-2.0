@@ -85,7 +85,17 @@ const getUserByHobby = (req, res) => __awaiter(void 0, void 0, void 0, function*
                     from: "departments",
                     localField: "department",
                     foreignField: "_id",
-                    as: "departmentInfo"
+                    as: "departmentInfo",
+                    pipeline: [
+                        {
+                            $lookup: {
+                                from: "jobtitles",
+                                localField: "jobTitle",
+                                foreignField: "_id",
+                                as: "jobTitleInfo"
+                            }
+                        }
+                    ]
                 }
             },
             {
@@ -100,6 +110,12 @@ const getUserByHobby = (req, res) => __awaiter(void 0, void 0, void 0, function*
                     preserveNullAndEmptyArrays: true
                 }
             },
+            {
+                $unwind: {
+                    path: "$departmentInfo.jobTitleInfo",
+                    preserveNullAndEmptyArrays: true
+                }
+            }
         ]);
         res.status(200).json({ success: true, users });
     }
