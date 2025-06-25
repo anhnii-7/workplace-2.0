@@ -158,7 +158,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <span className="text-sm text-muted-foreground">Remember me</span>
                 </label>
                 <Link
-                  href="/auth/forgot-password"
+                  href="/user"
                   className="text-sm text-primary hover:underline"
                 >
                   Forgot password?
