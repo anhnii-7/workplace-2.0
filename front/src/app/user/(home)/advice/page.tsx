@@ -31,13 +31,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-import { CalendarDays, Clock4, Heart, LocateIcon, LocationEditIcon, MapPin, MapPinIcon, MessageSquare, Search, User, User2Icon } from "lucide-react";
+  CalendarDays,
+  Clock4,
+  Heart,
+  LocateIcon,
+  LocationEditIcon,
+  MapPin,
+  MapPinIcon,
+  MessageSquare,
+  Search,
+  User,
+  User2Icon,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -45,6 +52,7 @@ import LeaderboardEmployee from "../components/LeaderboardEmployee";
 import EmployeeProfile from "../components/EmployeeProfile";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { ReqDailogpage } from "./components/ReqDailog";
 
 interface User {
   _id: string;
@@ -65,7 +73,7 @@ interface User {
     jobTitleInfo: {
       _id: string;
       title: string;
-    }
+    };
   };
   availableSchedules?: string[];
 }
@@ -76,7 +84,7 @@ interface Request {
   to: string | User;
   message: string;
   selectedSchedule: string;
-  status: 'pending' | 'accepted' | 'declined';
+  status: "pending" | "accepted" | "declined";
   isActive: boolean;
   mentorNotes?: string;
   meetingDate?: string;
@@ -91,14 +99,17 @@ export default function WishPage() {
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const [requests, setRequests] = useState<{ sent: Request[], received: Request[] }>({ sent: [], received: [] });
+  const [requests, setRequests] = useState<{
+    sent: Request[];
+    received: Request[];
+  }>({ sent: [], received: [] });
   const [formData, setFormData] = useState({
-    message: '',
-    selectedDate: ''
+    message: "",
+    selectedDate: "",
   });
-  console.log(requests)
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<'send' | 'received'>('send');
+  console.log(requests);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState<"send" | "received">("send");
   const [selectedMentor, setSelectedMentor] = useState<User | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -110,7 +121,7 @@ export default function WishPage() {
   useEffect(() => {
     const currentUserString = localStorage.getItem("currentUser");
     if (!currentUserString) {
-      router.push('/login');
+      router.push("/login");
       return;
     }
     const user = JSON.parse(currentUserString);
@@ -121,13 +132,17 @@ export default function WishPage() {
 
   useEffect(() => {
     if (currentUser && users.length > 0) {
-      const filtered = users.filter((user) =>
-        currentUser.role === "mentor"
-          ? user.role === "new"
-          : user.role === "mentor"
-      ).filter(user =>
-        `${user.name} ${user.lastName} ${user.departmentInfo?.title}`.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      const filtered = users
+        .filter((user) =>
+          currentUser.role === "mentor"
+            ? user.role === "new"
+            : user.role === "mentor"
+        )
+        .filter((user) =>
+          `${user.name} ${user.lastName} ${user.departmentInfo?.title}`
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
+        );
       setFilteredUsers(filtered);
     }
   }, [users, currentUser, searchTerm]);
@@ -153,52 +168,67 @@ export default function WishPage() {
 
   const fetchRequests = async (userId: string) => {
     try {
-      const response = await axios.get('http://localhost:8000/request', {
+      const response = await axios.get("http://localhost:8000/request", {
         params: {
           userId,
-          type: 'all'
-        }
+          type: "all",
+        },
       });
       setRequests({
-        sent: response.data.requests.filter((req: Request) => req.from === userId),
-        received: response.data.requests.filter((req: Request) => req.to === userId)
+        sent: response.data.requests.filter(
+          (req: Request) => req.from === userId
+        ),
+        received: response.data.requests.filter(
+          (req: Request) => req.to === userId
+        ),
       });
     } catch (error) {
-      console.error('Error fetching requests:', error);
+      console.error("Error fetching requests:", error);
       toast.error("Failed to load requests");
     }
   };
 
-  const createRequest = async (toUserId: string, message: string, selectedDate: string) => {
+  const createRequest = async (
+    toUserId: string,
+    message: string,
+    selectedDate: string
+  ) => {
     try {
-      const response = await axios.post('http://localhost:8000/request', {
+      const response = await axios.post("http://localhost:8000/request", {
         from: currentUser._id,
         to: toUserId,
         message,
-        selectedSchedule: selectedDate
+        selectedSchedule: selectedDate,
       });
       fetchRequests(currentUser._id);
       toast.success("Request sent successfully");
       setIsDialogOpen(false);
       return response.data;
     } catch (error: any) {
-      console.error('Error creating request:', error);
+      console.error("Error creating request:", error);
       toast.error(error.response?.data?.message || "Failed to send request");
       throw error;
     }
   };
 
-  const updateRequest = async (requestId: string, status: string, notes?: string) => {
+  const updateRequest = async (
+    requestId: string,
+    status: string,
+    notes?: string
+  ) => {
     try {
-      const response = await axios.put(`http://localhost:8000/request/${requestId}`, {
-        status,
-        mentorNotes: notes
-      });
+      const response = await axios.put(
+        `http://localhost:8000/request/${requestId}`,
+        {
+          status,
+          mentorNotes: notes,
+        }
+      );
       fetchRequests(currentUser._id);
       toast.success(`Request ${status}`);
       return response.data;
     } catch (error: any) {
-      console.error('Error updating request:', error);
+      console.error("Error updating request:", error);
       toast.error(error.response?.data?.message || "Failed to update request");
       throw error;
     }
@@ -210,24 +240,24 @@ export default function WishPage() {
       fetchRequests(currentUser._id);
       toast.success("Request cancelled");
     } catch (error: any) {
-      console.error('Error cancelling request:', error);
+      console.error("Error cancelling request:", error);
       toast.error(error.response?.data?.message || "Failed to cancel request");
     }
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
   const handleScheduleSelect = (schedule: string) => {
     setFormData({
       ...formData,
-      selectedDate: schedule
+      selectedDate: schedule,
     });
   };
 
@@ -241,10 +271,15 @@ export default function WishPage() {
 
   return (
     <div className="flex gap-6 mt-[40px] p-4 ">
-      
       <div className="flex-1 ">
         <div className="flex justify-between items-center mb-6 ">
-          <h1 className={`text-stone-800 text-2xl font-semibold ${currentUser?.role === "mentor" ? "" : "bg-white py-4 px-8 rounded-xl"}`}>
+          <h1
+            className={`text-stone-800 text-2xl font-semibold ${
+              currentUser?.role === "mentor"
+                ? ""
+                : "bg-white py-4 px-8 rounded-xl"
+            }`}
+          >
             {currentUser?.role === "mentor"
               ? "Шинэ ажилчидтай холбох гүүр тань болж өгье"
               : "Эргэлзэх зүйл, айх айдасгүй хүссэн асуултаа асуух боломж"}
@@ -258,7 +293,9 @@ export default function WishPage() {
               : "Ахлах ажилчдын жагсаалт"}
           </h2>
           <div className="bg-white rounded-xl p-3 mr-[40px]">
-            <p className="text-slate-700 font-normal">{filteredUsers.length} хүн</p>
+            <p className="text-slate-700 font-normal">
+              {filteredUsers.length} хүн
+            </p>
           </div>
         </div>
 
@@ -294,7 +331,10 @@ export default function WishPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 justify-center items-center gap-5 ">
               {filteredUsers.map((user) => (
-                <Card key={user._id} className="p-4 hover:shadow-lg transition-shadow w-[399px] ">
+                <Card
+                  key={user._id}
+                  className="p-4 hover:shadow-lg transition-shadow w-[399px] flex flex-col gap-3"
+                >
                   <div className="flex justify-around gap-4  items-center">
                     <div className="flex flex-col items-center gap-4">
                       <Avatar className="w-24 h-24 rounded-lg">
@@ -303,16 +343,21 @@ export default function WishPage() {
                           alt={`${user.name} ${user.lastName}`}
                         />
                         <AvatarFallback className="text-[28px]">
-                          {user.name.charAt(0)}{user.lastName.charAt(0)}
+                          {user.name.charAt(0)}
+                          {user.lastName.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                     </div>
                     <div className="flex flex-col gap-3  w-full ">
                       <div className="flex justify-between w-full items-center">
-                       <p className="text-lg font-se text-slate-700">
-                          {user.departmentInfo?.jobTitleInfo?.title || "No Position"}
+                        <p className="text-lg font-se text-slate-700">
+                          {user.departmentInfo?.jobTitleInfo?.title ||
+                            "No Position"}
                         </p>
-                       <p className="text-sm font-normal">  {extractDuration(user.experience)}</p>
+                        <p className="text-sm font-normal">
+                          {" "}
+                          {extractDuration(user.experience)}
+                        </p>
                       </div>
                       <div className="flex items-center gap-3">
                         <User className="w-4 h-4" />
@@ -322,118 +367,27 @@ export default function WishPage() {
                       </div>
                       <div className="flex items-center gap-3">
                         <MessageSquare className="w-[18px] h-[18px]"></MessageSquare>
-                        <p className="text-sm font-normal text-stone-700">12 уулзалт</p>
+                        <p className="text-sm font-normal text-stone-700">
+                          12 уулзалт
+                        </p>
                       </div>
                     </div>
                   </div>
+                  <ReqDailogpage
+                    user={user}
+                    selectedMentor={selectedMentor}
+                    setSelectedMentor={setSelectedMentor}
+                    isDialogOpen={isDialogOpen}
+                    setIsDialogOpen={setIsDialogOpen}
+                    formData={formData}
+                    setFormData={setFormData}
+                    handleScheduleSelect={handleScheduleSelect}
+                    createRequest={createRequest}
+                    formatDate={formatDate}
+                    extractDuration={extractDuration}
+                  />
 
-                  <div className="mt-4">
-                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="bg-blue-500 text-white w-full hover:bg-blue-600"
-                          onClick={() => setSelectedMentor(user)}
-                        >
-                          Уулзах хүсэлт илгээх
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-4xl">
-                        <DialogHeader>
-                          <DialogTitle className="text-2xl">Хүлээн авагчийн мэдээлэл</DialogTitle>
-                        </DialogHeader>
-                        <div className="grid grid-cols-3 gap-4 my-6">
-                          <Card className="flex gap-4 p-4 items-center">
-                            <Avatar className="w-16 h-16">
-                              <AvatarImage src={`/avatars/${selectedMentor?._id}.jpg`} />
-                              <AvatarFallback>{selectedMentor?.name.charAt(0)}{selectedMentor?.lastName.charAt(0)}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <h3 className="font-medium">{selectedMentor?.lastName.slice(0, 1)}.{selectedMentor?.name}</h3>
-                              <p className="text-sm text-gray-500">Mentor</p>
-                            </div>
-                          </Card>
-                          <Card className="p-4">
-                            <div className="space-y-3">
-                              <div className="flex items-center gap-2">
-                                <User2Icon className="w-4 h-4" />
-                                <span>{selectedMentor?.departmentInfo?.jobTitleInfo?.title || "N/A"}</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <MapPinIcon className="w-4 h-4" />
-                                <span>{selectedMentor?.departmentInfo?.title || "N/A"}</span>
-                              </div>
-                            </div>
-                          </Card>
-                          <Card className="p-4">
-                            <div className="space-y-3">
-                              <h4 className="font-medium">Ажиллаж буй хугацаа</h4>
-                              <div className="flex items-center gap-2">
-                                <CalendarDays className="w-4 h-4" />
-                                <span>{selectedMentor ? extractDuration(selectedMentor.experience) : "N/A"}</span>
-                              </div>
-                            </div>
-                          </Card>
-                        </div>
-                        <form onSubmit={async (e) => {
-                          e.preventDefault();
-                          if (!selectedMentor) return;
-                          try {
-                            await createRequest(
-                              selectedMentor._id,
-                              formData.message,
-                              formData.selectedDate
-                            );
-                          } catch (error) {
-                            // Error handled in createRequest
-                          }
-                        }}>
-                          <div className="space-y-4">
-                            <div>
-                              <Label className="text-lg font-semibold">
-                                Боломжит цагууд
-                              </Label>
-                              <div className="flex gap-2 mt-2">
-                                {selectedMentor?.availableSchedules?.map((schedule) => (
-                                  <Button
-                                    key={schedule}
-                                    type="button"
-                                    variant={formData.selectedDate === schedule ? "default" : "outline"}
-                                    onClick={() => handleScheduleSelect(schedule)}
-                                  >
-                                    {formatDate(schedule)}
-                                  </Button>
-                                ))}
-                              </div>
-                            </div>
-                            <div>
-                              <Label htmlFor="message" className="text-lg font-semibold">
-                                Ямар шалтгааны улмаас уулзах хүсэлт илгээж байгаа вэ?
-                              </Label>
-                              <textarea
-                                id="message"
-                                name="message"
-                                value={formData.message}
-                                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                className="w-full h-40 rounded-lg border p-3 mt-2"
-                                required
-                                placeholder="Уулзалтын зорилго, асууж байгаа асуултаа дэлгэрэнгүй бичнэ үү..."
-                              />
-                            </div>
-                          </div>
-                          <DialogFooter className="mt-6">
-                            <Button
-                              type="submit"
-                              className="bg-blue-500 hover:bg-blue-600"
-                              disabled={!formData.selectedDate}
-                            >
-                              Хүсэлт илгээх
-                            </Button>
-                          </DialogFooter>
-                        </form>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
+               
                 </Card>
               ))}
             </div>
@@ -480,12 +434,16 @@ export default function WishPage() {
         {/* Requests */}
         <Card className="p-6">
           <CardHeader>
-            <CardTitle className="text-center border-b border-black w-[100px] pb-[30px]">Хүсэлтүүд</CardTitle>
+            <CardTitle className="text-center border-b border-black w-[100px] pb-[30px]">
+              Хүсэлтүүд
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs
               value={activeTab}
-              onValueChange={(value) => setActiveTab(value as 'send' | 'received')}
+              onValueChange={(value) =>
+                setActiveTab(value as "send" | "received")
+              }
               className="w-full"
             >
               <TabsList className="grid w-full grid-cols-2">
@@ -494,31 +452,31 @@ export default function WishPage() {
               </TabsList>
 
               <TabsContent value="send" className="mt-4">
-                  <div className="border-1 p-2 flex gap-3 bg-white rounded-xl border-blue-200">
-                    <div className="flex gap-3 items-center">
-                      <Avatar className="w-[70px] h-[70px]">
-                        <AvatarImage src={"AG"} />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col ">
-                        <h1 className="text-slate-800 text-base font-medium leading-6">
-                          Ахлах дизайнер
-                        </h1>
-                        <div className="flex gap-2 items-center">
-                          <User className="w-4 h-4 " />
-                          <h2 className="text-slate-700 font-normal leading-5 text-sm">
-                            Д.Сүхбаяр
-                          </h2>
-                        </div>
-                        <div className="flex gap-2 items-center">
-                          <CalendarDays className="w-4 h-4 " />
-                          <h3 className="text-slate-700 font-normal leading-5 text-sm">
-                            06-29
-                          </h3>
-                        </div>
+                <div className="border-1 p-2 flex gap-3 bg-white rounded-xl border-blue-200">
+                  <div className="flex gap-3 items-center">
+                    <Avatar className="w-[70px] h-[70px]">
+                      <AvatarImage src={"AG"} />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col ">
+                      <h1 className="text-slate-800 text-base font-medium leading-6">
+                        Ахлах дизайнер
+                      </h1>
+                      <div className="flex gap-2 items-center">
+                        <User className="w-4 h-4 " />
+                        <h2 className="text-slate-700 font-normal leading-5 text-sm">
+                          Д.Сүхбаяр
+                        </h2>
+                      </div>
+                      <div className="flex gap-2 items-center">
+                        <CalendarDays className="w-4 h-4 " />
+                        <h3 className="text-slate-700 font-normal leading-5 text-sm">
+                          06-29
+                        </h3>
                       </div>
                     </div>
                   </div>
+                </div>
 
                 {/* {requests.sent.length === 0 ? (
                   <p className="text-center text-gray-500 py-4">Илгээсэн хүсэлт байхгүй</p>
@@ -576,34 +534,37 @@ export default function WishPage() {
               </TabsContent>
 
               <TabsContent value="received" className="mt-4">
-                  <div className="border-1 p-2 flex gap-3 bg-white rounded-xl border-blue-200 flex-col" >
-                    <div className="bg-indigo-50 px-3 py-1 w-full rounded-full flex gap-2 items-center">
-                      <Clock4 className="w-[14px] h-[14px]" /> <p className="text-xs font-medium leading-4 text-blue-900">Таны хүсэлт хүлээгдэж байна.</p>
-                    </div>
-                    <div className="flex gap-3 items-center">
-                      <Avatar className="w-[70px] h-[70px]">
-                        <AvatarImage src={"AG"} />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col ">
-                        <h1 className="text-slate-800 text-base font-medium leading-6">
-                          Ахлах дизайнер
-                        </h1>
-                        <div className="flex gap-2 items-center">
-                          <User className="w-4 h-4 " />
-                          <h2 className="text-slate-700 font-normal leading-5 text-sm">
-                            Д.Сүхбаяр
-                          </h2>
-                        </div>
-                        <div className="flex gap-2 items-center">
-                          <CalendarDays className="w-4 h-4 " />
-                          <h3 className="text-slate-700 font-normal leading-5 text-sm">
-                            06-29
-                          </h3>
-                        </div>
+                <div className="border-1 p-2 flex gap-3 bg-white rounded-xl border-blue-200 flex-col">
+                  <div className="bg-indigo-50 px-3 py-1 w-full rounded-full flex gap-2 items-center">
+                    <Clock4 className="w-[14px] h-[14px]" />{" "}
+                    <p className="text-xs font-medium leading-4 text-blue-900">
+                      Таны хүсэлт хүлээгдэж байна.
+                    </p>
+                  </div>
+                  <div className="flex gap-3 items-center">
+                    <Avatar className="w-[70px] h-[70px]">
+                      <AvatarImage src={"AG"} />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col ">
+                      <h1 className="text-slate-800 text-base font-medium leading-6">
+                        Ахлах дизайнер
+                      </h1>
+                      <div className="flex gap-2 items-center">
+                        <User className="w-4 h-4 " />
+                        <h2 className="text-slate-700 font-normal leading-5 text-sm">
+                          Д.Сүхбаяр
+                        </h2>
+                      </div>
+                      <div className="flex gap-2 items-center">
+                        <CalendarDays className="w-4 h-4 " />
+                        <h3 className="text-slate-700 font-normal leading-5 text-sm">
+                          06-29
+                        </h3>
                       </div>
                     </div>
                   </div>
+                </div>
 
                 {/* {requests.received.length === 0 ? (
                   <p className="text-center text-gray-500 py-4">Хүлээн авсан хүсэлт байхгүй</p>
