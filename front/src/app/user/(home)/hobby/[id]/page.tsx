@@ -46,14 +46,18 @@ type Department = {
   jobTitle: string;
   title: string;
   _id: string;
+  jobTitleInfo: {
+    title: string;
+    _id: string;
+  }
 };
 
 type Hobby = {
   title: string;
   _id: string;
-}[];
+};
 
-type User = {
+export type User = {
   department: string;
   departmentInfo: Department;
   hobby: string;
@@ -67,11 +71,22 @@ type User = {
 export default function HobbyInsertPage() {
   const id = useParams();
   const [users, setUsers] = useState<User[]>([]);
+  const [hobbies, setHobbies] = useState<Hobby[]>([]);
+
+  const getHobbies = async () => {
+    const response = await axios.get(`${BASE_URl}/hobby`);
+    console.log(response, "hobbies");
+    setHobbies(response.data);
+  };
+  // console.log(hobbies, "hobbies");
+  useEffect(() => {
+    getHobbies();
+  }, []);
 
   const getUserByHobby = async () => {
     const response = await axios.get(`${BASE_URl}/user/by-hobby?id=${id.id}`);
     const user = response.data.users;
-    console.log(user, "users");
+    // console.log(user, "users");
     setUsers(user);
   };
 
@@ -89,13 +104,17 @@ export default function HobbyInsertPage() {
             <SelectValue placeholder="Ангилал" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="system">System</SelectItem>
+           {
+            hobbies.map(hobby => {
+              return (
+                <SelectItem value={hobby.title} key={hobby._id}>{hobby.title}</SelectItem>
+              )
+            })
+           }
           </SelectContent>
         </Select>
-   
-         <AddEventDialog/>
+
+        <AddEventDialog />
       </div>
       <Tabs defaultValue="workerlist" className="w-full">
         <TabsList className="w-full bg-blue-100 mb-8 rounded-sm">
@@ -103,7 +122,7 @@ export default function HobbyInsertPage() {
           <TabsTrigger value="eventList">Эвентын жагсаалт</TabsTrigger>
         </TabsList>
         <TabsContent value="workerlist">
-          <WorkerListCard />
+          <WorkerListCard users={users} />
         </TabsContent>
         <TabsContent value="eventList">
           <div className="grid grid-cols-2 gap-5">

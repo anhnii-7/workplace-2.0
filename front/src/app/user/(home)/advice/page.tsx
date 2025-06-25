@@ -58,10 +58,13 @@ interface User {
     title: string;
   }[];
   departmentInfo: {
-    jobTitleInfo: any;
     _id: string;
     title: string;
     jobTitle?: string;
+    jobTitleInfo: {
+      _id: string;
+      title: string;
+    }
   };
   availableSchedules?: string[];
 }
@@ -238,7 +241,7 @@ export default function WishPage() {
   return (
     <div className="flex gap-6 mt-[40px] p-4">
       {/* Main Content - Users List */}
-      <div className="flex-1">
+      <div className="flex-1 bg-red-400">
         <div className="flex justify-between items-center mb-6">
           <h1 className={`text-stone-800 text-2xl font-semibold ${currentUser?.role === "mentor" ? "" : "bg-white py-4 px-8 rounded-xl"}`}>
             {currentUser?.role === "mentor"
@@ -290,7 +293,7 @@ export default function WishPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-5">
               {filteredUsers.map((user) => (
-                <Card key={user._id} className="p-4 hover:shadow-lg transition-shadow">
+                <Card key={user._id} className="p-4 hover:shadow-lg transition-shadow w-[379px] ">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col items-center gap-4">
                       <Avatar className="w-24 h-24 rounded-lg">
@@ -298,38 +301,27 @@ export default function WishPage() {
                           src={`/avatars/${user._id}.jpg`}
                           alt={`${user.name} ${user.lastName}`}
                         />
-                        <AvatarFallback className="text-xl">
+                        <AvatarFallback className="text-[28px]">
                           {user.name.charAt(0)}{user.lastName.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                     </div>
                     <div className="flex flex-col gap-3">
                       <div className="flex justify-between w-full items-center">
-                        <p className="text-lg font-semibold text-slate-700">
-                          {user.departmentInfo?.title || "Unknown Department"}
+                       <p className="text-[20px] text-slate-700">
+                          {user.departmentInfo?.jobTitleInfo?.title || "No Position"}
                         </p>
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="w-[56px] h-[24px] bg-blue-200 rounded-2xl">
                           {extractDuration(user.experience)}
                         </Badge>
                       </div>
                       <div className="flex items-center gap-3">
                         <User className="w-4 h-4" />
-                        <h2 className="text-sm font-medium text-stone-700">
+                        <h2 className="text-sm font-normal text-stone-700">
                           {user.name} {user.lastName}
                         </h2>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <MessageSquare className="w-4 h-4" />
-                        <p className="text-sm text-slate-700">
-                          {user.hobbyInfo[0]?.title || "No Hobby"}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <MapPin className="w-4 h-4" />
-                        <p className="text-sm text-slate-700">
-                          {user.departmentInfo?.jobTitleInfo?.title || "No Position"}
-                        </p>
-                      </div>
+                      <div>Туслалцаа хэрэгтэй байна.</div>
                     </div>
                   </div>
 
