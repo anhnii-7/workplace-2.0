@@ -23,6 +23,7 @@ const myHobby = () => {
     const getHobbies = async () => {
         const response = await axios.get(`${BASE_URl}/hobby`);
         setHobbies(response.data)
+
         console.log(response.data, "hobby response")
     }
     // console.log(hobbies, "hobbies");
@@ -36,8 +37,8 @@ const myHobby = () => {
             <div className="grid grid-cols-4 gap-5 w-[868px] place-self-center items-center py-24">
                 {myHobbies.map((hobby) => {
                     return (
-                        <Link href={`/user/hobby/${hobby._id}`} key={hobby._id}>
-                            <Card className="p-0 w-[202px] h-[288px] flex flex-col gap-3">
+                   
+                            <Card className="p-0 w-[202px] h-[288px] flex flex-col gap-3"key={hobby._id}>
                                 <div className=" w-full rounded-3xl h-[224px] bg-white overflow-hidden relative">
                                     <Image
                                         src={hobby.image}
@@ -51,7 +52,7 @@ const myHobby = () => {
                                     {hobby.title}
                                 </p>
                             </Card>
-                        </Link>
+                 
                     );
                 })}
                 <DialogDemo hobbies={hobbies} />

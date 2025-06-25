@@ -98,7 +98,7 @@ export function AppSidebar() {
                 {currentUser?.name}
                 </h1>
                 <p className="text-slate-500 text-xs font-normal leading-4">
-                {currentUser?.departmentInfo.jobTitleInfo.title}
+                {currentUser?.departmentInfo?.jobTitleInfo.title}
                 </p>
               </div>
             </SidebarGroupLabel></Link>
