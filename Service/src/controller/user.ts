@@ -7,7 +7,7 @@ export const getUserWithInfo = async (_req: Request, res: Response) => {
         const userWithInfo = await User.aggregate([
             {
                 $lookup: {
-                    from: "hobbies",       
+                    from: "hobbies",
                     localField: "hobby",
                     foreignField: "_id",
                     as: "hobbyInfo"
@@ -15,7 +15,7 @@ export const getUserWithInfo = async (_req: Request, res: Response) => {
             },
             {
                 $lookup: {
-                    from: "departments", 
+                    from: "departments",
                     localField: "department",
                     foreignField: "_id",
                     as: "departmentInfo",
@@ -71,7 +71,17 @@ export const getUserByHobby = async (req: Request, res: Response) => {
                     from: "departments",
                     localField: "department",
                     foreignField: "_id",
-                    as: "departmentInfo"
+                    as: "departmentInfo",
+                    pipeline: [
+                        {
+                            $lookup: {
+                                from: "jobtitles",
+                                localField: "jobTitle",
+                                foreignField: "_id",
+                                as: "jobTitleInfo"
+                            }
+                        }
+                    ]
                 }
             },
             {
@@ -86,6 +96,12 @@ export const getUserByHobby = async (req: Request, res: Response) => {
                     preserveNullAndEmptyArrays: true
                 }
             },
+            {
+                $unwind: {
+                    path: "$departmentInfo.jobTitleInfo",
+                    preserveNullAndEmptyArrays: true
+                }
+            }
         ]);
         res.status(200).json({ success: true, users })
     } catch (error) {
@@ -129,4 +145,3 @@ export const getMentors = async (_req: Request, res: Response) => {
         res.status(500).json({ message: error.message });
     }
 };
- 

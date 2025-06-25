@@ -22,7 +22,7 @@ export default function WishPage() {
     console.log(response, "hobbies");
     setHobbies(response.data);
   };
-  console.log(hobbies, "hobbies");
+  // console.log(hobbies, "hobbies");
   useEffect(() => {
     getHobbies();
   }, []);

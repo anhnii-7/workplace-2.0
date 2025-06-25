@@ -1,16 +1,11 @@
 "use client";
 import {
+  Bell,
   BookOpen,
-  Calendar,
   Handshake,
   HelpCircle,
-  Home,
-  Inbox,
   MessageSquare,
   Plus,
-  Search,
-  Settings,
-  Trash,
   Trash2,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -46,20 +41,15 @@ const items = [
         icon: Handshake,
       },
       {
-        title: "Хүсэлтүүд",
-        url: "/user/request",
-        icon: BookOpen,
+        title: "Мэдэгдэл",
+        url: "/user/#",
+        icon: Bell,
       },
     ],
   },
   {
     name: "Миний хуудас",
     item: [
-      {
-        title: "Хувийн мэдээлэл",
-        url: "/user/profile",
-        icon: Search,
-      },
       {
         title: "Хобби нэмэх",
         url: "/user/#",
@@ -90,11 +80,11 @@ export function AppSidebar() {
     setCurrentUser(currentUserString ? JSON.parse(currentUserString) : null);
   }, []);
 
-console.log(currentUser, "curuser")
+// console.log(currentUser, "currentuser")
 
 
   return (
-    <Sidebar>
+    <Sidebar >
       <SidebarContent>
         <SidebarGroup>
           <Link href="/user" className="no-underline">

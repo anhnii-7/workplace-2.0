@@ -54,6 +54,7 @@ interface User {
   department: string;
   role: string;
   hobby: string;
+  experience: string;
   hobbyInfo: {
     _id: string;
     title: string;
@@ -62,6 +63,10 @@ interface User {
     _id: string;
     title: string;
     jobTitle?: string;
+    jobTitleInfo: {
+      _id: string;
+      title: string;
+    }
   };
 }
 
@@ -71,7 +76,7 @@ export default function WishPage() {
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [date, setDate] = React.useState<Date | undefined>(new Date());
-  console.log(currentUser);
+  // console.log(currentUser);
   // console.log(users)
   useEffect(() => {
     const currentUserString = localStorage.getItem("currentUser");
@@ -93,7 +98,7 @@ export default function WishPage() {
       setLoading(true);
       const response = await axios.get("http://localhost:8000/user/with-info");
 
-      console.log("Response data:", response.data);
+      // console.log("Response data:", response.data);
       if (response.data.success && response.data.userWithInfo) {
         setUsers(response.data.userWithInfo);
       } else {
@@ -122,11 +127,10 @@ export default function WishPage() {
       <div className="px-10 h-screen  ">
         <div className="flex justify-between items-center mb-6">
           <h1
-            className={`text-stone-800 text-2xl font-semibold = text-center${
-              currentUser?.role === "mentor"
+            className={`text-stone-800 text-2xl font-semibold = text-center${currentUser?.role === "mentor"
                 ? ""
                 : " bg-white py-4 px-[33px] mt-10 rounded-xl"
-            }`}
+              }`}
           >
             {currentUser?.role === "mentor"
               ? "Шинэ ажилчидтай холбох гүүр тань болж өгье"
@@ -141,7 +145,7 @@ export default function WishPage() {
               : "Ахлах ажилчдын жагсаалт"}
           </h2>
           <div className="bg-white rounded-xl p-[10px]">
-            <image></image>
+            {/* <image></image> */}
             <p className="text-slate-700 font-normal text-xl leading-7 ">too</p>
           </div>
         </div>
@@ -194,15 +198,15 @@ export default function WishPage() {
                       <div className="flex flex-col gap-3">
                         <div className="flex justify-between w-full items-center">
                           <p className="text-lg font-semibold leading-7 text-slate-700 ">
-                            {user.departmentInfo?.title || "Unknown Department"}
+                          {user.departmentInfo?.jobTitleInfo.title || "Unknown Department"}
                           </p>
-                          <p className="text-sm font-normal leading-5 ">jil </p>
+                          <p className="text-sm font-normal leading-5 ">{user.experience.match(/[0-9]/g)?.join("")} жил</p>
                         </div>
                         <div className="flex items-center gap-3">
                           <User />
 
                           <h2 className="text-sm font-normal text-stone-700 leading-5">
-                            {user.name} {user.lastName}
+                             {user.name} {user.lastName}
                           </h2>
                         </div>
                         <div className="flex items-center gap-3">
@@ -312,7 +316,7 @@ export default function WishPage() {
                 <TabsContent value="req">
                   <div className="border-1 p-2 flex gap-3 bg-white rounded-xl border-blue-200 flex-col" >
                     <div className="bg-indigo-50 px-3 py-1 w-full rounded-full flex gap-2 items-center">
-                      <Clock4 className="w-[14px] h-[14px]"/> <p className="text-xs font-medium leading-4 text-blue-900">Таны хүсэлт хүлээгдэж байна.</p>
+                      <Clock4 className="w-[14px] h-[14px]" /> <p className="text-xs font-medium leading-4 text-blue-900">Таны хүсэлт хүлээгдэж байна.</p>
                     </div>
                     <div className="flex gap-3 items-center">
                       <Avatar className="w-[70px] h-[70px]">
