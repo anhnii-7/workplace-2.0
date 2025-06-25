@@ -42,7 +42,7 @@ const items = [
       },
       {
         title: "Мэдэгдэл",
-        url: "/user/#",
+        url: "/user/request",
         icon: Bell,
       },
     ],
@@ -52,7 +52,7 @@ const items = [
     item: [
       {
         title: "Хобби нэмэх",
-        url: "/user/#",
+        url: "/user/myHobby",
         icon: Plus,
       },
       {
@@ -116,10 +116,10 @@ export function AppSidebar() {
 
                   return (
                     <SidebarMenuItem key={index}>
-                      <SidebarMenuButton asChild>
+                      <SidebarMenuButton asChild className="rounded-full">
                         <a
                           href={menuItem.url}
-                          className={`flex items-center gap-2 px-3 py-2 rounded-full ${isActive
+                          className={`flex items-center gap-2 px-3 py-2  ${isActive
                             ? "bg-blue-400 text-white"
                             : "text-slate-700 hover:bg-slate-100"
                             }`}
