@@ -26,6 +26,9 @@ import {
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import axios from "axios";
+import { BASE_URl } from "@/app/contants";
+import { useEffect, useState } from "react";
 
 // Menu items.
 const items = [
@@ -76,28 +79,39 @@ const items = [
   },
 ];
 
+
+
 export function AppSidebar() {
   const pathname = usePathname(); // одоогийн path-ийг авна
+  const [currentUser, setCurrentUser] = useState<any>(null)
+
+  useEffect(() => {
+    const currentUserString = localStorage.getItem("currentUser");
+    setCurrentUser(currentUserString ? JSON.parse(currentUserString) : null);
+  }, []);
+
+console.log(currentUser, "curuser")
+
 
   return (
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-         <Link href="/user" className="no-underline">
-          <SidebarGroupLabel className="flex items-center gap-3 my-10">
-            <Avatar className="w-[60px] h-[60px] rounded-md">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="text-slate-700 font-semibold leading-5 text-base">
-                Ner
-              </h1>
-              <p className="text-slate-500 text-xs font-normal leading-4">
-                ajil
-              </p>
-            </div>
-          </SidebarGroupLabel></Link>
+          <Link href="/user" className="no-underline">
+            <SidebarGroupLabel className="flex items-center gap-3 my-10">
+              <Avatar className="w-[60px] h-[60px] rounded-md">
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              <div>
+                <h1 className="text-slate-700 font-semibold leading-5 text-base">
+                {currentUser?.name}
+                </h1>
+                <p className="text-slate-500 text-xs font-normal leading-4">
+                {currentUser?.departmentInfo.jobTitleInfo.title}
+                </p>
+              </div>
+            </SidebarGroupLabel></Link>
 
           <SidebarGroupContent>
             {items.map((group, groupIdx) => (
@@ -115,11 +129,10 @@ export function AppSidebar() {
                       <SidebarMenuButton asChild>
                         <a
                           href={menuItem.url}
-                          className={`flex items-center gap-2 px-3 py-2 rounded-full ${
-                            isActive
-                              ? "bg-blue-400 text-white"
-                              : "text-slate-700 hover:bg-slate-100"
-                          }`}
+                          className={`flex items-center gap-2 px-3 py-2 rounded-full ${isActive
+                            ? "bg-blue-400 text-white"
+                            : "text-slate-700 hover:bg-slate-100"
+                            }`}
                         >
                           <menuItem.icon className="w-4 h-4" />
                           <span>{menuItem.title}</span>
@@ -136,3 +149,5 @@ export function AppSidebar() {
     </Sidebar>
   );
 }
+
+ 
