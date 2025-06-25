@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-type Hobby = {
+export type Hobby = {
   title: string;
   _id: string;
   image: string;
@@ -47,7 +47,7 @@ export default function WishPage() {
           {hobbies.map((hobby) => {
             return (
               <Link href={`/user/hobby/${hobby._id}`} key={hobby._id}>
-                <Card className="p-0 w-[202px] h-[288px] flex flex-col gap-3">
+                <Card className="p-0 w-[202px] h-[290px] flex flex-col gap-3 box-border">
                   <div className=" w-full rounded-3xl h-[224px] bg-white overflow-hidden relative">
                     <Image
                       src={hobby.image}
