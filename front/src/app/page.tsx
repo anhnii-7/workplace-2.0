@@ -1,7 +1,9 @@
 "use client";
 import Image from "next/image";
 import { useEffect } from "react";
+import  {useRouter}  from "next/navigation";
 export default function Home() {
+  const router = useRouter();
   useEffect(() => {
     const bubblesContainer = document.querySelector(".bubbles");
     if (bubblesContainer) {
@@ -18,7 +20,9 @@ export default function Home() {
     }
   }, []);
 
-  
+  const handleStartClick = () => {
+    router.push("/auth/login"); // Replace with your actual target page
+  };
   return (
     <div className="relative min-h-screen w-screen bg-gray-50 flex flex-col items-center justify-center ">
       <div className="bubbles absolute inset-0 w-full h-full pointer-events-none z-0"></div>
@@ -37,7 +41,7 @@ export default function Home() {
           <button className="w-[169px] h-10 bg-white rounded-md text-blue-400 py-2 px-4 hover:bg-blue-50 cursor-pointer border-1 border-blue-400">
             Заавар видео
           </button>
-          <button className="w-[169px] h-10 bg-blue-400 rounded-md text-white py-2 px-4 hover:bg-blue-500 cursor-pointer">
+          <button onClick={handleStartClick} className="w-[169px] h-10 bg-blue-400 rounded-md text-white py-2 px-4 hover:bg-blue-500 cursor-pointer">
             Эхлэх
           </button>
         </div>

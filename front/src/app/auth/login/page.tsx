@@ -164,7 +164,22 @@ const handleSubmit = async (e: React.FormEvent) => {
                   Forgot password?
                 </Link>
               </div>
-
+              <Button
+    type="button"
+    variant="outline"
+    className="w-full mb-4"
+    onClick={() => {
+      setFormData({
+        email: 'oyunbat@example.com',
+        password: 'oyunbat1234'
+      });
+      setErrors({});
+      setLoginError('');
+    }}
+    disabled={isLoading}
+  >
+    Fill with mock data
+  </Button>
               <Button
                 type="submit"
                 className="w-full"
