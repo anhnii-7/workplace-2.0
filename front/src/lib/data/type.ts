@@ -21,3 +21,4 @@ export type JobTitle = {
 export type Department = {
     id: string
 }
+

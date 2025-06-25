@@ -4,7 +4,32 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Briefcase } from "lucide-react";
 import React from "react";
-import { User } from "../page";
+
+type User = {
+  _id: string,
+  name: string,
+  lastName: string,
+  departmentInfo: {
+    _id: string,
+    title: string,
+    jobTitle: string,
+    jobTitleInfo: {
+      title: string,
+      _id: string
+    }
+  },
+  hobbyInfo: {
+    _id: string,
+    title: string,
+    image: string
+  },
+  menteesCount: number,
+  hobby: string,
+  role: string,
+  email: string,
+  password: string,
+  experience: string
+}
 
 export const WorkerListCard = ({ users }: { users: User[] }) => {
   console.log(users, "worklist")
