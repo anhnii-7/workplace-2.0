@@ -1,1 +1,0 @@
-{"version":3,"file":"department.js","sourceRoot":"","sources":["../../src/routes/department.ts"],"names":[],"mappings":";;;AAAA,qCAAiC;AACjC,yDAAsG;AAEtG,MAAM,gBAAgB,GAAG,IAAA,gBAAM,GAAE,CAAC;AAMzB,4CAAgB;AALzB,gBAAgB;KACX,GAAG,CAAC,GAAG,EAAE,0BAAa,CAAC;KACvB,GAAG,CAAC,gBAAgB,EAAE,sCAAyB,CAAC;KAChD,IAAI,CAAC,GAAG,EAAE,6BAAgB,CAAC,CAAA"}
