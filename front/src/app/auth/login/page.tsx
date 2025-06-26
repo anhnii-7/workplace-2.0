@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { user } from '../../../lib/data/user'
+import axios from 'axios'
 
 const LoginPage = () => {
   const router = useRouter()
@@ -65,17 +66,11 @@ const handleSubmit = async (e: React.FormEvent) => {
   setLoginError('')
   
   try {
-    const response = await fetch('http://localhost:8000/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    })
+    const response = await axios.post('/api/login', formData)
+    const data = response.data
 
-    const data = await response.json()
-
-    if (!response.ok) {
+    // If the API returns an error status, throw
+    if (response.status !== 200) {
       throw new Error(data.error || 'Нэвтрэхэд алдаа гарлаа')
     }
 

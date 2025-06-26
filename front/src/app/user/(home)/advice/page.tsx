@@ -150,7 +150,7 @@ export default function WishPage() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:8000/user/with-info");
+      const response = await axios.get("/api/user/with-info");
 
       if (response.data.success && response.data.userWithInfo) {
         setUsers(response.data.userWithInfo);
@@ -168,7 +168,7 @@ export default function WishPage() {
 
   const fetchRequests = async (userId: string) => {
     try {
-      const response = await axios.get("http://localhost:8000/request", {
+      const response = await axios.get("/api/request", {
         params: {
           userId,
           type: "all",
@@ -194,7 +194,7 @@ export default function WishPage() {
     selectedDate: string
   ) => {
     try {
-      const response = await axios.post("http://localhost:8000/request", {
+      const response = await axios.post("/api/request", {
         from: currentUser._id,
         to: toUserId,
         message,
@@ -218,7 +218,7 @@ export default function WishPage() {
   ) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/request/${requestId}`,
+        `/api/request/${requestId}`,
         {
           status,
           mentorNotes: notes,
@@ -236,7 +236,7 @@ export default function WishPage() {
 
   const cancelRequest = async (requestId: string) => {
     try {
-      await axios.delete(`http://localhost:8000/request/${requestId}`);
+      await axios.delete(`/api/request/${requestId}`);
       fetchRequests(currentUser._id);
       toast.success("Request cancelled");
     } catch (error: any) {
