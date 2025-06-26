@@ -3,9 +3,9 @@ import RequestModel from '../../../../lib/models/request';
 import User from '../../../../lib/models/user';
 import { dbConnect } from '../../../../lib/connection';
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await dbConnect();
-  const { id } = params;
+  const { id } = await params;
   const { status, mentorNotes, meetingDate, meetingLocation } = await req.json();
   const request = await RequestModel.findById(id);
   if (!request) {

@@ -3,9 +3,9 @@ import RequestModel from '../../../../../lib/models/request';
 import User from '../../../../../lib/models/user';
 import { dbConnect } from '../../../../../lib/connection';
 
-export async function POST(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await dbConnect();
-  const { id } = params;
+  const { id } = await params;
   const request = await RequestModel.findById(id);
   if (!request) {
     return NextResponse.json({ message: 'Request not found' }, { status: 404 });
