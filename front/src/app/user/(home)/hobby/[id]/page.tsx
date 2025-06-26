@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Heart, Briefcase } from "lucide-react"
 import { useState } from "react"
 
 // Mock data based on the screenshot
@@ -102,8 +101,6 @@ const mockUsers = [
   },
 ]
 
-
-
 export default function HobbyInsertPage() {
   const [selectedCategory, setSelectedCategory] = useState("")
   return (
@@ -144,19 +141,11 @@ export default function HobbyInsertPage() {
                   {/* Name and Heart */}
                   <div className="flex items-center justify-between w-full">
                     <h3 className="font-semibold text-gray-800 text-sm">{user.name}</h3>
-                    <Heart className="w-4 h-4 text-gray-400 hover:text-red-500 cursor-pointer transition-colors" />
                   </div>
 
                   {/* Role */}
                   <div className="flex items-center space-x-2 w-full">
-                    <Briefcase className="w-4 h-4 text-gray-400" />
                     <span className="text-sm text-gray-600">{user.role}</span>
-                  </div>
-
-                  {/* Department */}
-                  <div className="flex items-center space-x-2 w-full">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">{user.department}</span>
                   </div>
 
                   {/* Tags */}

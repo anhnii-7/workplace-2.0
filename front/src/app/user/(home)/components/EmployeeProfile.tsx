@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { Command, MessageSquare, User } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 function EmployeeProfile() {
   return (
     <div>

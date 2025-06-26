@@ -1,7 +1,6 @@
 "use client";
 
-import { BASE_URl } from "@/app/contants";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import axios from "axios";
 
 import Image from "next/image";

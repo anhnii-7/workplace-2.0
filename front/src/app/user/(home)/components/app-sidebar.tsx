@@ -1,12 +1,9 @@
 "use client";
 import {
   Bell,
-  BookOpen,
   Handshake,
-  HelpCircle,
   MessageSquare,
-  Plus,
-  Trash2,
+  Plus
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -21,8 +18,6 @@ import {
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import axios from "axios";
-import { BASE_URl } from "@/app/contants";
 import { useEffect, useState } from "react";
 
 // Menu items.
@@ -72,7 +67,6 @@ export function AppSidebar() {
   }, []);
 
 // console.log(currentUser, "currentuser")
-
 
   return (
     <Sidebar >

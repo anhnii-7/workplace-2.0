@@ -1,31 +1,20 @@
 "use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-
-
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Brush,
-  Calendar,
-  CheckCheck,
-  Clock4,
-  MapPin,
-  User,
-} from "lucide-react";
-import { useState } from "react";
-
-
+import { MapPin, User } from "lucide-react";
 
 export const ResBody = () => {
     return(
-        <div className="flex flex-col gap-5">
+        <div className="grid grid-cols-2 gap-5">
             <div className="bg-blue-200 p-6 rounded-[8px] flex flex-col gap-10">
               <div>
                 <Badge className="font-semibold text-xs text-white bg-cyan-700 leading-4 flex justify-self-end">
                   Зөвлөгөө
                 </Badge>
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white rounded-[8px] px-6 py-3 flex items-center gap-4">
                   <Avatar className="w-[64px] h-[64px]">
                     <AvatarImage src={"AG"} />
@@ -52,21 +41,10 @@ export const ResBody = () => {
                     </p>
                   </div>
                 </div>
-                <div className="bg-white rounded-[8px] p-3 flex flex-col gap-2 ">
-                  <p className="text-slate-700 text-base font-medium leading-6 ">
-                    Ажиллаж буй хугацаа :
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-5 h-5" />
-                    <p className="text-slate-700 text-base font-medium leading-6 ">
-                      5 жил
-                    </p>
-                  </div>
-                </div>
               </div>
               <Textarea
                 className="bg-white"
-                defaultValue="  Шинээр ажилд орсонд нь баяр хүргэе. Манай багт тавтай морил.
+                defaultValue="Шинээр ажилд орсонд нь баяр хүргэе. Манай багт тавтай морил.
                 Ахлах дизайнерын хувьд хамтран ажиллах болсондоо баяртай байна.
                 Шинэ хамт олондоо дасан зохицох үүднээс багийн ахлагчтай
                 хувьчилсал уулзалт хийж дотно яриа болон хувьчилсан зөвлөгөө
@@ -90,7 +68,7 @@ export const ResBody = () => {
                   Зөвлөгөө
                 </Badge>
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white rounded-[8px] px-6 py-3 flex items-center gap-4">
                   <Avatar className="w-[64px] h-[64px]">
                     <AvatarImage src={"AG"} />
@@ -117,21 +95,10 @@ export const ResBody = () => {
                     </p>
                   </div>
                 </div>
-                <div className="bg-white rounded-[8px] p-3 flex flex-col gap-2 ">
-                  <p className="text-slate-700 text-base font-medium leading-6 ">
-                    Ажиллаж буй хугацаа :
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-5 h-5" />
-                    <p className="text-slate-700 text-base font-medium leading-6 ">
-                      3 жил
-                    </p>
-                  </div>
-                </div>
               </div>
               <Textarea
                 className="bg-white"
-                defaultValue="  Шинээр ажилд орсонд нь баяр хүргэе. Манай багт тавтай морил.
+                defaultValue="Шинээр ажилд орсонд нь баяр хүргэе. Манай багт тавтай морил.
                 Ахлах дизайнерын хувьд хамтран ажиллах болсондоо баяртай байна.
                 Шинэ хамт олондоо дасан зохицох үүднээс багийн ахлагчтай
                 хувьчилсал уулзалт хийж дотно яриа болон хувьчилсан зөвлөгөө

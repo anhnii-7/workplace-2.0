@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { Command, MessageSquare, User } from 'lucide-react'
+import { MessageSquare, User } from 'lucide-react'
 function LeaderboardEmployee() {
     return (
         <div>
