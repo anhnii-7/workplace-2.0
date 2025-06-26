@@ -1,0 +1,90 @@
+# Next.js API Usage & Controller Creation Guide
+
+## 📚 How to Use Your Next.js API
+
+### 1. API Route Structure
+Your API routes live under `src/app/api/`. Each file or folder inside this directory becomes an endpoint.
+
+**Examples:**
+- `src/app/api/user/route.ts` → `/api/user`
+- `src/app/api/hobby/route.ts` → `/api/hobby`
+- `src/app/api/request/[id]/route.ts` → `/api/request/[id]` (dynamic route)
+
+### 2. Calling the API from the Frontend
+You can call these endpoints using `fetch` or `axios` from your React components:
+
+```js
+// GET example
+const res = await fetch('/api/user');
+const data = await res.json();
+
+// POST example
+const res = await fetch('/api/hobby', {
+  method: 'POST',
+  body: JSON.stringify({ title: 'New Hobby' }),
+  headers: { 'Content-Type': 'application/json' }
+});
+const data = await res.json();
+```
+
+Or with axios:
+```js
+import axios from 'axios';
+const res = await axios.get('/api/user');
+const res2 = await axios.post('/api/hobby', { title: 'New Hobby' });
+```
+
+---
+
+## 🛠️ How to Create a New Controller (API Route)
+
+### 1. Create the File
+Suppose you want a new endpoint `/api/example`:
+- Create a file: `src/app/api/example/route.ts`
+
+### 2. Write the Handler
+Here's a template for a simple GET and POST handler:
+
+```ts
+// src/app/api/example/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(req: NextRequest) {
+  // Your logic here
+  return NextResponse.json({ message: 'GET request successful!' });
+}
+
+export async function POST(req: NextRequest) {
+  const data = await req.json();
+  // Your logic here
+  return NextResponse.json({ message: 'POST request successful!', data });
+}
+```
+
+### 3. Dynamic Routes
+For dynamic routes (e.g., `/api/example/[id]`):
+- Create: `src/app/api/example/[id]/route.ts`
+- Use the new Next.js 15 pattern for params:
+
+```ts
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  // Your logic here
+  return NextResponse.json({ message: `You requested ID: ${id}` });
+}
+```
+
+---
+
+## 📝 Best Practices
+- Use relative URLs (`/api/...`) when calling from the frontend.
+- Always await params in dynamic API routes in Next.js 15.
+- Return JSON using `NextResponse.json()`.
+
+---
+
+## 🔗 Official Resources
+- https://nextjs.org/docs/app/building-your-application/routing/route-handlers
+- https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes
