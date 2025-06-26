@@ -41,32 +41,23 @@ const items = [
         icon: Handshake,
       },
       {
+        title: "Эвэнт",
+        url: "/user/event",
+        icon: Plus,
+      },
+      {
         title: "Мэдэгдэл",
         url: "/user/request",
         icon: Bell,
       },
-    ],
-  },
-  {
-    name: "Миний хуудас",
-    item: [
       {
         title: "Хобби нэмэх",
         url: "/user/myHobby",
         icon: Plus,
       },
-      {
-        title: "Тусламж",
-        url: "/user/",
-        icon: HelpCircle,
-      },
-      {
-        title: "Бүртгэл устгах",
-        url: "/user/#",
-        icon: Trash2,
-      },
     ],
   },
+  
 ];
 
 
