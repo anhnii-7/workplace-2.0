@@ -3,11 +3,8 @@
 import { useEffect, useState } from "react";
 import { Hobby } from "../hobby/page";
 import axios from "axios";
-import { BASE_URl } from "@/app/contants";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
-import Link from "next/link";
-import { Plus } from "lucide-react";
 import { DialogDemo } from "../components/addHobby";
 
 const myHobby = () => {

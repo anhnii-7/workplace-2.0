@@ -1,22 +1,17 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { se } from "date-fns/locale";
 import {
   CalendarDays,
-  MapPin,
   User,
   User2Icon,
   MapPinIcon,

@@ -1,17 +1,8 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Brush,
-  Calendar,
-  CheckCheck,
-  Clock4,
-  MapPin,
-  User,
-} from "lucide-react";
+import { Calendar, CheckCheck, Clock4, MapPin, User } from "lucide-react";
 import { useState } from "react";
 
 export const ReqBody = () => {
@@ -19,7 +10,7 @@ export const ReqBody = () => {
 
   const [currentUser, setCurrentUser] = useState<any>(null);
   return (
-    <div className="flex gap-6 flex-col">
+    <div className="grid grid-cols-2 gap-6">
       <div className="bg-blue-100 p-6 rounded-[8px] flex flex-col gap-10">
         <div className="flex justify-between items-center">
           <div className="flex gap-2 bg-green-50 rounded-md px-4 py-2 items-center w-[334px]">
@@ -36,7 +27,7 @@ export const ReqBody = () => {
             {currentUser?.role === "advice" ? "Хобби" : "Зөвлөгөө"}
           </Badge>
         </div>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <div className="bg-white rounded-[8px] px-6 py-3 flex items-center gap-4">
             <Avatar className="w-[64px] h-[64px]">
               <AvatarImage src={"AG"} />
@@ -63,17 +54,6 @@ export const ReqBody = () => {
               </p>
             </div>
           </div>
-          <div className="bg-white rounded-[8px] p-3 flex flex-col gap-2 ">
-            <p className="text-slate-700 text-base font-medium leading-6 ">
-              Ажиллаж буй хугацаа :
-            </p>
-            <div className="flex items-center gap-3">
-              <Calendar className="w-5 h-5" />
-              <p className="text-slate-700 text-base font-medium leading-6 ">
-                2 сар
-              </p>
-            </div>
-          </div>
         </div>
         <Textarea
           className="bg-white"
@@ -96,7 +76,7 @@ export const ReqBody = () => {
             {currentUser?.role === "advice" ? "Хобби" : "Зөвлөгөө"}
           </Badge>
         </div>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <div className="bg-white rounded-[8px] px-6 py-3 flex items-center gap-4">
             <Avatar className="w-[64px] h-[64px]">
               <AvatarImage src={"AG"} />
@@ -120,17 +100,6 @@ export const ReqBody = () => {
               <MapPin className="w-5 h-5" />{" "}
               <p className="text-slate-700 text-base font-medium leading-6">
                 Хөгжүүлэлтийн хэлтэс
-              </p>
-            </div>
-          </div>
-          <div className="bg-white rounded-[8px] p-3 flex flex-col gap-2 ">
-            <p className="text-slate-700 text-base font-medium leading-6 ">
-              Ажиллаж буй хугацаа :
-            </p>
-            <div className="flex items-center gap-3">
-              <Calendar className="w-5 h-5" />
-              <p className="text-slate-700 text-base font-medium leading-6 ">
-                2 жил
               </p>
             </div>
           </div>
