@@ -1,0 +1,69 @@
+"use client";
+
+import { Card } from "@/components/ui/card";
+import axios from "axios";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+export type Hobby = {
+  title: string;
+  _id: string;
+  image: string;
+};
+export default function EventPage() {
+  const [hobbies, setHobbies] = useState<Hobby[]>([]);
+  
+  // console.log(baseUrl, "baseUrl")
+  const getHobbies = async () => {
+    const response = await axios.get('/api/hobby');
+    console.log(response, "hobbies");
+    setHobbies(response.data);
+  };
+  // console.log(hobbies, "hobbies");
+  useEffect(() => {
+    getHobbies();
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center ">
+      <div className="text-center py-10">
+        <h1 className="text-slate-800 text-3xl font-semibold">
+          Цайны цагаараа хоббигоороо нэгдье
+        </h1>
+        <p className="text-slate-600 text-2xl font-medium ">
+          Та өөрийн дуртай ямар ч сэдвээ ажлынхантайгаа хуваалцах боломжтой.
+        </p>
+      </div>
+
+      <div className="flex flex-col h-screen items-center w-full">
+        <h2 className="text-slate-800 text-2xl font-normal pb-10">
+          Та өөрийн дуртай хэдэн ч сэдвийг сонгосон болно ☺️
+        </h2>
+        <div className="grid grid-cols-4 gap-5 ">
+          {hobbies.map((hobby) => {
+            return (
+              <Link href={`/user/event/${hobby._id}`} key={hobby._id}>
+                <Card className="p-0 w-[202px] h-[290px] flex flex-col gap-3 box-border">
+                  <div className=" w-full rounded-3xl h-[224px] bg-white overflow-hidden relative">
+                    <Image
+                      src={hobby.image}
+                      fill={true}
+                      alt="sport"
+                      className="place-self-center"
+                      style={{ objectFit: "contain" }}
+                    />
+                  </div>
+                  <p className="bg-slate-50 text-center rounded-b-2xl text-lg py-3 text-slate-800">
+                    {hobby.title}
+                  </p>
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
