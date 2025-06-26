@@ -21,7 +21,7 @@ const myHobby = () => {
     };
     
     const getHobbies = async () => {
-        const response = await axios.get(`${BASE_URl}/hobby`);
+        const response = await axios.get('/api/hobby');
         setHobbies(response.data)
 
         console.log(response.data, "hobby response")

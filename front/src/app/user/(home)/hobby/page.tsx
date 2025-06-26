@@ -15,10 +15,10 @@ export type Hobby = {
 };
 export default function WishPage() {
   const [hobbies, setHobbies] = useState<Hobby[]>([]);
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  
   // console.log(baseUrl, "baseUrl")
   const getHobbies = async () => {
-    const response = await axios.get(`${baseUrl}/hobby`);
+    const response = await axios.get('/api/hobby');
     console.log(response, "hobbies");
     setHobbies(response.data);
   };
@@ -27,7 +27,6 @@ export default function WishPage() {
     getHobbies();
   }, []);
 
-  console.log(baseUrl, "base");
   return (
     <div className="flex flex-col items-center ">
       <div className="text-center py-10">
