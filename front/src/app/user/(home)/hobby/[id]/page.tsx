@@ -104,15 +104,15 @@ const mockUsers = [
 export default function HobbyInsertPage() {
   const [selectedCategory, setSelectedCategory] = useState("")
   return (
-    <div className="min-h-screen bg-gray-50 w-full">
-      <div className="w-full px-6 py-6">
+    <div className="min-h-screen w-full">
+      <div className="w-full">
         {/* Header */}
         <h1 className="text-3xl font-semibold text-gray-800 text-center mb-8">
           Сонирхлоороо нэгдэн цагийг хамтдаа өнгөрүүлцгээе
         </h1>
 
         {/* Controls */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="mb-8">
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="w-48 bg-blue-50 border-blue-200">
               <SelectValue placeholder="Сагсан бөмбөг" />
@@ -127,34 +127,36 @@ export default function HobbyInsertPage() {
         </div>
 
         {/* Tabs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 w-full">
+        <div className="grid grid-cols-4 gap-5 py-3 px-6 place-self-center">
           {mockUsers.map((user) => (
             <Card key={user._id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
-              <CardContent className="p-4">
-                <div className="flex flex-col items-center space-y-4">
+              <CardContent>
+                <div className="flex flex-col items-center">
                   {/* Avatar */}
-                  <Avatar className="w-20 h-20">
-                    <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
+                  <Avatar className="w-31 h-30 mb-3">
+                    <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name}/>
                     <AvatarFallback className="bg-gray-200 text-gray-600">{user.lastName}</AvatarFallback>
                   </Avatar>
 
-                  {/* Name and Heart */}
-                  <div className="flex items-center justify-between w-full">
-                    <h3 className="font-semibold text-gray-800 text-sm">{user.name}</h3>
+                 <div className="flex flex-col gap-[2px] py-[6px] text-center">
+                   {/* Name */}
+                   <div className="w-full">
+                    <h3 className="font-semibold text-gray-800 text-lg">{user.name}</h3>
                   </div>
 
                   {/* Role */}
-                  <div className="flex items-center space-x-2 w-full">
-                    <span className="text-sm text-gray-600">{user.role}</span>
+                  <div className="w-full">
+                    <span className="text-sm font-normal text-gray-600">{user.role}</span>
                   </div>
+                 </div>
 
                   {/* Tags */}
-                  <div className="flex flex-wrap gap-1 w-full">
+                  <div className="grid grid-cols-2 gap-3 w-full my-3">
                     {user.tags.map((tag, index) => (
                       <Badge
                         key={index}
                         variant="secondary"
-                        className="text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer transition-colors"
+                        className="flex w-full rounded-full py-1 px-3 text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer transition-colors"
                       >
                         {tag}
                       </Badge>
@@ -165,7 +167,7 @@ export default function HobbyInsertPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="w-full bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 transition-colors"
+                    className="w-full bg-blue-50 text-sm text-blue-600 border-blue-200 py-2 px-16 rounded-md hover:bg-blue-100 transition-colors"
                     onClick={() => console.log(`Sending request to ${user.name}`)}
                   >
                     Хүсэлт илгээх
