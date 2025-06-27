@@ -32,11 +32,11 @@ const requestSchema = new mongoose.Schema({
     },
     isActive: {
         type: Boolean,
-        default: false
+        default: false,
     },
     selectedSchedule: {
         type: String,
-        required: true
+        required: false
     },
 }, { timestamps: true });
 
