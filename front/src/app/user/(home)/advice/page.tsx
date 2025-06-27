@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  Calendar1,
   CalendarDays,
   Clock4,
   Heart,
@@ -43,6 +44,7 @@ import {
   MessageSquare,
   Search,
   User,
+  User2,
   User2Icon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -55,6 +57,7 @@ import { useRouter } from "next/navigation";
 import { ReqDailogpage } from "./components/ReqDailog";
 
 interface User {
+
   _id: string;
   name: string;
   lastName: string;
@@ -62,6 +65,8 @@ interface User {
   role: string;
   hobby: string;
   experience: string;
+  menteesCount?: number;
+
   hobbyInfo: {
     _id: string;
     title: string;
@@ -107,7 +112,7 @@ export default function WishPage() {
     message: "",
     selectedDate: "",
   });
-console.log("Requestssss" ,requests)
+  console.log("Requestssss", requests)
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"send" | "received">("send");
   const [selectedMentor, setSelectedMentor] = useState<User | null>(null);
@@ -125,7 +130,7 @@ console.log("Requestssss" ,requests)
       return;
     }
     const user = JSON.parse(currentUserString);
-    setCurrentUser(user); 
+    setCurrentUser(user);
     fetchUsers();
     fetchRequests(user._id);
   }, [router]);
@@ -174,13 +179,13 @@ console.log("Requestssss" ,requests)
           type: "all",
         },
       });
-      console.log(response.data.requests , "Response data")
+      console.log(response.data.requests, "Response data")
       setRequests({
         sent: response.data.requests.filter(
-          (req: Request) => req.from._id === userId
+          (req: Request) => typeof req.from !== "string" && req.from._id === userId
         ),
         received: response.data.requests.filter(
-          (req: Request) => req.to._id === userId
+          (req: Request) => typeof req.to !== "string" && req.to._id === userId
         ),
       });
     } catch (error) {
@@ -275,11 +280,10 @@ console.log("Requestssss" ,requests)
       <div className="flex-1 ">
         <div className="flex justify-between items-center mb-6 ">
           <h1
-            className={`text-stone-800 text-2xl font-semibold ${
-              currentUser?.role === "mentor"
-                ? ""
-                : "bg-white py-4 px-8 rounded-xl"
-            }`}
+            className={`text-stone-800 text-2xl font-semibold ${currentUser?.role === "mentor"
+              ? ""
+              : "bg-white py-4 px-8 rounded-xl"
+              }`}
           >
             {currentUser?.role === "mentor"
               ? "Шинэ ажилчидтай холбох гүүр тань болж өгье"
@@ -287,13 +291,13 @@ console.log("Requestssss" ,requests)
           </h1>
         </div>
 
-        <div className="flex justify-between items-center mb-6   ">
+        <div className="flex justify-between items-center mb-6  ">
           <h2 className="text-stone-800 text-2xl font-medium">
             {currentUser?.role === "mentor"
               ? "Шинэ ажилчдын жагсаалт"
               : "Ахлах ажилчдын жагсаалт"}
           </h2>
-          <div className="bg-white rounded-xl p-3 mr-[40px]">
+          <div className="bg-white rounded-xl p-3 mr-[20px]">
             <p className="text-slate-700 font-normal">
               {filteredUsers.length} хүн
             </p>
@@ -334,7 +338,7 @@ console.log("Requestssss" ,requests)
               {filteredUsers.map((user) => (
                 <Card
                   key={user._id}
-                  className="p-4 hover:shadow-lg transition-shadow w-[399px] flex flex-col gap-3"
+                  className="p-4 hover:shadow-lg transition-shadow w-[359px] flex flex-col gap-3"
                 >
                   <div className="flex justify-around gap-4  items-center">
                     <div className="flex flex-col items-center gap-4">
@@ -369,7 +373,7 @@ console.log("Requestssss" ,requests)
                       <div className="flex items-center gap-3">
                         <MessageSquare className="w-[18px] h-[18px]"></MessageSquare>
                         <p className="text-sm font-normal text-stone-700">
-                          12 уулзалт
+                          {user.menteesCount}
                         </p>
                       </div>
                     </div>
@@ -388,7 +392,7 @@ console.log("Requestssss" ,requests)
                     extractDuration={extractDuration}
                   />
 
-               
+
                 </Card>
               ))}
             </div>
@@ -433,9 +437,9 @@ console.log("Requestssss" ,requests)
         </Card>
 
         {/* Requests */}
-        <Card className="p-6">
-          <CardHeader>
-            <CardTitle className="text-center border-b border-black w-[100px] pb-[30px]">
+        <Card className="p-6 ">
+          <CardHeader className="flex justify-center">
+            <CardTitle className="text-center border-b border-black w-[80px] pb-[6px]">
               Хүсэлтүүд
             </CardTitle>
           </CardHeader>
@@ -448,45 +452,44 @@ console.log("Requestssss" ,requests)
               className="w-full"
             >
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="send">Илгээсэн</TabsTrigger>
+
                 <TabsTrigger value="received">Хүлээн авсан</TabsTrigger>
+                <TabsTrigger value="send">Илгээсэн</TabsTrigger>
               </TabsList>
 
               <TabsContent value="send" className="mt-4">
-              
-
                 {requests.sent.length === 0 ? (
                   <p className="text-center text-gray-500 py-4">Илгээсэн хүсэлт байхгүй</p>
                 ) : (
                   <div className="space-y-3">
                     {requests.sent.map((request) => (
                       <Card key={request._id} className="p-4">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              {/* <Avatar className="w-8 h-8">
-                                <AvatarImage src={typeof request.to !== 'string' ? `/avatars/${request.to._id}.jpg` : ''} />
-                                <AvatarFallback>
-                                  {typeof request.to !== 'string' ? request.to.name.charAt(0) : '?'}
-                                </AvatarFallback>
-                              </Avatar> */}
-                              <span className="font-medium">
-                                {typeof request.to !== 'string' ?
-                                  `${request.to.name} ${request.to.lastName}` : 'Unknown'}
-                              </span>
-                            </div>
-                            <div className="mt-2 space-y-1">
-                              <Badge variant={request.status === 'accepted' ? 'default' :
-                                request.status === 'declined' ? 'destructive' : 'outline'}>
-                                {request.status === 'pending' ? 'Хүлээгдэж буй' :
-                                  request.status === 'accepted' ? 'Зөвшөөрсөн' : 'Татгалзсан'}
-                              </Badge>
-                              <p className="text-sm text-gray-500">
-                                {formatDate(request.selectedSchedule)}
-                              </p>
+                        <div className="flex flex-col w-full gap-2">
+                          <div className="flex justify-center">
+                            <Badge className="bg-blue-100 text-blue-800 w-[240px]" variant={request.status === 'accepted' ? 'default' :
+                              request.status === 'declined' ? 'destructive' : 'outline'}>
+                              {request.status === 'pending' ? 'Таны хүсэлт хүлээгдэж байна.' :
+                                request.status === 'accepted' ? 'Зөвшөөрсөн' : 'Татгалзсан'}
+                            </Badge>
+                          </div>
+                          <div className="flex gap-3">
+                            <div className="w-[60px] h-[60px] rounded-md bg-blue-200 flex items-center justify-center">img</div>
+                            <div className="flex flex-col gap-2 justify-center">
+                              <div className="flex gap-2"><User2 className="w-[16px] h-[16px]" />
+                                <span className="font-normal text-sm">
+                                  {typeof request.to !== 'string' ?
+                                    `${request.to.name} ${request.to.lastName}` : 'Unknown'}
+                                </span>
+                              </div>
+                              <div className="flex gap-2">
+                                <Calendar1 className="w-[16px] h-[16px]" />
+                                <p className="text-sm font-normal text-gray-500">
+                                  {formatDate(request.selectedSchedule)}
+                                </p>
+                              </div>
                             </div>
                           </div>
-                          {request.status === 'pending' && (
+                          {/* {request.status === 'pending' && (
                             <Button
                               variant="ghost"
                               size="sm"
@@ -495,9 +498,9 @@ console.log("Requestssss" ,requests)
                             >
                               Цуцлах
                             </Button>
-                          )}
+                          )} */}
                         </div>
-                        <p className="mt-3 text-sm">{request.message}</p>
+
                         {request.status === 'accepted' && request.meetingLocation && (
                           <div className="mt-2 flex items-center gap-2 text-sm">
                             <MapPin className="w-4 h-4" />
@@ -511,37 +514,6 @@ console.log("Requestssss" ,requests)
               </TabsContent>
 
               <TabsContent value="received" className="mt-4">
-                {/* <div className="border-1 p-2 flex gap-3 bg-white rounded-xl border-blue-200 flex-col">
-                  <div className="bg-indigo-50 px-3 py-1 w-full rounded-full flex gap-2 items-center">
-                    <Clock4 className="w-[14px] h-[14px]" />{" "}
-                    <p className="text-xs font-medium leading-4 text-blue-900">
-                      Таны хүсэлт хүлээгдэж байна.
-                    </p>
-                  </div>
-                  <div className="flex gap-3 items-center">
-                    <Avatar className="w-[70px] h-[70px]">
-                      <AvatarImage src={"AG"} />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col ">
-                      <h1 className="text-slate-800 text-base font-medium leading-6">
-                        Ахлах дизайнер
-                      </h1>
-                      <div className="flex gap-2 items-center">
-                        <User className="w-4 h-4 " />
-                        <h2 className="text-slate-700 font-normal leading-5 text-sm">
-                          Д.Сүхбаяр
-                        </h2>
-                      </div>
-                      <div className="flex gap-2 items-center">
-                        <CalendarDays className="w-4 h-4 " />
-                        <h3 className="text-slate-700 font-normal leading-5 text-sm">
-                          06-29
-                        </h3>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
 
                 {requests.received.length === 0 ? (
                   <p className="text-center text-gray-500 py-4">Хүлээн авсан хүсэлт байхгүй</p>
@@ -549,61 +521,68 @@ console.log("Requestssss" ,requests)
                   <div className="space-y-3">
                     {requests.received.map((request) => (
                       <Card key={request._id} className="p-4">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <Avatar className="w-8 h-8">
-                                <AvatarImage src={typeof request.from !== 'string' ? `/avatars/${request.from._id}.jpg` : ''} />
-                                <AvatarFallback>
-                                  {typeof request.from !== 'string' ? request.from.name.charAt(0) : '?'}
-                                </AvatarFallback>
-                              </Avatar>
-                              <span className="font-medium">
+                        <div className="flex flex-col gap-2 items-center">
+                          <div className="flex gap-3 justify-around">
+                            <div className="w-[60px] h-[60px] rounded-md bg-blue-200 flex items-center justify-center">img</div>
+                            <div className="flex flex-col gap-2  justify-center ">
+                              <div className="flex gap-2"><User2 className="w-[16px] h-[16px]" />
+                                <span className="font-normal text-sm">
+                                  {typeof request.to !== 'string' ?
+                                    `${request.to.name} ${request.to.lastName}` : 'Unknown'}
+                                </span>
+                              </div>
+                              <div className="flex gap-2">
+                                <Calendar1 className="w-[16px] h-[16px]" />
+                                <p className="text-sm font-normal text-gray-500">
+                                  {formatDate(request.selectedSchedule)}
+                                </p>
+                              </div>
+
+                            </div>
+                            {/* <span className="font-normal text-sm">
                                 {typeof request.from !== 'string' ?
                                   `${request.from.name} ${request.from.lastName}` : 'Unknown'}
-                              </span>
-                            </div>
-                            <div className="mt-2 space-y-1">
-                              <Badge variant={request.status === 'accepted' ? 'default' :
-                                request.status === 'declined' ? 'destructive' : 'outline'}>
-                                {request.status === 'pending' ? 'Хүлээгдэж буй' :
-                                  request.status === 'accepted' ? 'Зөвшөөрсөн' : 'Татгалзсан'}
-                              </Badge>
-                              <p className="text-sm text-gray-500">
+                              </span> */}
+                            {/* <p className="text-sm text-gray-500">
                                 {formatDate(request.selectedSchedule)}
-                              </p>
-                            </div>
+                              </p> */}
+
                           </div>
-                          {request.status === 'pending' && (
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                onClick={() => updateRequest(request._id, 'accepted')}
-                              >
-                                Зөвшөөрөх
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  const notes = prompt('Татгалзах шалтгаанаа бичнэ үү:');
-                                  if (notes !== null) {
-                                    updateRequest(request._id, 'declined', notes);
-                                  }
-                                }}
-                              >
-                                Татгалзах
-                              </Button>
-                            </div>
-                          )}
+                          <div>
+                            {request.status === 'pending' && (
+                              <div className="flex gap-2">
+                                <Button
+                                  className="border border-blue-400 text-blue-400 hover:bg-blue-50 bg-white"
+                                  size="sm"
+                                  onClick={() => updateRequest(request._id, 'accepted')}
+                                >
+                                  Зөвшөөрөх
+                                </Button>
+                                <Button
+                                  className="border border-red-400 text-red-400 hover:text-red-400 bg-white"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    const notes = prompt('Татгалзах шалтгаанаа бичнэ үү:');
+                                    if (notes !== null) {
+                                      updateRequest(request._id, 'declined', notes);
+                                    }
+                                  }}
+                                >
+                                  Татгалзах
+                                </Button>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <p className="mt-3 text-sm">{request.message}</p>
-                        {request.status !== 'pending' && request.mentorNotes && (
+
+
+                        {/* {request.status !== 'pending' && request.mentorNotes && (
                           <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                             <p className="text-sm font-medium">Тайлбар:</p>
                             <p className="text-sm text-gray-600">{request.mentorNotes}</p>
                           </div>
-                        )}
+                        )} */}
                         {request.status === 'accepted' && (
                           <div className="mt-3 space-y-2">
                             {request.meetingLocation && (

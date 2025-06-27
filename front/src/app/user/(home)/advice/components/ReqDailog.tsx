@@ -99,13 +99,12 @@ export function ReqDailogpage({
             {user.availableSchedules?.map((schedule) => (
               <button
                 key={schedule}
-                className={`bg-white border-1 border-blue-400 rounded-md py-2 px-4 text-blue-400 w-full hover:bg-blue-50 cursor-pointer ${
-                  formData.selectedDate === schedule ? 'bg-blue-100 border-blue-600' : ''
-                }`}
+                className={` border-1 bg-blue-400 rounded-md py-2 px-4 text-white w-full hover:bg-blue-500 cursor-pointer ${formData.selectedDate === schedule ? 'bg-blue-100 border-blue-600' : ''
+                  }`}
                 onClick={() => handleScheduleButtonClick(schedule)}
               >
                 {formatDate(schedule)}
-              
+
               </button>
             ))}
           </div>
