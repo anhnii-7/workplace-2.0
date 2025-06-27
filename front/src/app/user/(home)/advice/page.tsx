@@ -107,7 +107,7 @@ export default function WishPage() {
     message: "",
     selectedDate: "",
   });
-  console.log(requests);
+console.log("Requestssss" ,requests)
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"send" | "received">("send");
   const [selectedMentor, setSelectedMentor] = useState<User | null>(null);
@@ -125,7 +125,7 @@ export default function WishPage() {
       return;
     }
     const user = JSON.parse(currentUserString);
-    setCurrentUser(user);
+    setCurrentUser(user); 
     fetchUsers();
     fetchRequests(user._id);
   }, [router]);
@@ -174,12 +174,13 @@ export default function WishPage() {
           type: "all",
         },
       });
+      console.log(response.data.requests , "Response data")
       setRequests({
         sent: response.data.requests.filter(
-          (req: Request) => req.from === userId
+          (req: Request) => req.from._id === userId
         ),
         received: response.data.requests.filter(
-          (req: Request) => req.to === userId
+          (req: Request) => req.to._id === userId
         ),
       });
     } catch (error) {
@@ -452,33 +453,9 @@ export default function WishPage() {
               </TabsList>
 
               <TabsContent value="send" className="mt-4">
-                <div className="border-1 p-2 flex gap-3 bg-white rounded-xl border-blue-200">
-                  <div className="flex gap-3 items-center">
-                    <Avatar className="w-[70px] h-[70px]">
-                      <AvatarImage src={"AG"} />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col ">
-                      <h1 className="text-slate-800 text-base font-medium leading-6">
-                        Ахлах дизайнер
-                      </h1>
-                      <div className="flex gap-2 items-center">
-                        <User className="w-4 h-4 " />
-                        <h2 className="text-slate-700 font-normal leading-5 text-sm">
-                          Д.Сүхбаяр
-                        </h2>
-                      </div>
-                      <div className="flex gap-2 items-center">
-                        <CalendarDays className="w-4 h-4 " />
-                        <h3 className="text-slate-700 font-normal leading-5 text-sm">
-                          06-29
-                        </h3>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              
 
-                {/* {requests.sent.length === 0 ? (
+                {requests.sent.length === 0 ? (
                   <p className="text-center text-gray-500 py-4">Илгээсэн хүсэлт байхгүй</p>
                 ) : (
                   <div className="space-y-3">
@@ -487,12 +464,12 @@ export default function WishPage() {
                         <div className="flex justify-between items-start">
                           <div>
                             <div className="flex items-center gap-2">
-                              <Avatar className="w-8 h-8">
+                              {/* <Avatar className="w-8 h-8">
                                 <AvatarImage src={typeof request.to !== 'string' ? `/avatars/${request.to._id}.jpg` : ''} />
                                 <AvatarFallback>
                                   {typeof request.to !== 'string' ? request.to.name.charAt(0) : '?'}
                                 </AvatarFallback>
-                              </Avatar>
+                              </Avatar> */}
                               <span className="font-medium">
                                 {typeof request.to !== 'string' ?
                                   `${request.to.name} ${request.to.lastName}` : 'Unknown'}
@@ -530,11 +507,11 @@ export default function WishPage() {
                       </Card>
                     ))}
                   </div>
-                )} */}
+                )}
               </TabsContent>
 
               <TabsContent value="received" className="mt-4">
-                <div className="border-1 p-2 flex gap-3 bg-white rounded-xl border-blue-200 flex-col">
+                {/* <div className="border-1 p-2 flex gap-3 bg-white rounded-xl border-blue-200 flex-col">
                   <div className="bg-indigo-50 px-3 py-1 w-full rounded-full flex gap-2 items-center">
                     <Clock4 className="w-[14px] h-[14px]" />{" "}
                     <p className="text-xs font-medium leading-4 text-blue-900">
@@ -564,9 +541,9 @@ export default function WishPage() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
-                {/* {requests.received.length === 0 ? (
+                {requests.received.length === 0 ? (
                   <p className="text-center text-gray-500 py-4">Хүлээн авсан хүсэлт байхгүй</p>
                 ) : (
                   <div className="space-y-3">
@@ -646,7 +623,7 @@ export default function WishPage() {
                       </Card>
                     ))}
                   </div>
-                )} */}
+                )}
               </TabsContent>
             </Tabs>
           </CardContent>

@@ -76,7 +76,6 @@ export function ReqDailogpage({
   formatDate,
   extractDuration,
 }: ReqDailogpageProps) {
-  // Готов мессеж сонгох функц
   const handlePresetMessage = (message: string) => {
     setFormData({
       ...formData,
@@ -84,16 +83,32 @@ export function ReqDailogpage({
     });
   };
 
+  console.log(user)
+
+  const handleScheduleButtonClick = (schedule: string) => {
+    setSelectedMentor(user);
+    handleScheduleSelect(schedule);
+    setIsDialogOpen(true);
+  };
+
   return (
     <div className="">
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
-          <button
-            className="bg-white border-1 border-blue-400 rounded-md py-2 px-4 text-blue-400 w-full hover:bg-blue-50 cursor-pointer"
-            onClick={() => setSelectedMentor(user)}
-          >
-            06-23
-          </button>
+          <div className="flex  gap-2">
+            {user.availableSchedules?.map((schedule) => (
+              <button
+                key={schedule}
+                className={`bg-white border-1 border-blue-400 rounded-md py-2 px-4 text-blue-400 w-full hover:bg-blue-50 cursor-pointer ${
+                  formData.selectedDate === schedule ? 'bg-blue-100 border-blue-600' : ''
+                }`}
+                onClick={() => handleScheduleButtonClick(schedule)}
+              >
+                {formatDate(schedule)}
+              
+              </button>
+            ))}
+          </div>
         </DialogTrigger>
         <DialogContent className="max-w-4xl bg-blue-50 ">
           <div className="h-[172px]">
@@ -145,7 +160,7 @@ export function ReqDailogpage({
                   <h4 className="font-medium">Уулзах өдөр :</h4>
                   <div className="flex items-center gap-2">
                     <CalendarDays className="w-4 h-4" />
-                    <span>06-23</span>
+                    <span>{formData.selectedDate}</span>
                   </div>
                 </div>
               </Card>

@@ -6,6 +6,7 @@ import { dbConnect } from '../../../lib/connection';
 export async function GET(req: NextRequest) {
   await dbConnect();
   const { searchParams } = new URL(req.url);
+  console.log(searchParams , "Search Params")
   const status = searchParams.get('status');
   const userId = searchParams.get('userId');
   const type = searchParams.get('type');
