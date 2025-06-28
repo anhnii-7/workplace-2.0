@@ -1,10 +1,5 @@
 "use client";
-import {
-  Bell,
-  Handshake,
-  MessageSquare,
-  Plus
-} from "lucide-react";
+import { Bell, Handshake, MessageSquare, Plus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
@@ -52,41 +47,39 @@ const items = [
       },
     ],
   },
-  
 ];
-
-
 
 export function AppSidebar() {
   const pathname = usePathname(); // одоогийн path-ийг авна
-  const [currentUser, setCurrentUser] = useState<any>(null)
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
     const currentUserString = localStorage.getItem("currentUser");
     setCurrentUser(currentUserString ? JSON.parse(currentUserString) : null);
   }, []);
 
-// console.log(currentUser, "currentuser")
+  // console.log(currentUser, "currentuser")
 
   return (
-    <Sidebar >
+    <Sidebar>
       <SidebarContent>
         <SidebarGroup>
           <Link href="/user" className="no-underline">
-            <SidebarGroupLabel className="flex items-center gap-3 my-10">
+            <SidebarGroupLabel className="flex items-center gap-3 my-10  ">
               <Avatar className="w-[60px] h-[60px] rounded-md">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <div>
                 <h1 className="text-slate-700 font-semibold leading-5 text-base">
-                {currentUser?.name}
+                  {currentUser?.name}
                 </h1>
                 <p className="text-slate-500 text-xs font-normal leading-4">
-                {currentUser?.departmentInfo?.jobTitleInfo.title}
+                  {currentUser?.departmentInfo?.jobTitleInfo.title}
                 </p>
               </div>
-            </SidebarGroupLabel></Link>
+            </SidebarGroupLabel>
+          </Link>
 
           <SidebarGroupContent>
             {items.map((group, groupIdx) => (
@@ -104,10 +97,11 @@ export function AppSidebar() {
                       <SidebarMenuButton asChild className="rounded-full">
                         <a
                           href={menuItem.url}
-                          className={`flex items-center gap-2 px-3 py-2  ${isActive
-                            ? "bg-blue-400 text-white"
-                            : "text-slate-700 hover:bg-slate-100"
-                            }`}
+                          className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors duration-150 ${
+                            isActive
+                              ? "text-blue-900 bg-blue-200"
+                              : "text-slate-700 bg-white hover:bg-slate-100"
+                          }`}
                         >
                           <menuItem.icon className="w-4 h-4" />
                           <span>{menuItem.title}</span>
@@ -124,5 +118,3 @@ export function AppSidebar() {
     </Sidebar>
   );
 }
-
- 
