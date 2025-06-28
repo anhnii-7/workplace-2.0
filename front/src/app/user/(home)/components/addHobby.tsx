@@ -59,3 +59,5 @@ export function DialogDemo({ hobbies }: { hobbies: Hobby[] }) {
     </Dialog>
   );
 }
+
+// 500 zaaj bgaa
