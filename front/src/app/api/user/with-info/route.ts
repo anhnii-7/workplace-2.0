@@ -3,8 +3,9 @@ import User from '../../../../lib/models/user';
 import { dbConnect } from '../../../../lib/connection';
 
 export async function GET() {
-  await dbConnect();
   try {
+    await dbConnect();
+    
     const userWithInfo = await User.aggregate([
       {
         $lookup: {
@@ -45,8 +46,23 @@ export async function GET() {
         },
       },
     ]);
-    return NextResponse.json({ success: true, userWithInfo }, { status: 200 });
+    
+    return NextResponse.json(
+      { 
+        success: true, 
+        data: userWithInfo,
+        count: userWithInfo.length 
+      }, 
+      { status: 200 }
+    );
   } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+    console.error("Error fetching users with info:", error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        message: "Failed to fetch users with info" 
+      }, 
+      { status: 500 }
+    );
   }
 } 

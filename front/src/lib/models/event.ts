@@ -1,10 +1,10 @@
-
 import mongoose from "mongoose";
+
 const eventSchema = new mongoose.Schema({
-    eventType:{
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'Hobby',
-        required : true
+    eventType: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Hobby',
+        required: true
     },
     name: {
         type: String,
@@ -24,16 +24,29 @@ const eventSchema = new mongoose.Schema({
     },
     maxParticipants: {
         type: Number,
-        required: true
+        required: true,
+        min: 1
     },
     participants: {
         type: [String],
-        required: true
+        default: []
     },
     description: {
         type: String,
         required: true
+    },
+    organizer: {
+        type: String,
+        default: "Г.Хулан" // Default organizer name
+    },
+    status: {
+        type: String,
+        enum: ["active", "cancelled", "completed"],
+        default: "active"
     }
-})
+}, { 
+    timestamps: true 
+});
+
 const Event = mongoose.models.Event || mongoose.model('Event', eventSchema);
 export default Event; 

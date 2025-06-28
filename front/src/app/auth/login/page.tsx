@@ -67,7 +67,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   
   try {
     const response = await axios.post('/api/login', formData)
-    const data = response.data
+    const data = response.data as { token: string; user: any; error?: string };
 
     // If the API returns an error status, throw
     if (response.status !== 200) {
