@@ -37,12 +37,7 @@ export async function POST(req: NextRequest) {
     if (!fromUser || !toUser) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }
-    if (toUser.role !== 'mentor') {
-      return NextResponse.json({ message: 'Can only send requests to mentors' }, { status: 400 });
-    }
-    if (!toUser.availableSchedules.includes(selectedSchedule)) {
-      return NextResponse.json({ message: 'Selected schedule is not available' }, { status: 400 });
-    }
+
     const existingRequest = await RequestModel.findOne({
       from,
       to,
