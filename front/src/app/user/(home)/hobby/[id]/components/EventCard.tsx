@@ -8,6 +8,9 @@ import {
   User,
   Users,
 } from "lucide-react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { toast } from "sonner";
 
 interface Event {
   _id: string;
@@ -29,9 +32,24 @@ interface Event {
 interface EventCardProps {
   event: Event;
   onEdit?: (event: Event) => void;
+  onEventUpdated?: () => void;
 }
 
-export const EventCard = ({ event, onEdit }: EventCardProps) => {
+export const EventCard = ({ event, onEdit, onEventUpdated }: EventCardProps) => {
+  const [isJoined, setIsJoined] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    // Get current user from localStorage
+    const currentUserString = localStorage.getItem("currentUser");
+    if (currentUserString) {
+      const user = JSON.parse(currentUserString);
+      setCurrentUser(user);
+      setIsJoined(event.participants.includes(user.name));
+    }
+  }, [event.participants]);
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('mn-MN', { month: '2-digit', day: '2-digit' });
@@ -49,6 +67,38 @@ export const EventCard = ({ event, onEdit }: EventCardProps) => {
   const getStatusColor = () => {
     if (isFull) return "bg-red-50 text-red-900";
     return "bg-indigo-50 text-blue-900";
+  };
+
+  const handleJoinLeave = async () => {
+    if (!currentUser) {
+      toast.error("Хэрэглэгчийн мэдээлэл олдсонгүй");
+      return;
+    }
+
+    setIsLoading(true);
+    const action = isJoined ? "leave" : "join";
+
+    try {
+      const response = await axios.patch(`/api/event/${event._id}`, {
+        action,
+        userName: currentUser.name
+      });
+
+      const responseData = response.data as { success: boolean; data: Event; message: string };
+
+      if (responseData.success) {
+        setIsJoined(!isJoined);
+        toast.success(responseData.message);
+        onEventUpdated?.(); // Refresh parent component
+      } else {
+        toast.error(responseData.message || "Алдаа гарлаа");
+      }
+    } catch (error: any) {
+      console.error("Error joining/leaving event:", error);
+      toast.error(error.response?.data?.message || "Эвентэд нэгдэхэд алдаа гарлаа");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -112,13 +162,16 @@ export const EventCard = ({ event, onEdit }: EventCardProps) => {
       </div>
       <Button 
         className={`w-full transition-colors ${
-          isFull 
-            ? "bg-gray-400 cursor-not-allowed" 
-            : "bg-blue-400 text-white hover:bg-blue-500 cursor-pointer"
+          isJoined 
+            ? "bg-green-500 hover:bg-green-600 text-white" 
+            : isFull 
+              ? "bg-gray-400 cursor-not-allowed" 
+              : "bg-blue-400 text-white hover:bg-blue-500 cursor-pointer"
         }`}
-        disabled={isFull}
+        disabled={isFull && !isJoined || isLoading}
+        onClick={handleJoinLeave}
       >
-        {isFull ? "Дүүрсэн" : "Эвентэд нэгдэх"}
+        {isLoading ? "Уучлаарай..." : isJoined ? "Гарах" : isFull ? "Дүүрсэн" : "Эвентэд нэгдэх"}
       </Button>
       {onEdit && (
         <Button 

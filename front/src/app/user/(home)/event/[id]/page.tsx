@@ -38,6 +38,7 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [hobbyId, setHobbyId] = useState<string>("")
+  const [currentUser, setCurrentUser] = useState<any>(null)
   const [newEvent, setNewEvent] = useState({
     name: "",
     eventType: "",
@@ -57,6 +58,15 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
     getParams();
   }, [params]);
 
+  useEffect(() => {
+    // Get current user from localStorage
+    const currentUserString = localStorage.getItem("currentUser");
+    if (currentUserString) {
+      const user = JSON.parse(currentUserString);
+      setCurrentUser(user);
+    }
+  }, []);
+
   const fetchEvents = async () => {
     if (!hobbyId) return;
     
@@ -71,6 +81,14 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
           event.eventType._id === hobbyId
         )
         setEvents(hobbyEvents)
+        
+        // Update joined events based on current user's participation
+        if (currentUser) {
+          const userJoinedEvents = hobbyEvents
+            .filter((event: Event) => event.participants.includes(currentUser.name))
+            .map((event: Event) => event._id);
+          setJoinedEvents(userJoinedEvents);
+        }
       }
     } catch (error) {
       console.error("Error fetching events:", error)
@@ -84,14 +102,24 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
     if (hobbyId) {
       fetchEvents()
     }
-  }, [hobbyId])
+  }, [hobbyId, currentUser])
 
   const handleCreateEvent = async () => {
     try {
+      // Get current user from localStorage
+      const currentUserString = localStorage.getItem("currentUser");
+      if (!currentUserString) {
+        toast.error("Хэрэглэгчийн мэдээлэл олдсонгүй");
+        return;
+      }
+      
+      const currentUser = JSON.parse(currentUserString);
+      
       const eventData = {
         ...newEvent,
         maxParticipants: parseInt(newEvent.maxParticipants),
         eventDate: new Date(newEvent.eventDate).toISOString(),
+        organizer: currentUser.name, // Add the current user's name as organizer
       }
 
       const response = await axios.post('/api/event', eventData)
@@ -124,16 +152,48 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
     }
   }
 
-  const handleJoinEvent = (eventId: string) => {
-    setJoinedEvents((prev) => {
-      if (prev.includes(eventId)) {
-        // Leave event logic would go here
-        return prev.filter((id) => id !== eventId)
+  const handleJoinEvent = async (eventId: string) => {
+    if (!currentUser) {
+      toast.error("Хэрэглэгчийн мэдээлэл олдсонгүй");
+      return;
+    }
+
+    const isCurrentlyJoined = joinedEvents.includes(eventId);
+    const action = isCurrentlyJoined ? "leave" : "join";
+
+    try {
+      const response = await axios.patch(`/api/event/${eventId}`, {
+        action,
+        userName: currentUser.name
+      });
+
+      const responseData = response.data as { success: boolean; data: Event; message: string };
+
+      if (responseData.success) {
+        // Update local state
+        setJoinedEvents((prev) => {
+          if (isCurrentlyJoined) {
+            return prev.filter((id) => id !== eventId);
+          } else {
+            return [...prev, eventId];
+          }
+        });
+
+        // Update events list with the updated event
+        setEvents((prevEvents) => 
+          prevEvents.map((event) => 
+            event._id === eventId ? responseData.data : event
+          )
+        );
+
+        toast.success(responseData.message);
       } else {
-        // Join event logic would go here
-        return [...prev, eventId]
+        toast.error(responseData.message || "Алдаа гарлаа");
       }
-    })
+    } catch (error: any) {
+      console.error("Error joining/leaving event:", error);
+      toast.error(error.response?.data?.message || "Эвентэд нэгдэхэд алдаа гарлаа");
+    }
   }
 
   const formatDate = (dateString: string) => {

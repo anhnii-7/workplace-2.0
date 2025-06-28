@@ -37,7 +37,6 @@ const eventSchema = new mongoose.Schema({
     },
     organizer: {
         type: String,
-        default: "Г.Хулан" // Default organizer name
     },
     status: {
         type: String,
