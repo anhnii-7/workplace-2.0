@@ -1,9 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import Hobby from "../../../../lib/models/hobby"
+import Event from "../../../../lib/models/event"
 import { dbConnect } from "../../../../lib/connection"
 import { isValidObjectId } from "mongoose"
 
-// GET /api/hobby/[id] - Fetch a specific hobby
+// GET /api/event/[id] - Fetch a specific event
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await dbConnect()
@@ -13,19 +13,19 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid hobby ID format",
+          message: "Invalid event ID format",
         },
         { status: 400 },
       )
     }
 
-    const hobby = await Hobby.findById(id)
+    const event = await Event.findById(id).populate('eventType', 'title image')
 
-    if (!hobby) {
+    if (!event) {
       return NextResponse.json(
         {
           success: false,
-          message: "Hobby not found",
+          message: "Event not found",
         },
         { status: 404 },
       )
@@ -34,23 +34,23 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json(
       {
         success: true,
-        data: hobby,
+        data: event,
       },
       { status: 200 },
     )
   } catch (error: any) {
-    console.error("Error fetching hobby:", error)
+    console.error("Error fetching event:", error)
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to fetch hobby",
+        message: "Failed to fetch event",
       },
       { status: 500 },
     )
   }
 }
 
-// PUT /api/hobby/[id] - Update a specific hobby
+// PUT /api/event/[id] - Update a specific event
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await dbConnect()
@@ -60,7 +60,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid hobby ID format",
+          message: "Invalid event ID format",
         },
         { status: 400 },
       )
@@ -68,44 +68,30 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
     const body = await req.json()
 
-    // Validate title if provided
-    if (body.title !== undefined) {
-      if (typeof body.title !== "string") {
-        return NextResponse.json(
-          {
-            success: false,
-            message: "Title must be a string",
-          },
-          { status: 400 },
-        )
-      }
-
-      const title = body.title.trim()
-      if (title.length < 1 || title.length > 100) {
-        return NextResponse.json(
-          {
-            success: false,
-            message: "Title must be between 1 and 100 characters",
-          },
-          { status: 400 },
-        )
-      }
-      body.title = title
+    // Validate eventType if provided
+    if (body.eventType && !isValidObjectId(body.eventType)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid event type ID format",
+        },
+        { status: 400 },
+      )
     }
 
     // Add updatedAt timestamp
     body.updatedAt = new Date()
 
-    const hobby = await Hobby.findByIdAndUpdate(id, body, {
+    const event = await Event.findByIdAndUpdate(id, body, {
       new: true,
       runValidators: true,
-    })
+    }).populate('eventType', 'title image')
 
-    if (!hobby) {
+    if (!event) {
       return NextResponse.json(
         {
           success: false,
-          message: "Hobby not found",
+          message: "Event not found",
         },
         { status: 404 },
       )
@@ -114,24 +100,13 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json(
       {
         success: true,
-        data: hobby,
-        message: "Hobby updated successfully",
+        data: event,
+        message: "Event updated successfully",
       },
       { status: 200 },
     )
   } catch (error: any) {
-    console.error("Error updating hobby:", error)
-
-    if (error.code === 11000) {
-      const field = Object.keys(error.keyPattern)[0]
-      return NextResponse.json(
-        {
-          success: false,
-          message: `Hobby with this ${field} already exists`,
-        },
-        { status: 409 },
-      )
-    }
+    console.error("Error updating event:", error)
 
     if (error.name === "ValidationError") {
       const messages = Object.values(error.errors).map((err: any) => err.message)
@@ -148,14 +123,14 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to update hobby",
+        message: "Failed to update event",
       },
       { status: 500 },
     )
   }
 }
 
-// DELETE /api/hobby/[id] - Delete a specific hobby
+// DELETE /api/event/[id] - Delete a specific event
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await dbConnect()
@@ -165,19 +140,19 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid hobby ID format",
+          message: "Invalid event ID format",
         },
         { status: 400 },
       )
     }
 
-    const hobby = await Hobby.findByIdAndDelete(id)
+    const event = await Event.findByIdAndDelete(id)
 
-    if (!hobby) {
+    if (!event) {
       return NextResponse.json(
         {
           success: false,
-          message: "Hobby not found",
+          message: "Event not found",
         },
         { status: 404 },
       )
@@ -186,19 +161,19 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     return NextResponse.json(
       {
         success: true,
-        message: "Hobby deleted successfully",
-        data: hobby,
+        message: "Event deleted successfully",
+        data: event,
       },
       { status: 200 },
     )
   } catch (error: any) {
-    console.error("Error deleting hobby:", error)
+    console.error("Error deleting event:", error)
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to delete hobby",
+        message: "Failed to delete event",
       },
       { status: 500 },
     )
   }
-}
+} 

@@ -14,12 +14,28 @@ export type Hobby = {
 };
 export default function WishPage() {
   const [hobbies, setHobbies] = useState<Hobby[]>([]);
+  const [loading, setLoading] = useState(true);
   
   // console.log(baseUrl, "baseUrl")
   const getHobbies = async () => {
-    const response = await axios.get('/api/hobby');
-    console.log(response, "hobbies");
-    setHobbies(response.data);
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/hobby');
+      const data = response.data as { success: boolean; data: Hobby[]; message?: string };
+      console.log(response, "hobbies");
+      
+      if (data.success) {
+        setHobbies(data.data);
+      } else {
+        console.error("Failed to fetch hobbies:", data.message);
+        setHobbies([]);
+      }
+    } catch (error) {
+      console.error("Error fetching hobbies:", error);
+      setHobbies([]);
+    } finally {
+      setLoading(false);
+    }
   };
   // console.log(hobbies, "hobbies");
   useEffect(() => {
@@ -42,26 +58,36 @@ export default function WishPage() {
           Та өөрийн дуртай хэдэн ч сэдвийг сонгосон болно ☺️
         </h2>
         <div className="grid grid-cols-4 gap-5 ">
-          {hobbies.map((hobby) => {
-            return (
-              <Link href={`/user/hobby/${hobby._id}`} key={hobby._id}>
-                <Card className="p-0 w-[202px] h-[290px] flex flex-col gap-3 box-border">
-                  <div className=" w-full rounded-3xl h-[224px] bg-white overflow-hidden relative">
-                    <Image
-                      src={hobby.image}
-                      fill={true}
-                      alt="sport"
-                      className="place-self-center"
-                      style={{ objectFit: "contain" }}
-                    />
-                  </div>
-                  <p className="bg-slate-50 text-center rounded-b-2xl text-lg py-3 text-slate-800">
-                    {hobby.title}
-                  </p>
-                </Card>
-              </Link>
-            );
-          })}
+          {loading ? (
+            <div className="col-span-4 text-center py-8">
+              <p>Хоббинууд ачаалж байна...</p>
+            </div>
+          ) : hobbies.length > 0 ? (
+            hobbies.map((hobby) => {
+              return (
+                <Link href={`/user/hobby/${hobby._id}`} key={hobby._id}>
+                  <Card className="p-0 w-[202px] h-[290px] flex flex-col gap-3 box-border">
+                    <div className=" w-full rounded-3xl h-[224px] bg-white overflow-hidden relative">
+                      <Image
+                        src={hobby.image}
+                        fill={true}
+                        alt="sport"
+                        className="place-self-center"
+                        style={{ objectFit: "contain" }}
+                      />
+                    </div>
+                    <p className="bg-slate-50 text-center rounded-b-2xl text-lg py-3 text-slate-800">
+                      {hobby.title}
+                    </p>
+                  </Card>
+                </Link>
+              );
+            })
+          ) : (
+            <div className="col-span-4 text-center py-8">
+              <p className="text-gray-500">Одоогоор хобби байхгүй байна.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
