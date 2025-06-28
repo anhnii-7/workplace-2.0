@@ -5,104 +5,66 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { useParams } from "next/navigation"
 
-// Mock data based on the screenshot
-const mockUsers = [
-  {
-    _id: "1",
-    name: "Г.Хулан",
-    lastName: "Г",
-    role: "Дизайнер",
-    department: "Сагсан бөмбөг",
-    avatar: "/placeholder.svg?height=80&width=80",
-    tags: ["Ном", "Астрологи"],
-  },
-  {
-    _id: "2",
-    name: "Б.Санаа",
-    lastName: "Б",
-    role: "Хөгжүүлэгч",
-    department: "Сагсан бөмбөг",
-    avatar: "/placeholder.svg?height=80&width=80",
-    tags: ["Ном"],
-  },
-  {
-    _id: "3",
-    name: "У.Болд",
-    lastName: "У",
-    role: "Дизайнер",
-    department: "Сагсан бөмбөг",
-    avatar: "/placeholder.svg?height=80&width=80",
-    tags: ["Уулзах"],
-  },
-  {
-    _id: "4",
-    name: "Г.Батсайхан",
-    lastName: "Г",
-    role: "Дизайнер",
-    department: "Сагсан бөмбөг",
-    avatar: "/placeholder.svg?height=80&width=80",
-    tags: ["Ном", "Видео тоглоом"],
-  },
-  {
-    _id: "5",
-    name: "Р.Удвал",
-    lastName: "Р",
-    role: "Хөгжүүлэгч",
-    department: "Сагсан бөмбөг",
-    avatar: "/placeholder.svg?height=80&width=80",
-    tags: ["Бисалгал", "Ном"],
-  },
-  {
-    _id: "6",
-    name: "Х.Сайханбилэгт",
-    lastName: "Х",
-    role: "Хүний нөөц",
-    department: "Сагсан бөмбөг",
-    avatar: "/placeholder.svg?height=80&width=80",
-    tags: ["Астрологи"],
-  },
-  {
-    _id: "7",
-    name: "Е.Индрам",
-    lastName: "Е",
-    role: "Дизайнер",
-    department: "Сагсан бөмбөг",
-    avatar: "/placeholder.svg?height=80&width=80",
-    tags: ["Сагсан бөмбөг", "Ном"],
-  },
-  {
-    _id: "8",
-    name: "Л.Нранцацралт",
-    lastName: "Л",
-    role: "Хүний нөөц",
-    department: "Сагсан бөмбөг",
-    avatar: "/placeholder.svg?height=80&width=80",
-    tags: ["Сагсан бөмбөг", "Ном"],
-  },
-  {
-    _id: "9",
-    name: "Б.Бундан",
-    lastName: "Б",
-    role: "Нягтлан",
-    department: "Сагсан бөмбөг",
-    avatar: "/placeholder.svg?height=80&width=80",
-    tags: ["Сагсан бөмбөг", "Ном"],
-  },
-  {
-    _id: "10",
-    name: "Г.Лувсандорж",
-    lastName: "Г",
-    role: "Хөгжүүлэгч",
-    department: "Сагсан бөмбөг",
-    avatar: "/placeholder.svg?height=80&width=80",
-    tags: ["Сагсан бөмбөг", "Ном"],
-  },
-]
+export type User = {
+  _id: string
+  email: string
+  name: string
+  lastName: string
+  role: "new" | "old" | "mentor",
+  password: string
+  hobby: string
+  experience: string
+  hobbyInfo: HobbyInfo
+  department: string
+  departmentInfo: DepartmentInfo
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+export type JobTitleInfo = {
+  _id: string
+  title: string
+}
+
+export type DepartmentInfo = {
+  id: string
+  jobTitle: string
+  jobTitleInfo: JobTitleInfo
+}
+
+export type HobbyInfo = {
+  _id: string,
+  title: string,
+  image: string
+}
+
 
 export default function HobbyInsertPage() {
-  const [selectedCategory, setSelectedCategory] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [users, setUsers] = useState<User[]>([]);
+  const [hobbies, setHobbies] = useState<HobbyInfo[]>([])
+  const params = useParams();
+
+  useEffect(() => {
+    const getUsers = async () => {
+      const response = await axios.get(`/api/user/by-hobby?id=${params.id}`);
+      setUsers(response.data.users);
+    }
+    getUsers();
+  }, [params.id]);
+
+  useEffect(() => {
+    const getHobbies = async () => {
+      const response = await axios.get('/api/hobby');
+      setHobbies(response.data)
+    }
+    getHobbies();
+  }, []);
+
   return (
     <div className="min-h-screen w-full">
       <div className="w-full">
@@ -115,44 +77,52 @@ export default function HobbyInsertPage() {
         <div className="mb-8">
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="w-48 bg-blue-50 border-blue-200">
-              <SelectValue placeholder="Сагсан бөмбөг" />
+              <SelectValue placeholder='' />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="esports">Э-спорт</SelectItem>
-              <SelectItem value="basketball">Сагсан бөмбөг</SelectItem>
-              <SelectItem value="astrology">Астрологи</SelectItem>
-              <SelectItem value="books">Ном</SelectItem>
+              {
+                hobbies.map(hobby => (
+                  <SelectItem value={hobby.title} key={hobby._id}>{hobby.title}</SelectItem>
+                ))
+              }
             </SelectContent>
           </Select>
         </div>
 
         {/* Tabs */}
         <div className="grid grid-cols-4 gap-5 py-3 px-6 place-self-center">
-          {mockUsers.map((user) => (
+          {users.map((user) => (
             <Card key={user._id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
               <CardContent>
                 <div className="flex flex-col items-center">
                   {/* Avatar */}
                   <Avatar className="w-31 h-30 mb-3">
-                    <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name}/>
-                    <AvatarFallback className="bg-gray-200 text-gray-600">{user.lastName}</AvatarFallback>
+                    <AvatarImage src={""} alt={user.name} />
+                    <AvatarFallback className="bg-gray-200 text-gray-600">{user.lastName.slice(0, 1)}{user.name.slice(0, 1)}</AvatarFallback>
                   </Avatar>
 
-                 <div className="flex flex-col gap-[2px] py-[6px] text-center">
-                   {/* Name */}
-                   <div className="w-full">
-                    <h3 className="font-semibold text-gray-800 text-lg">{user.name}</h3>
-                  </div>
+                  <div className="flex flex-col gap-1 py-[6px] text-center">
+                    {/* Name */}
+                    <div className="w-full">
+                      <h3 className="font-semibold text-gray-800 text-lg">{user.lastName.slice(0, 1)}.{user.name}</h3>
+                    </div>
 
-                  {/* Role */}
-                  <div className="w-full">
-                    <span className="text-sm font-normal text-gray-600">{user.role}</span>
+                    {/* Role */}
+                    <div className="w-full">
+                      <span className="text-sm font-normal text-gray-600">{user.departmentInfo.jobTitleInfo.title}</span>
+                    </div>
                   </div>
-                 </div>
 
                   {/* Tags */}
                   <div className="grid grid-cols-2 gap-3 w-full my-3">
-                    {user.tags.map((tag, index) => (
+                    <Badge
+                      key={user.hobbyInfo.title}
+                      variant="secondary"
+                      className="flex w-full rounded-full py-1 px-3 text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer transition-colors"
+                    >
+                      {user.hobbyInfo.title}
+                    </Badge>
+                    {/* {user.hobby.map((tag, index) => (
                       <Badge
                         key={index}
                         variant="secondary"
@@ -160,7 +130,7 @@ export default function HobbyInsertPage() {
                       >
                         {tag}
                       </Badge>
-                    ))}
+                    ))} */}
                   </div>
 
                   {/* Action Button */}
