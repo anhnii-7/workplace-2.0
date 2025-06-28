@@ -156,16 +156,19 @@ export default function WishPage() {
     try {
       setLoading(true);
       const response = await axios.get("/api/user/with-info");
+      const data = response.data as { success: boolean; data: User[] };
 
-      if (response.data.success && response.data.userWithInfo) {
-        setUsers(response.data.userWithInfo);
+      if (data.success && data.data) {
+        setUsers(data.data);
       } else {
-        console.error("Unexpected response format:", response.data);
+        console.error("Unexpected response format:", data);
         toast.error("Failed to load users");
+        setUsers([]);
       }
     } catch (error) {
       console.error("Error fetching users:", error);
       toast.error("Error loading users");
+      setUsers([]);
     } finally {
       setLoading(false);
     }
@@ -179,18 +182,26 @@ export default function WishPage() {
           type: "all",
         },
       });
-      console.log(response.data.requests, "Response data")
-      setRequests({
-        sent: response.data.requests.filter(
-          (req: Request) => typeof req.from !== "string" && req.from._id === userId
-        ),
-        received: response.data.requests.filter(
-          (req: Request) => typeof req.to !== "string" && req.to._id === userId
-        ),
-      });
+      const data = response.data as { success: boolean; data: Request[]; message?: string };
+      console.log(data, "Response data")
+      
+      if (data.success && data.data) {
+        setRequests({
+          sent: data.data.filter(
+            (req: Request) => typeof req.from !== "string" && req.from._id === userId
+          ),
+          received: data.data.filter(
+            (req: Request) => typeof req.to !== "string" && req.to._id === userId
+          ),
+        });
+      } else {
+        console.error("Failed to fetch requests:", data.message);
+        setRequests({ sent: [], received: [] });
+      }
     } catch (error) {
       console.error("Error fetching requests:", error);
       toast.error("Failed to load requests");
+      setRequests({ sent: [], received: [] });
     }
   };
 
@@ -206,10 +217,11 @@ export default function WishPage() {
         message,
         selectedSchedule: selectedDate,
       });
+      const data = response.data as { success: boolean; data: Request; message: string };
       fetchRequests(currentUser._id);
       toast.success("Request sent successfully");
       setIsDialogOpen(false);
-      return response.data;
+      return data;
     } catch (error: any) {
       console.error("Error creating request:", error);
       toast.error(error.response?.data?.message || "Failed to send request");
@@ -230,9 +242,10 @@ export default function WishPage() {
           mentorNotes: notes,
         }
       );
+      const data = response.data as { success: boolean; data: Request; message: string };
       fetchRequests(currentUser._id);
       toast.success(`Request ${status}`);
-      return response.data;
+      return data;
     } catch (error: any) {
       console.error("Error updating request:", error);
       toast.error(error.response?.data?.message || "Failed to update request");

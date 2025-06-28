@@ -5,148 +5,141 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { CalendarSearch, Users, Plus,Calendar, User } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import axios from "axios"
+import { toast } from "sonner"
 
-// Mock data based on the screenshot
+interface Event {
+  _id: string;
+  name: string;
+  description: string;
+  eventDate: string;
+  eventTime: string;
+  eventLocation: string;
+  maxParticipants: number;
+  participants: string[];
+  organizer: string;
+  eventType: {
+    _id: string;
+    title: string;
+    image: string;
+  };
+}
 
-const initialEvents = [
-  {
-    _id: "1",
-    title: "Book Club",
-    description: "Сууд унших номоо ярьцгаая",
-    date: "07-02",
-    time: "12:30",
-    currentParticipants: 3,
-    maxParticipants: 5,
-    status: "2 хүн дутуу",
-    category: "Ном унших",
-    organizer: "Г.Хулан",
-    location: "Lobby lounge",
-  },
-  {
-    _id: "2",
-    title: "CS 1.6",
-    description: "Асуух зүйл байвал > 99123489",
-    date: "06-25",
-    time: "19:00",
-    currentParticipants: 4,
-    maxParticipants: 10,
-    status: "6 хүн дутуу",
-    category: "Наг уяай дээ",
-    organizer: "Г.Хулан",
-    location: "Ace Sport",
-  },
-  {
-    _id: "3",
-    title: "Астрологийн семинар",
-    description: "Одны зураг болон астрологийн үндсийг судлах семинар.",
-    date: "2024-01-25",
-    time: "14:00",
-    currentParticipants: 12,
-    maxParticipants: 15,
-    status: "Идэвхтэй",
-    category: "Астрологи",
-    organizer: "Г.Хулан",
-    location: "Conference Room",
-  },
-]
-
-export default function HobbyInsertPage() {
-  const [events, setEvents] = useState(initialEvents)
+export default function EventPage({ params }: { params: Promise<{ id: string }> }) {
+  const [events, setEvents] = useState<Event[]>([])
   const [joinedEvents, setJoinedEvents] = useState<string[]>([])
   const [selectedCategory, setSelectedCategory] = useState("")
   const [isCreateEventOpen, setIsCreateEventOpen] = useState(false)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [hobbyId, setHobbyId] = useState<string>("")
   const [newEvent, setNewEvent] = useState({
     name: "",
-    type: "",
-    date: "",
-    time: "",
-    location: "",
-    limit: "",
+    eventType: "",
+    eventDate: "",
+    eventTime: "",
+    eventLocation: "",
+    maxParticipants: "",
     description: "",
   })
 
-  const handleCreateEvent = () => {
-    // Create new event object
-    const createdEvent = {
-      _id: Date.now().toString(), // Simple ID generation
-      title: newEvent.name,
-      description: newEvent.description,
-      date: newEvent.date,
-      time: newEvent.time,
-      currentParticipants: 1, // Creator is automatically joined
-      maxParticipants: Number.parseInt(newEvent.limit) || 10,
-      status: `${(Number.parseInt(newEvent.limit) || 10) - 1} хүн дутуу`,
-      category: newEvent.type,
-      organizer: "Г.Хулан", // Current user
-      location: newEvent.location,
-    }
+  useEffect(() => {
+    const getParams = async () => {
+      const { id } = await params;
+      setHobbyId(id);
+      setNewEvent(prev => ({ ...prev, eventType: id }));
+    };
+    getParams();
+  }, [params]);
 
-    // Add the new event to the events list
-    setEvents((prevEvents) => [...prevEvents, createdEvent])
-
-    // Automatically join the creator to the event
-    setJoinedEvents((prev) => [...prev, createdEvent._id])
-
-    // Close create modal and show success
-    setIsCreateEventOpen(false)
-    setIsSuccessOpen(true)
-
+  const fetchEvents = async () => {
+    if (!hobbyId) return;
     
+    try {
+      setLoading(true)
+      const response = await axios.get('/api/event')
+      const responseData = response.data as { success: boolean; data: Event[]; count: number };
+      
+      if (responseData.success) {
+        // Filter events for this specific hobby
+        const hobbyEvents = responseData.data.filter((event: Event) => 
+          event.eventType._id === hobbyId
+        )
+        setEvents(hobbyEvents)
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error)
+      toast.error("Эвентүүдийг ачаалж чадсангүй")
+    } finally {
+      setLoading(false)
+    }
+  }
 
-    // Reset form
-    setNewEvent({
-      name: "",
-      type: "",
-      date: "",
-      time: "",
-      location: "",
-      limit: "",
-      description: "",
-    })
+  useEffect(() => {
+    if (hobbyId) {
+      fetchEvents()
+    }
+  }, [hobbyId])
+
+  const handleCreateEvent = async () => {
+    try {
+      const eventData = {
+        ...newEvent,
+        maxParticipants: parseInt(newEvent.maxParticipants),
+        eventDate: new Date(newEvent.eventDate).toISOString(),
+      }
+
+      const response = await axios.post('/api/event', eventData)
+      const responseData = response.data as { success: boolean; data: Event; message: string };
+      
+      if (responseData.success) {
+        toast.success("Эвент амжилттай үүсгэгдлээ!")
+        setIsCreateEventOpen(false)
+        setIsSuccessOpen(true)
+        
+        // Reset form
+        setNewEvent({
+          name: "",
+          eventType: hobbyId,
+          eventDate: "",
+          eventTime: "",
+          eventLocation: "",
+          maxParticipants: "",
+          description: "",
+        })
+        
+        // Refresh events
+        fetchEvents()
+      } else {
+        toast.error(responseData.message || "Алдаа гарлаа")
+      }
+    } catch (error: any) {
+      console.error("Error creating event:", error)
+      toast.error(error.response?.data?.message || "Эвент үүсгэхэд алдаа гарлаа")
+    }
   }
 
   const handleJoinEvent = (eventId: string) => {
     setJoinedEvents((prev) => {
       if (prev.includes(eventId)) {
-        // Leave event - decrease participant count
-        setEvents((prevEvents) =>
-          prevEvents.map((event) =>
-            event._id === eventId
-              ? {
-                  ...event,
-                  currentParticipants: event.currentParticipants - 1,
-                  status: `${event.maxParticipants - (event.currentParticipants - 1)} хүн дутуу`,
-                }
-              : event,
-          ),
-        )
+        // Leave event logic would go here
         return prev.filter((id) => id !== eventId)
       } else {
-        // Join event - increase participant count
-        setEvents((prevEvents) =>
-          prevEvents.map((event) =>
-            event._id === eventId
-              ? {
-                  ...event,
-                  currentParticipants: event.currentParticipants + 1,
-                  status:
-                    event.currentParticipants + 1 >= event.maxParticipants
-                      ? "Дүүрсэн"
-                      : `${event.maxParticipants - (event.currentParticipants + 1)} хүн дутуу`,
-                }
-              : event,
-          ),
-        )
+        // Join event logic would go here
         return [...prev, eventId]
       }
     })
   }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('mn-MN', { month: '2-digit', day: '2-digit' });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 w-full">
@@ -194,23 +187,14 @@ export default function HobbyInsertPage() {
                     onChange={(e) => setNewEvent({ ...newEvent, name: e.target.value })}
                   />
                 </div>
-                <div>
-                  <Label htmlFor="eventType">Төрөл</Label>
-                  <Input
-                    id="eventType"
-                    placeholder="Энд бичих орууна уу ..."
-                    value={newEvent.type}
-                    onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
-                  />
-                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="eventDate">Өдөр</Label>
                     <Input
                       id="eventDate"
                       type="date"
-                      value={newEvent.date}
-                      onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
+                      value={newEvent.eventDate}
+                      onChange={(e) => setNewEvent({ ...newEvent, eventDate: e.target.value })}
                     />
                   </div>
                   <div>
@@ -218,8 +202,8 @@ export default function HobbyInsertPage() {
                     <Input
                       id="eventTime"
                       type="time"
-                      value={newEvent.time}
-                      onChange={(e) => setNewEvent({ ...newEvent, time: e.target.value })}
+                      value={newEvent.eventTime}
+                      onChange={(e) => setNewEvent({ ...newEvent, eventTime: e.target.value })}
                     />
                   </div>
                 </div>
@@ -228,17 +212,18 @@ export default function HobbyInsertPage() {
                   <Input
                     id="eventLocation"
                     placeholder="Энд бичих орууна уу ..."
-                    value={newEvent.location}
-                    onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
+                    value={newEvent.eventLocation}
+                    onChange={(e) => setNewEvent({ ...newEvent, eventLocation: e.target.value })}
                   />
                 </div>
                 <div>
                   <Label htmlFor="eventLimit">Хүний хязгаар</Label>
                   <Input
                     id="eventLimit"
+                    type="number"
                     placeholder="Энд бичих орууна уу ..."
-                    value={newEvent.limit}
-                    onChange={(e) => setNewEvent({ ...newEvent, limit: e.target.value })}
+                    value={newEvent.maxParticipants}
+                    onChange={(e) => setNewEvent({ ...newEvent, maxParticipants: e.target.value })}
                   />
                 </div>
                 <div>
@@ -276,125 +261,133 @@ export default function HobbyInsertPage() {
           </Dialog>
         </div>
 
-        {/* Tabs */}
-       
-     
+        {/* Content */}
+        <div className="space-y-6">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="bg-white shadow-sm">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="bg-yellow-50 p-4 rounded-xl">
+                    <CalendarSearch className="w-8 h-8 text-yellow-600" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-semibold text-gray-800">
+                      {loading ? "..." : events.filter((e) => e.participants.length < e.maxParticipants).length}
+                    </p>
+                    <p className="text-gray-600">Хүлээгдэж буй эвентүүд</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-            <div className="space-y-6">
-              {/* Stats Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="bg-white shadow-sm">
-                  <CardContent className="p-6">
-                    <div className="flex items-center space-x-4">
-                      <div className="bg-yellow-50 p-4 rounded-xl">
-                        <CalendarSearch className="w-8 h-8 text-yellow-600" />
-                      </div>
-                      <div>
-                        <p className="text-2xl font-semibold text-gray-800">
-                          {events.filter((e) => e.status.includes("дутуу")).length}
-                        </p>
-                        <p className="text-gray-600">Хүлээгдэж буй эвентүүд</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+            <Card className="bg-white shadow-sm">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="bg-green-50 p-4 rounded-xl">
+                    <Users className="w-8 h-8 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-semibold text-gray-800">
+                      {loading ? "..." : events.reduce((total, event) => total + event.participants.length, 0)}
+                    </p>
+                    <p className="text-gray-600">Нийт оролцогчид</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-                <Card className="bg-white shadow-sm">
-                  <CardContent className="p-6">
-                    <div className="flex items-center space-x-4">
-                      <div className="bg-green-50 p-4 rounded-xl">
-                        <Users className="w-8 h-8 text-green-600" />
-                      </div>
-                      <div>
-                        <p className="text-2xl font-semibold text-gray-800">
-                          {events.reduce((total, event) => total + event.currentParticipants, 0)}
-                        </p>
-                        <p className="text-gray-600">Нийт оролцогчид</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Events List */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {events.map((event) => {
-                  const isJoined = joinedEvents.includes(event._id)
-                  const isFull = event.currentParticipants >= event.maxParticipants
-                  return (
-                    <Card key={event._id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
-                      <CardContent className="p-6">
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-3">
-                              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <Calendar className="w-5 h-5 text-blue-600" />
-                              </div>
-                              <div>
-                                <h3 className="font-semibold text-gray-800">{event.title}</h3>
-                                <p className="text-sm text-gray-500">{event.category}</p>
-                              </div>
+          {/* Events List */}
+          {loading ? (
+            <div className="text-center py-8">
+              <p>Эвентүүд ачаалж байна...</p>
+            </div>
+          ) : events.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {events.map((event) => {
+                const isJoined = joinedEvents.includes(event._id)
+                const isFull = event.participants.length >= event.maxParticipants
+                const remainingSpots = event.maxParticipants - event.participants.length
+                
+                return (
+                  <Card key={event._id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                              <Calendar className="w-5 h-5 text-blue-600" />
                             </div>
-                            <Badge
-                              className={
-                                isFull
-                                  ? "bg-red-100 text-red-700"
-                                  : event.status.includes("дутуу")
-                                    ? "bg-blue-100 text-blue-700"
-                                    : "bg-green-100 text-green-700"
-                              }
-                            >
-                              {event.status}
-                            </Badge>
-                          </div>
-
-                          <p className="text-sm text-gray-600">{event.description}</p>
-
-                          <div className="space-y-2">
-                            <div className="flex items-center space-x-2 text-sm text-gray-500">
-                              <Calendar className="w-4 h-4" />
-                              <span>{event.date}</span>
-                              <span className="ml-4">🕐 {event.time}</span>
-                            </div>
-                            <div className="flex items-center space-x-2 text-sm text-gray-500">
-                              <User className="w-4 h-4" />
-                              <span>{event.organizer}</span>
-                              <span className="ml-4">📍 {event.location}</span>
-                            </div>
-                            <div className="flex items-center space-x-2 text-sm text-gray-500">
-                              <Users className="w-4 h-4" />
-                              <span>
-                                {event.currentParticipants}/{event.maxParticipants} хүн бүртгүүлсэн байна
-                              </span>
+                            <div>
+                              <h3 className="font-semibold text-gray-800">{event.name}</h3>
+                              <p className="text-sm text-gray-500">{event.eventType.title}</p>
                             </div>
                           </div>
+                          <Badge
+                            className={
+                              isFull
+                                ? "bg-red-100 text-red-700"
+                                : "bg-blue-100 text-blue-700"
+                            }
+                          >
+                            {isFull ? "Дүүрсэн" : `${remainingSpots} хүн дутуу`}
+                          </Badge>
+                        </div>
 
-                          <div className="flex space-x-2">
-                            <Button size="sm" variant="outline" className="flex-1">
-                              Засах
-                            </Button>
-                            <Button
-                              size="sm"
-                              className={`flex-1 transition-colors ${
-                                isJoined
-                                  ? "bg-green-500 hover:bg-green-600 text-white"
-                                  : isFull
-                                    ? "bg-gray-400 cursor-not-allowed"
-                                    : "bg-blue-500 hover:bg-blue-600 text-white"
-                              }`}
-                              onClick={() => !isFull && handleJoinEvent(event._id)}
-                              disabled={isFull && !isJoined}
-                            >
-                              {isJoined ? "Орсон" : isFull ? "Дүүрсэн" : "Эвентэд нэгдэх"}
-                            </Button>
+                        <p className="text-sm text-gray-600">{event.description}</p>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2 text-sm text-gray-500">
+                            <Calendar className="w-4 h-4" />
+                            <span>{formatDate(event.eventDate)}</span>
+                            <span className="ml-4">🕐 {event.eventTime}</span>
+                          </div>
+                          <div className="flex items-center space-x-2 text-sm text-gray-500">
+                            <User className="w-4 h-4" />
+                            <span>{event.organizer}</span>
+                            <span className="ml-4">📍 {event.eventLocation}</span>
+                          </div>
+                          <div className="flex items-center space-x-2 text-sm text-gray-500">
+                            <Users className="w-4 h-4" />
+                            <span>
+                              {event.participants.length}/{event.maxParticipants} хүн бүртгүүлсэн байна
+                            </span>
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
-                  )
-                })}
-              </div>
+
+                        <div className="flex space-x-2">
+                          <Button size="sm" variant="outline" className="flex-1">
+                            Засах
+                          </Button>
+                          <Button
+                            size="sm"
+                            className={`flex-1 transition-colors ${
+                              isJoined
+                                ? "bg-green-500 hover:bg-green-600 text-white"
+                                : isFull
+                                  ? "bg-gray-400 cursor-not-allowed"
+                                  : "bg-blue-500 hover:bg-blue-600 text-white"
+                            }`}
+                            onClick={() => !isFull && handleJoinEvent(event._id)}
+                            disabled={isFull && !isJoined}
+                          >
+                            {isJoined ? "Орсон" : isFull ? "Дүүрсэн" : "Эвентэд нэгдэх"}
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              })}
             </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-gray-500">Энэ хоббид одоогоор эвент байхгүй байна.</p>
+              <p className="text-gray-400 text-sm mt-2">Эхний эвентээ үүсгэж эхлээрэй!</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

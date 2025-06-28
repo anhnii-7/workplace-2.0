@@ -25,9 +25,9 @@ export function DialogDemo({ hobbies }: { hobbies: Hobby[] }) {
         </DialogHeader>
 
         <div className="grid grid-cols-4 gap-5 w-full">
-          {hobbies.map((hobby) => {
-            return (
-              
+          {hobbies && hobbies.length > 0 ? (
+            hobbies.map((hobby) => {
+              return (
                 <Card className="p-0 w-[202px] h-[290px] flex flex-col gap-3 box-border" key={hobby._id}>
                   <div className=" w-full rounded-3xl h-[224px] bg-white overflow-hidden relative">
                     <Image
@@ -42,16 +42,19 @@ export function DialogDemo({ hobbies }: { hobbies: Hobby[] }) {
                     {hobby.title}
                   </p>
                 </Card>
-         
-            );
-          })}
-        
+              );
+            })
+          ) : (
+            <div className="col-span-4 text-center py-8">
+              <p className="text-gray-500">Хоббинууд ачаалж байна...</p>
+            </div>
+          )}
         </div>
         <DialogFooter className="w-full">
-    <button className="w-full mt-6 px-4 rounded-md cursor-pointer py-3 bg-blue-400 text-white text-sm font-medium leading-5 hover:bg-blue-500">
-      Нэмэх
-    </button>
-  </DialogFooter>
+          <button className="w-full mt-6 px-4 rounded-md cursor-pointer py-3 bg-blue-400 text-white text-sm font-medium leading-5 hover:bg-blue-500">
+            Нэмэх
+          </button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

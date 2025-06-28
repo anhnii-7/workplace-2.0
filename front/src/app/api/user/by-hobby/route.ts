@@ -3,14 +3,20 @@ import User from '../../../../lib/models/user';
 import { dbConnect } from '../../../../lib/connection';
 import mongoose from 'mongoose';
 
-export async function GET(req: NextRequest) {
-  await dbConnect();
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get('id');
-  if (!id) {
-    return NextResponse.json({ message: 'Missing id' }, { status: 400 });
-  }
-  try {
+export async function GET(req: NextRequest) { try {
+    await dbConnect();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+    if (!id) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'Missing id' 
+        }, 
+        { status: 400 }
+      );
+    }
+    
     const users = await User.aggregate([
       { $match: { hobby: new mongoose.Types.ObjectId(id) } },
       {
@@ -58,8 +64,23 @@ export async function GET(req: NextRequest) {
         },
       },
     ]);
-    return NextResponse.json({ success: true, users }, { status: 200 });
+    
+    return NextResponse.json(
+      { 
+        success: true, 
+        data: users,
+        count: users.length 
+      }, 
+      { status: 200 }
+    );
   } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+    console.error("Error fetching users by hobby:", error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        message: "Failed to fetch users by hobby" 
+      }, 
+      { status: 500 }
+    );
   }
 } 
