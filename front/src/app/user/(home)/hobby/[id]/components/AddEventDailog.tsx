@@ -40,9 +40,10 @@ const formSchema = z.object({
 interface AddEventDialogProps {
   hobbyId: string;
   onEventCreated?: () => void;
+  currentUser?: any;
 }
 
-export function AddEventDialog({ hobbyId, onEventCreated }: AddEventDialogProps) {
+export function AddEventDialog({ hobbyId, onEventCreated, currentUser }: AddEventDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -63,10 +64,21 @@ export function AddEventDialog({ hobbyId, onEventCreated }: AddEventDialogProps)
     try {
       setIsLoading(true);
       
+      let user = currentUser;
+      if (!user) {
+        const currentUserString = localStorage.getItem("currentUser");
+        if (!currentUserString) {
+          toast.error("Хэрэглэгчийн мэдээлэл олдсонгүй");
+          return;
+        }
+        user = JSON.parse(currentUserString);
+      }
+      
       const eventData = {
         ...data,
         maxParticipants: parseInt(data.maxParticipants),
         eventDate: new Date(data.eventDate).toISOString(),
+        organizer: user.name,
       };
 
       const response = await axios.post('/api/event', eventData);

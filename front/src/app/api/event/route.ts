@@ -108,9 +108,19 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    if (!body.organizer || typeof body.organizer !== "string") {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Organizer is required and must be a string",
+        },
+        { status: 400 },
+      )
+    }
+
     const eventData = {
       ...body,
-      participants: body.participants || [],
+      participants: [body.organizer], // Automatically add organizer as first participant
       createdAt: new Date(),
       updatedAt: new Date(),
     }

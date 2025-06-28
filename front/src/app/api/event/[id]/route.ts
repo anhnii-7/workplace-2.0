@@ -176,4 +176,121 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       { status: 500 },
     )
   }
+}
+
+// PATCH /api/event/[id]/join - Join an event
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    await dbConnect()
+    const { id } = await params
+    const body = await req.json()
+
+    if (!isValidObjectId(id)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid event ID format",
+        },
+        { status: 400 },
+      )
+    }
+
+    const event = await Event.findById(id)
+    if (!event) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Event not found",
+        },
+        { status: 404 },
+      )
+    }
+
+    // Check if action is join or leave
+    const { action, userName } = body
+
+    if (!userName || typeof userName !== "string") {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "User name is required",
+        },
+        { status: 400 },
+      )
+    }
+
+    let updatedEvent
+
+    if (action === "join") {
+      // Check if event is full
+      if (event.participants.length >= event.maxParticipants) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Event is full",
+          },
+          { status: 400 },
+        )
+      }
+
+      // Check if user is already a participant
+      if (event.participants.includes(userName)) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "User is already a participant",
+          },
+          { status: 400 },
+        )
+      }
+
+      // Add user to participants
+      updatedEvent = await Event.findByIdAndUpdate(
+        id,
+        { 
+          $push: { participants: userName },
+          updatedAt: new Date()
+        },
+        { new: true }
+      ).populate('eventType', 'title image')
+
+    } else if (action === "leave") {
+      // Remove user from participants
+      updatedEvent = await Event.findByIdAndUpdate(
+        id,
+        { 
+          $pull: { participants: userName },
+          updatedAt: new Date()
+        },
+        { new: true }
+      ).populate('eventType', 'title image')
+
+    } else {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid action. Use 'join' or 'leave'",
+        },
+        { status: 400 },
+      )
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: updatedEvent,
+        message: `Successfully ${action === "join" ? "joined" : "left"} the event`,
+      },
+      { status: 200 },
+    )
+  } catch (error: any) {
+    console.error("Error updating event participation:", error)
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to update event participation",
+      },
+      { status: 500 },
+    )
+  }
 } 
