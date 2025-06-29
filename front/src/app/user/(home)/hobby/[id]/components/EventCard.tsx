@@ -165,8 +165,8 @@ export const EventCard = ({ event, onEdit, onEventUpdated }: EventCardProps) => 
           isJoined 
             ? "bg-green-500 hover:bg-green-600 text-white" 
             : isFull 
-              ? "bg-gray-400 cursor-not-allowed" 
-              : "bg-blue-400 text-white hover:bg-blue-500 cursor-pointer"
+            ? "bg-gray-400 cursor-not-allowed" 
+            : "bg-blue-400 text-white hover:bg-blue-500 cursor-pointer"
         }`}
         disabled={isFull && !isJoined || isLoading}
         onClick={handleJoinLeave}

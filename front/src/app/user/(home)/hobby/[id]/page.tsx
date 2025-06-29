@@ -283,17 +283,10 @@ const handleSendRequest = async (toUserId: string) => {
         </div>
       </div>
 
-      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle className="text-center">Амжилттай</DialogTitle>
-            <DialogDescription className="text-center">
-              <Image src={`/alertpinguin.png`} alt="image" width={400} height={400}></Image>
-              Хүсэлт амжилттай илгээгдлээ!
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+      <SuccessDialog
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+      />
     </div>
   )
 }

@@ -170,7 +170,7 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
 
       if (responseData.success) {
         // Update local state
-        setJoinedEvents((prev) => {
+    setJoinedEvents((prev) => {
           if (isCurrentlyJoined) {
             return prev.filter((id) => id !== eventId);
           } else {
