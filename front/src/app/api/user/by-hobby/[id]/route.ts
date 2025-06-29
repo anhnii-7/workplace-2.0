@@ -3,14 +3,11 @@ import User from "@/lib/models/user";
 import { dbConnect } from "@/lib/connection";
 import mongoose from "mongoose";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, context: { params: { id: string } }) {
+    const params = await context.params;
+    const userId = params.id;
   try {
     await dbConnect();
-
-    const userId = params.id;
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return NextResponse.json(
