@@ -1,120 +1,37 @@
 "use client";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import { MapPin, User } from "lucide-react";
+import { useEffect, useState } from "react";
+import Card from "./Card";
 
 export const ResBody = () => {
-    return(
-        <div className="grid grid-cols-2 gap-5">
-            <div className="bg-blue-200 p-6 rounded-[8px] flex flex-col gap-10">
-              <div>
-                <Badge className="font-semibold text-xs text-white bg-cyan-700 leading-4 flex justify-self-end">
-                  Зөвлөгөө
-                </Badge>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white rounded-[8px] px-6 py-3 flex items-center gap-4">
-                  <Avatar className="w-[64px] h-[64px]">
-                    <AvatarImage src={"AG"} />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col ">
-                    <h1 className="text-slate-800 font-semibold leading-7 text-lg">
-                      Г. Гансүх
-                    </h1>
-                  </div>
-                </div>
-                <div className="bg-white rounded-[8px] p-3 flex flex-col gap-2">
-                  <div className="flex gap-3 ">
-                    <User className="w-5 h-5" />{" "}
-                    <p className="text-slate-700 text-base font-medium leading-6 ">
-                      Ахлах дизайнер
-                    </p>
-                  </div>
-                  <div className="flex gap-3 ">
-                    {" "}
-                    <MapPin className="w-5 h-5" />{" "}
-                    <p className="text-slate-700 text-base font-medium leading-6">
-                      Хөгжүүлэлтийн хэлтэс
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <Textarea
-                className="bg-white"
-                defaultValue="Шинээр ажилд орсонд нь баяр хүргэе. Манай багт тавтай морил.
-                Ахлах дизайнерын хувьд хамтран ажиллах болсондоо баяртай байна.
-                Шинэ хамт олондоо дасан зохицох үүднээс багийн ахлагчтай
-                хувьчилсал уулзалт хийж дотно яриа болон хувьчилсан зөвлөгөө
-                авах зэрэг олон асуудлаар хандаж уулзах боломжтой шүү."
-              ></Textarea>
-              <div className="grid grid-cols-2 gap-5">
-                <button className="bg-white text-blue-400 flex px-4 py-2 items-center rounded-md border-1 border-blue-400 hover:bg-blue-50 cursor-pointer  justify-center">
-                  Боломжит өдрийн хүсэлт илгээх
-                </button>
-                <button
-                  className="bg-blue-400 text-white flex justify-center px-4 py-2 items-center  rounded-md border-1 border-blue-500 hover:bg-blue-500 cursor-pointer"
-                  type="submit"
-                >
-                  Зөвшөөрөх
-                </button>
-              </div>
-            </div>
-            <div className="bg-blue-100 p-6 rounded-[8px] flex flex-col gap-10">
-              <div>
-                <Badge className="font-semibold text-xs text-white bg-cyan-700 leading-4 flex justify-self-end">
-                  Зөвлөгөө
-                </Badge>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white rounded-[8px] px-6 py-3 flex items-center gap-4">
-                  <Avatar className="w-[64px] h-[64px]">
-                    <AvatarImage src={"AG"} />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col ">
-                    <h1 className="text-slate-800 font-semibold leading-7 text-lg">
-                      Д. Болдбаатар
-                    </h1>
-                  </div>
-                </div>
-                <div className="bg-white rounded-[8px] p-3 flex flex-col gap-2">
-                  <div className="flex gap-3 ">
-                    <User className="w-5 h-5" />{" "}
-                    <p className="text-slate-700 text-base font-medium leading-6 ">
-                      Ерөнхий менежер
-                    </p>
-                  </div>
-                  <div className="flex gap-3 ">
-                    {" "}
-                    <MapPin className="w-5 h-5" />{" "}
-                    <p className="text-slate-700 text-base font-medium leading-6">
-                      Хөгжүүлэлтийн хэлтэс
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <Textarea
-                className="bg-white"
-                defaultValue="Шинээр ажилд орсонд нь баяр хүргэе. Манай багт тавтай морил.
-                Ахлах дизайнерын хувьд хамтран ажиллах болсондоо баяртай байна.
-                Шинэ хамт олондоо дасан зохицох үүднээс багийн ахлагчтай
-                хувьчилсал уулзалт хийж дотно яриа болон хувьчилсан зөвлөгөө
-                авах зэрэг олон асуудлаар хандаж уулзах боломжтой шүү."
-              ></Textarea>
-              <div className="grid grid-cols-2 gap-5">
-                <button className="bg-white text-blue-400 flex px-4 py-2 items-center rounded-md border-1 border-blue-400 hover:bg-blue-50 cursor-pointer  justify-center">
-                  Боломжит өдрийн хүсэлт илгээх
-                </button>
-                <button
-                  className="bg-blue-400 text-white flex justify-center px-4 py-2 items-center  rounded-md border-1 border-blue-500 hover:bg-blue-500 cursor-pointer"
-                  type="submit"
-                >
-                  Зөвшөөрөх
-                </button>
-              </div>
-            </div>
-        </div>
-    )}
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+    setCurrentUser(user);
+    if (user?._id) {
+      fetch(`/api/notification?to=${user._id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          // Only show notifications where to === current user
+          setNotifications(data.data.filter((n: any) => n.to === user._id));
+        });
+    }
+  }, []);
+  console.log(notifications[3] , "res")
+  if (!currentUser) return null;
+  console.log(notifications)
+  return (
+    <div className="grid grid-cols-2 gap-5 mx-[60px]">
+      {notifications.length === 0 && (
+        <div className="col-span-2 text-center text-gray-400">Ирсэн хүсэлт алга байна</div>
+      )}
+      {notifications.map((notif) => {
+        if (currentUser._id === notif.to) {
+          return <Card notif={notif} direction="recieved" key={notif._id}/>;
+        }
+        return null;
+      })}
+    </div>
+  );
+};

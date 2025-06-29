@@ -112,7 +112,7 @@ export default function WishPage() {
     message: "",
     selectedDate: "",
   });
-  console.log("Requestssss", requests)
+  // console.log("Requestssss", requests)
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"send" | "received">("send");
   const [selectedMentor, setSelectedMentor] = useState<User | null>(null);
@@ -213,7 +213,14 @@ export default function WishPage() {
       fetchRequests(currentUser._id);
       toast.success("Request sent successfully");
       setIsDialogOpen(false);
-      return data;
+      const notificationResponse = await axios.post("/api/notification", {
+        from: currentUser._id,
+        to: toUserId,
+        type: "Request",
+        typeId: response.data.request._id
+      });
+      const notification = notificationResponse.data as {success: boolean; data: Request; message: string}
+      return { data , notification }
     } catch (error: any) {
       console.error("Error creating request:", error);
       toast.error(error.response?.data?.message || "Failed to send request");
