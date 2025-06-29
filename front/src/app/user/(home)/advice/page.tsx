@@ -179,7 +179,7 @@ export default function WishPage() {
       const response = await axios.get("/api/request", {
         params: { userId, type: "all" }
       });
-
+      console.log(response , "RESPONSE ")
       
       const processedRequests = {
         sent: response.data.requests.filter(

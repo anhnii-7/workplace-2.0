@@ -79,7 +79,7 @@ export default function HobbyInsertPage() {
       
       try {
         const response = await axios.get(`/api/request?userId=${currentUser._id}&type=sent&status=pending`);
-        const requests = response.data.requests || [];
+        const requests = (response.data as any)?.data?.requests || [];
         
         const pendingMap = requests.reduce((acc: Record<string, boolean>, request: any) => {
           acc[request.to._id] = true;
@@ -106,7 +106,7 @@ export default function HobbyInsertPage() {
       const currentUser = JSON.parse(currentUserString);
       setCurrentUser(currentUser);
 
-      const filteredUsers = response.data.data.filter((user: User) => user._id !== currentUser._id);
+      const filteredUsers = (response.data as any).data.filter((user: User) => user._id !== currentUser._id);
       setUsers(filteredUsers);
       // setFilteredUsers(filteredUsers);
       const hobbyResponse = await axios.get('/api/hobby');
