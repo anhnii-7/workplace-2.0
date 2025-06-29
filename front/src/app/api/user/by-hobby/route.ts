@@ -3,6 +3,114 @@ import User from '../../../../lib/models/user';
 import { dbConnect } from '../../../../lib/connection';
 import mongoose from 'mongoose';
 
+export async function GET(req: NextRequest) {
+  try {
+    await dbConnect();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+    if (!id) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Missing id'
+        },
+        { status: 400 }
+      );
+    }
+
+    const users = await User.aggregate([
+      { $match: { hobby: new mongoose.Types.ObjectId(id) } },
+      {
+        $lookup: {
+          from: 'hobbies',
+          localField: 'hobby',
+          foreignField: '_id',
+          as: 'hobbyInfo',
+        },
+      },
+      {
+        $lookup: {
+          from: 'departments',
+          localField: 'department',
+          foreignField: '_id',
+          as: 'departmentInfo',
+          pipeline: [
+            {
+              $lookup: {
+                from: 'jobtitles',
+                localField: 'jobTitle',
+                foreignField: '_id',
+                as: 'jobTitleInfo',
+              },
+            },
+          ],
+        },
+      },
+      // {
+      //   $unwind: {
+      //     path: '$hobbyInfo',
+      //     preserveNullAndEmptyArrays: true,
+      //   },
+      // },
+      {
+        $unwind: {
+          path: '$departmentInfo',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $unwind: {
+          path: '$departmentInfo.jobTitleInfo',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      // Add this group stage to remove duplicates
+      {
+        $group: {
+          _id: '$_id',
+          doc: { $first: '$$ROOT' }
+        }
+      },
+      {
+        $replaceRoot: {
+          newRoot: '$doc'
+        }
+      },
+      {
+        $addFields: {
+          // Add a field to show first 2 hobbies
+          displayedHobbies: { $slice: ["$hobbyInfo", 2] },
+          // Count of additional hobbies
+          additionalHobbiesCount: {
+            $cond: {
+              if: { $isArray: "$hobbyInfo" },
+              then: { $subtract: [{ $size: "$hobbyInfo" }, 2] },
+              else: 0
+            }
+          }
+        }
+      }
+    ]);
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: users,
+        count: users.length
+      },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error("Error fetching users by hobby:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to fetch users by hobby"
+      },
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(req: NextRequest) {
   await dbConnect();
@@ -30,7 +138,7 @@ export async function POST(req: NextRequest) {
 
     // Hobby field-ийн төрлийг шалгаж, зөв хэлбэрт оруулах
     let currentHobbies: mongoose.Types.ObjectId[] = [];
-    
+
     if (Array.isArray(user.hobby)) {
       // Хэрвээ аль хэдийн массив бол
       currentHobbies = user.hobby;
@@ -59,8 +167,8 @@ export async function POST(req: NextRequest) {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { $set: { hobby: currentHobbies } },
-      { 
-        new: true, 
+      {
+        new: true,
         runValidators: true,
         select: '-password'
       }

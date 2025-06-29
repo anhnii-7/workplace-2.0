@@ -18,33 +18,40 @@ export async function GET(
     // params-г await хийх шаардлагатай
     const { id: userId } = await context.params;
 
-    // ObjectId хэлбэр зөв эсэх шалгах
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return NextResponse.json({ 
-        message: 'Invalid userId format' 
-      }, { status: 400 });
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid or missing user ID" },
+        { status: 400 }
+      );
     }
 
-    // Хэрэглэгчийн хоббиудыг олох
-    const user = await User.findById(userId)
-      .select('hobby')
-      .populate('hobby', 'name title image');
+    const result = await User.aggregate([
+      {
+        $match: { _id: new mongoose.Types.ObjectId(userId) },
+      },
+      {
+        $lookup: {
+          from: "hobbies", // Must match the actual collection name
+          localField: "hobby", // Ensure this matches the field in your User schema
+          foreignField: "_id",
+          as: "hobbies",
+        },
+      }
+    ]);
 
-    if (!user) {
-      return NextResponse.json({ 
-        message: 'User not found' 
-      }, { status: 404 });
+    if (!result || result.length === 0) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 }
+      );
     }
 
-    // Хобби массив хэлбэрт буцаах
-    const hobbies = Array.isArray(user.hobby) ? user.hobby : (user.hobby ? [user.hobby] : []);
+    // const hobbies = result[0].hobbies || [];
 
-    return NextResponse.json({
-      success: true,
-      hobbies: hobbies,
-      count: hobbies.length
-    }, { status: 200 });
-
+    return NextResponse.json(
+      { success: true, data: result },
+      { status: 200 }
+    );
   } catch (error: any) {
     console.error('Error fetching user hobbies:', error);
     return NextResponse.json({
