@@ -19,6 +19,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import Link from "next/link"
+import SuccessDialog from "./components/SuccessDialog"
 
 
 export type User = {
