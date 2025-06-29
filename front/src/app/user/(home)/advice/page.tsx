@@ -288,7 +288,7 @@ export default function WishPage() {
   }
 
   return (
-    <div className="flex gap-6 mt-[40px] p-4 ">
+    <div className="flex mt-[40px] p-4 place-self-center gap-50">
       <div className="flex-1 ">
         <div className="flex justify-between items-center mb-6 ">
           <h1
