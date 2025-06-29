@@ -1,5 +1,5 @@
 "use client";
-import { Bell, Handshake, MessageSquare, Plus } from "lucide-react";
+import { Bell, Handshake, LucidePartyPopper, MessageSquare, Plus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
@@ -33,7 +33,7 @@ const items = [
       {
         title: "Эвэнт",
         url: "/user/event",
-        icon: Plus,
+        icon: LucidePartyPopper,
       },
       {
         title: "Мэдэгдэл",
@@ -61,16 +61,16 @@ export function AppSidebar() {
   // console.log(currentUser, "currentuser")
 
   return (
-    <Sidebar>
-      <SidebarContent>
+    <Sidebar className="border-none">
+      <SidebarContent className="rounded-[0px_24px_24px_0px] overflow-hidden px-3">
         <SidebarGroup>
-          <Link href="/user" className="no-underline">
+          <Link href="/user" className="no-underline shadow-[0px_0px_4px_2px_rgba(125,168,225,0.12)]">
             <SidebarGroupLabel className="flex items-center gap-3 my-10  ">
               <Avatar className="w-[60px] h-[60px] rounded-md">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <div>
+              <div className="">
                 <h1 className="text-slate-700 font-semibold leading-5 text-base">
                   {currentUser?.name}
                 </h1>
@@ -94,12 +94,12 @@ export function AppSidebar() {
 
                   return (
                     <SidebarMenuItem key={index}>
-                      <SidebarMenuButton asChild className="rounded-full">
+                      <SidebarMenuButton asChild className="rounded-lg">
                         <a
                           href={menuItem.url}
                           className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors duration-150 ${
                             isActive
-                              ? "text-blue-900 bg-blue-200"
+                              ? "text-blue-900 bg-[#B8D5ED]"
                               : "text-slate-700 bg-white hover:bg-slate-100"
                           }`}
                         >
