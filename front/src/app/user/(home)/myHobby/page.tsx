@@ -1,92 +1,193 @@
 "use client"
 
-import { useEffect, useState } from "react";
-import { Hobby } from "../hobby/page";
-import axios from "axios";
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
-import { DialogDemo } from "../components/addHobby";
-import { AddEventCard } from "../components/AddEventCard";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { useParams, useRouter } from "next/navigation"
+import { toast } from "sonner"
+import { SuccessDialog } from "../../components/SuccessDialog"
 
-const myHobby = () => {
-    const [myHobbies, setMyHobbies] = useState<Hobby[]>([]);
-    const [hobbies, setHobbies] = useState<Hobby[]>([]);
-
-    const getMyHobbies = async () => {
-        try {
-            const res = localStorage.getItem("currentUser") as string;
-            if (res) {
-                const user = JSON.parse(res);
-                setMyHobbies(user.hobbyInfo || []);
-            }
-        } catch (error) {
-            console.error("Error getting user hobbies:", error);
-            setMyHobbies([]);
-        }
-    };
-    
-    const getHobbies = async () => {
-        try {
-            const response = await axios.get('/api/hobby');
-            const data = response.data as { success: boolean; data: Hobby[]; message?: string };
-            console.log(data, "hobby response");
-            
-            if (data.success) {
-                setHobbies(data.data);
-            } else {
-                console.error("Failed to fetch hobbies:", data.message);
-                setHobbies([]);
-            }
-        } catch (error) {
-            console.error("Error fetching hobbies:", error);
-            setHobbies([]);
-        }
-    }
-
-    useEffect(() => {
-        getMyHobbies();
-        getHobbies();
-    }, []);
-
-    return (
-        <div>
-            <div className="text-center py-10 flex justify-between items-center w-full max-w-5xl mx-auto">
-                <h1 className="text-slate-800 text-3xl font-semibold">
-                    Олуулаа илүү хөгжилтэй
-                </h1>
-                <div className="ml-auto">
-                    <AddEventCard onClick={() => {}} />
-                </div>
-            </div>
-            <div className="grid grid-cols-4 gap-5 w-[868px] place-self-center items-center py-24">
-                {myHobbies.length > 0 ? (
-                    myHobbies.map((hobby) => {
-                        return (
-                            <Card className="p-0 w-[202px] h-[288px] flex flex-col gap-3" key={hobby._id}>
-                                <div className=" w-full rounded-3xl h-[224px] bg-white overflow-hidden relative">
-                                    <Image
-                                        src={hobby.image}
-                                        fill={true}
-                                        alt="sport"
-                                        className="place-self-center"
-                                        style={{ objectFit: "contain" }}
-                                    />
-                                </div>
-                                <p className="bg-slate-50 text-center rounded-b-2xl text-lg py-3 text-slate-800">
-                                    {hobby.title}
-                                </p>
-                            </Card>
-                        );
-                    })
-                ) : (
-                    <div className="col-span-4 text-center py-8">
-                        <p className="text-gray-500">Та одоогоор хобби сонгоогүй байна.</p>
-                    </div>
-                )}
-                <DialogDemo hobbies={hobbies} />
-            </div>
-        </div>
-    )
+export type User = {
+  _id: string
+  email: string
+  name: string
+  lastName: string
+  role: "new" | "old" | "mentor",
+  password: string
+  hobby: string
+  experience: string
+  hobbyInfo: HobbyInfo
+  department: string
+  departmentInfo: DepartmentInfo
+  availableSchedules?: string[]
+  createdAt?: Date
+  updatedAt?: Date
 }
 
-export default myHobby
+export type JobTitleInfo = {
+  _id: string
+  title: string
+}
+
+export type DepartmentInfo = {
+  id: string
+  jobTitle: string
+  jobTitleInfo: JobTitleInfo
+  title: string
+}
+
+export type HobbyInfo = {
+  _id: string,
+  title: string,
+  image: string
+}
+
+export default function HobbyInsertPage() {
+  const router = useRouter();
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [users, setUsers] = useState<User[]>([]);
+  const [hobbies, setHobbies] = useState<HobbyInfo[]>([])
+  const [currentUser, setCurrentUser] = useState<any>(null)
+  const [loadingUsers, setLoadingUsers] = useState<Record<string, boolean>>({});
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const params = useParams();
+
+  useEffect(() => {
+    const getUsers = async () => {
+      const currentUserString = localStorage.getItem("currentUser");
+      if (!currentUserString) {
+        router.push("/login");
+        return;
+      }
+      const currentUser = JSON.parse(currentUserString);
+      setCurrentUser(currentUser);
+
+      const response = await axios.get(`/api/user/by-hobby?id=${params.id}`);
+      const filteredUsers = response.data.data.filter((user: User) => user._id !== currentUser._id);
+      setUsers(filteredUsers);
+    }
+    getUsers();
+  }, [params.id, router]);
+
+  useEffect(() => {
+    const getHobbies = async () => {
+      const response = await axios.get('/api/hobby');
+      setHobbies(response.data.data)
+    }
+    getHobbies();
+  }, []);
+
+  const handleSendRequest = async (toUserId: string) => {
+    setLoadingUsers(prev => ({ ...prev, [toUserId]: true }));
+    try {
+      await axios.post("/api/request", {
+        from: currentUser._id,
+        to: toUserId,
+        message: "Сонирхлоороо холбогдох хүсэлт илгээж байна",
+        status: "pending", 
+        isActive: true    
+      });
+      setShowSuccessDialog(true);
+      setTimeout(() => {
+        setShowSuccessDialog(false);
+      }, 3000);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Хүсэлт илгээхэд алдаа гарлаа", {
+        position: "top-center",
+        duration: 3000,
+      });
+    } finally {
+      setLoadingUsers(prev => ({ ...prev, [toUserId]: false }));
+    }
+  };
+
+  return (
+    <div className="min-h-screen w-full p-6">
+      <div className="w-full">
+        <h1 className="text-3xl font-semibold text-gray-800 text-center mb-8">
+          Сонирхлоороо нэгдэн цагийг хамтдаа өнгөрүүлцгээе
+        </h1>
+
+        <div className="mb-8">
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="w-48 bg-blue-50 border-blue-200">
+              <SelectValue placeholder='Сонирхол сонгох' />
+            </SelectTrigger>
+            <SelectContent>
+              {hobbies.map(hobby => (
+                <SelectItem value={hobby.title} key={hobby._id}>{hobby.title}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 py-3">
+          {users.map((user) => (
+            <Card key={user._id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
+              <CardContent className="p-4">
+                <div className="flex flex-col items-center">
+                  <Avatar className="w-24 h-24 mb-3">
+                    <AvatarImage src={`/avatars/${user._id}.jpg`} alt={user.name} />
+                    <AvatarFallback className="bg-gray-200 text-gray-600 text-xl">
+                      {user.lastName.slice(0, 1)}{user.name.slice(0, 1)}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div className="flex flex-col gap-1 py-[6px] text-center w-full">
+                    <div className="w-full">
+                      <h3 className="font-semibold text-gray-800 text-lg">
+                        {user.lastName.slice(0, 1)}.{user.name}
+                      </h3>
+                    </div>
+
+                    <div className="w-full">
+                      <span className="text-sm font-normal text-gray-600">
+                        {user.departmentInfo?.jobTitleInfo?.title || "Алба байхгүй"}
+                      </span>
+                    </div>
+
+                    <div className="w-full">
+                      <span className="text-sm font-normal text-gray-500">
+                        {user.departmentInfo?.title || "Хэлтэс байхгүй"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-2 w-full my-3">
+                    <Badge
+                      variant="secondary"
+                      className="flex w-full rounded-full py-1 px-3 text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer transition-colors"
+                    >
+                      {user.hobbyInfo?.title || "Сонирхол байхгүй"}
+                    </Badge>
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full bg-blue-50 text-sm text-blue-600 border-blue-200 py-2 rounded-md hover:bg-blue-100 transition-colors"
+                    onClick={() => handleSendRequest(user._id)}
+                    disabled={loadingUsers[user._id]}
+                  >
+                    {loadingUsers[user._id] ? "Илгээж байна..." : "Хүсэлт илгээх"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      <SuccessDialog
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+        title="Хүсэлт амжилттай илгээгдлээ!"
+        message="Таны хүсэлтийг хүлээн авлаа. Хариу ирэхэд мэдэгдэх болно."
+      />
+    </div>
+  )
+}
