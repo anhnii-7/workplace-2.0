@@ -51,6 +51,7 @@ export type DepartmentInfo = {
 }
 
 export type HobbyInfo = {
+  slice(arg0: number, arg1: number): unknown
   _id: string,
   title: string,
   image: string
@@ -65,9 +66,10 @@ export default function HobbyInsertPage() {
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [checkUserTitle, setCheckUserTitle] = useState<string>("all");
   const [currentHobby, setCurrentHobby] = useState<HobbyInfo | null>(null);
-  console.log("checkUserTitle", setCheckUserTitle);
-  console.log("filteredUsers", filteredUsers);
-  console.log("selectedCategory", selectedCategory);
+  // console.log("USERS", users);
+  // console.log("checkUserTitle", setCheckUserTitle);
+  console.log("filters", filteredUsers);
+  // console.log("selectedCategory", selectedCategory);
   const [loadingUsers, setLoadingUsers] = useState<Record<string, boolean>>({});
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [pendingRequests, setPendingRequests] = useState<Record<string, boolean>>({});
@@ -98,6 +100,7 @@ export default function HobbyInsertPage() {
   useEffect(() => {
     const getUsers = async () => {
       const response = await axios.get(`/api/user/by-hobby?id=${params.id}`);
+      console.log(response.data.data, "Users Data");
       const currentUserString = localStorage.getItem("currentUser");
       if (!currentUserString) {
         router.push("/login");
@@ -134,16 +137,16 @@ export default function HobbyInsertPage() {
   useEffect(() => {
     // console.log("FILTERED USERS", selectedCategory);
     // console.log("USERS", users);
-    if (selectedCategory === "all") {
-      setFilteredUsers(users);
-    } else {
-      // const filtered = users.filter(user =>
-      //  console.log(user.hobbyInfo?.title === selectedCategory)
-      // );
-      console.log(users, "Naraa");
+    console.log(users.filter(u => u.hobby.includes(params.id as string)), "Hobby Filter Check");
+    setFilteredUsers(users);
+
+      // setFilteredUsers(users);
+
+      // console.log(users, "Naraa");
       // setFilteredUsers(filtered);
-    }
   }, [selectedCategory, users]);
+
+  // console.log(users.filter(u => u.hobby.includes(selectedCategory)), "Hobby Filter Check");
 
   const handleHobbyChange = (hobbyId: string) => {
     if (hobbyId === "all") {
@@ -247,8 +250,11 @@ const handleSendRequest = async (toUserId: string) => {
                       <Badge
                         variant="secondary"
                         className="flex w-full rounded-full py-1 px-3 text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer transition-colors"
-                      >
-                        {user.hobbyInfo?.title || "Сонирхол байхгүй"}
+                      >{Array.isArray(user.hobbyInfo)
+                        ? (user.hobbyInfo as HobbyInfo[]).slice(0, 2).map((hobby: HobbyInfo) => (<div key={hobby._id}>{hobby.title}</div>))
+                        : <div>{(user.hobbyInfo as HobbyInfo)?.title || "Сонирхол байхгүй"}</div>
+                      }
+                        {/* {user.hobbyInfo?.title || "Сонирхол байхгүй"} */}
                       </Badge>
                     </div>
 

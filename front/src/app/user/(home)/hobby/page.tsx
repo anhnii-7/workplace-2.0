@@ -23,7 +23,6 @@ export default function WishPage() {
       const response = await axios.get('/api/hobby');
       const data = response.data as { success: boolean; data: Hobby[]; message?: string };
       console.log(response, "hobbies");
-
       if (data.success) {
         setHobbies(data.data);
       } else {
