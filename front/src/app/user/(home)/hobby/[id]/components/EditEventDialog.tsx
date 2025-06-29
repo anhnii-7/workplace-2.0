@@ -75,6 +75,16 @@ interface EditEventDialogProps {
 export function EditEventDialog({ event, open, onClose, onEventUpdated }: EditEventDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [hobbies, setHobbies] = useState<Hobby[]>([]);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    // Get current user from localStorage
+    const currentUserString = localStorage.getItem("currentUser");
+    if (currentUserString) {
+      const user = JSON.parse(currentUserString);
+      setCurrentUser(user);
+    }
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -109,6 +119,13 @@ export function EditEventDialog({ event, open, onClose, onEventUpdated }: EditEv
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (!event) return;
+    
+    // Check if current user is the organizer
+    if (!currentUser || currentUser.name !== event.organizer) {
+      toast.error("Зөвхөн эвентийн зохион байгуулагч засвар хийх боломжтой");
+      return;
+    }
+
     try {
       setIsLoading(true);
       const eventData = {
@@ -137,7 +154,19 @@ export function EditEventDialog({ event, open, onClose, onEventUpdated }: EditEv
       <DialogContent className="w-full">
         <DialogHeader>
           <DialogTitle>Эвент засах</DialogTitle>
-          <DialogDescription>Эвентийн мэдээллийг засварлана уу.</DialogDescription>
+          <DialogDescription>
+            Эвентийн мэдээллийг засварлана уу.
+            {event && (
+              <div className="mt-2 text-sm text-gray-600">
+                <div>Зохион байгуулагч: {event.organizer}</div>
+                {currentUser && currentUser.name === event.organizer ? (
+                  <div className="text-green-600">✓ Та энэ эвентийг засварлах боломжтой</div>
+                ) : (
+                  <div className="text-red-600">✗ Зөвхөн зохион байгуулагч засвар хийх боломжтой</div>
+                )}
+              </div>
+            )}
+          </DialogDescription>
         </DialogHeader>
         <div>
           <Form {...form}>
@@ -149,7 +178,11 @@ export function EditEventDialog({ event, open, onClose, onEventUpdated }: EditEv
                   <FormItem>
                     <FormLabel>Эвентийн нэр</FormLabel>
                     <FormControl>
-                      <Input placeholder="Энд бичиж оруулна уу ..." {...field} />
+                      <Input 
+                        placeholder="Энд бичиж оруулна уу ..." 
+                        {...field} 
+                        disabled={!currentUser || !event || currentUser.name !== event.organizer}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -162,7 +195,11 @@ export function EditEventDialog({ event, open, onClose, onEventUpdated }: EditEv
                   <FormItem>
                     <FormLabel>Төрөл</FormLabel>
                     <FormControl>
-                      <Select value={field.value} onValueChange={field.onChange}>
+                      <Select 
+                        value={field.value} 
+                        onValueChange={field.onChange}
+                        disabled={!currentUser || !event || currentUser.name !== event.organizer}
+                      >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Төрөл сонгох" />
                         </SelectTrigger>
@@ -186,7 +223,11 @@ export function EditEventDialog({ event, open, onClose, onEventUpdated }: EditEv
                   <FormItem>
                     <FormLabel>Өдөр</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input 
+                        type="date" 
+                        {...field} 
+                        disabled={!currentUser || !event || currentUser.name !== event.organizer}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -199,7 +240,11 @@ export function EditEventDialog({ event, open, onClose, onEventUpdated }: EditEv
                   <FormItem>
                     <FormLabel>Цаг</FormLabel>
                     <FormControl>
-                      <Input type="time" {...field} />
+                      <Input 
+                        type="time" 
+                        {...field} 
+                        disabled={!currentUser || !event || currentUser.name !== event.organizer}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -212,7 +257,11 @@ export function EditEventDialog({ event, open, onClose, onEventUpdated }: EditEv
                   <FormItem>
                     <FormLabel>Хаяг</FormLabel>
                     <FormControl>
-                      <Input placeholder="Энд бичиж оруулна уу ..." {...field} />
+                      <Input 
+                        placeholder="Энд бичиж оруулна уу ..." 
+                        {...field} 
+                        disabled={!currentUser || !event || currentUser.name !== event.organizer}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -225,7 +274,13 @@ export function EditEventDialog({ event, open, onClose, onEventUpdated }: EditEv
                   <FormItem>
                     <FormLabel>Хүний хязгаар</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="20" min="1" {...field} />
+                      <Input 
+                        type="number" 
+                        placeholder="20" 
+                        min="1" 
+                        {...field} 
+                        disabled={!currentUser || !event || currentUser.name !== event.organizer}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -238,7 +293,11 @@ export function EditEventDialog({ event, open, onClose, onEventUpdated }: EditEv
                   <FormItem>
                     <FormLabel>Тайлбар</FormLabel>
                     <FormControl>
-                      <Input placeholder="Асуух зүйл байвал > 99123489" {...field} />
+                      <Input 
+                        placeholder="Асуух зүйл байвал > 99123489" 
+                        {...field} 
+                        disabled={!currentUser || !event || currentUser.name !== event.organizer}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -257,7 +316,7 @@ export function EditEventDialog({ event, open, onClose, onEventUpdated }: EditEv
                 <Button
                   type="submit"
                   className="bg-blue-400 text-white flex justify-center px-4 py-2 items-center w-[210px] rounded-md border-1 hover:bg-blue-500 cursor-pointer"
-                  disabled={isLoading}
+                  disabled={isLoading || !currentUser || !event || currentUser.name !== event.organizer}
                 >
                   {isLoading ? "Засаж байна..." : "Хадгалах"}
                 </Button>

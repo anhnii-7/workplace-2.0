@@ -22,7 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -41,17 +41,43 @@ interface AddEventDialogProps {
   hobbyId: string;
   onEventCreated?: () => void;
   currentUser?: any;
+  requireHobbySelection?: boolean;
+  allHobbies?: { _id: string; title: string }[];
+  onHobbyChange?: (hobbyId: string) => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function AddEventDialog({ hobbyId, onEventCreated, currentUser }: AddEventDialogProps) {
+export function AddEventDialog({
+  hobbyId,
+  onEventCreated,
+  currentUser,
+  requireHobbySelection = false,
+  allHobbies = [],
+  onHobbyChange,
+  open,
+  onOpenChange,
+}: AddEventDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedHobby, setSelectedHobby] = useState(hobbyId || "");
+  const controlledOpen = open !== undefined && onOpenChange !== undefined;
+
+  // Update selectedHobby if hobbyId prop changes
+  useEffect(() => {
+    setSelectedHobby(hobbyId || "");
+  }, [hobbyId]);
+
+  // Notify parent if hobby changes
+  useEffect(() => {
+    if (onHobbyChange) onHobbyChange(selectedHobby);
+  }, [selectedHobby]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      eventType: hobbyId,
+      eventType: selectedHobby,
       eventDate: "",
       eventTime: "",
       eventLocation: "",
@@ -60,7 +86,16 @@ export function AddEventDialog({ hobbyId, onEventCreated, currentUser }: AddEven
     },
   });
 
+  // Update eventType in form if selectedHobby changes
+  useEffect(() => {
+    form.setValue("eventType", selectedHobby);
+  }, [selectedHobby]);
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    if (requireHobbySelection && !selectedHobby) {
+      toast.error("Хобби сонгоно уу");
+      return;
+    }
     try {
       setIsLoading(true);
       
@@ -76,6 +111,7 @@ export function AddEventDialog({ hobbyId, onEventCreated, currentUser }: AddEven
       
       const eventData = {
         ...data,
+        eventType: selectedHobby,
         maxParticipants: parseInt(data.maxParticipants),
         eventDate: new Date(data.eventDate).toISOString(),
         organizer: user.name,
@@ -101,7 +137,7 @@ export function AddEventDialog({ hobbyId, onEventCreated, currentUser }: AddEven
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={controlledOpen ? open : isOpen} onOpenChange={controlledOpen ? onOpenChange! : setIsOpen}>
       <DialogTrigger asChild>
         <Button className="bg-blue-400 text-white flex justify-between px-4 py-2 items-center w-[210px] rounded-md border-1 hover:bg-blue-500 cursor-pointer">
           Эвент үүсгэх
@@ -118,6 +154,22 @@ export function AddEventDialog({ hobbyId, onEventCreated, currentUser }: AddEven
         <div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {requireHobbySelection && (
+                <div>
+                  <label className="block mb-1 font-medium">Хобби сонгох <span className="text-red-500">*</span></label>
+                  <select
+                    className="w-full border rounded-md px-3 py-2"
+                    value={selectedHobby}
+                    onChange={e => setSelectedHobby(e.target.value)}
+                    required
+                  >
+                    <option value="">-- Хобби сонгох --</option>
+                    {allHobbies.map(hobby => (
+                      <option value={hobby._id} key={hobby._id}>{hobby.title}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <FormField
                 control={form.control}
                 name="name"

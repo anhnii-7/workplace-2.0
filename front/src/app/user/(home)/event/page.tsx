@@ -1,94 +1,124 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
-import axios from "axios";
-
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import { CalendarDays, Users } from "lucide-react";
+import { AddEventDialog } from "../hobby/[id]/components/AddEventDailog";
+import { EventCard } from "../components/EventCard";
+import { SummaryCard } from "../components/SummaryCard";
+import { AddEventCard } from "../components/AddEventCard";
+import { HobbyFilter } from "../components/HobbyFilter";
+import { useEvents } from "@/hooks/useEvents";
 
-export type Hobby = {
-  title: string;
-  _id: string;
-  image: string;
-};
 export default function EventPage() {
-  const [hobbies, setHobbies] = useState<Hobby[]>([]);
-  const [loading, setLoading] = useState(true);
-  
-  // console.log(baseUrl, "baseUrl")
-  const getHobbies = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get('/api/hobby');
-      const data = response.data as { success: boolean; data: Hobby[]; message?: string };
-      console.log(response, "hobbies");
-      
-      if (data.success) {
-        setHobbies(data.data);
-      } else {
-        console.error("Failed to fetch hobbies:", data.message);
-        setHobbies([]);
-      }
-    } catch (error) {
-      console.error("Error fetching hobbies:", error);
-      setHobbies([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-  // console.log(hobbies, "hobbies");
+  const [selectedHobby, setSelectedHobby] = useState<string>("all");
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [activeEmployeeCount, setActiveEmployeeCount] = useState<number>(12); // hardcoded for now
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [addDialogHobby, setAddDialogHobby] = useState<string>("");
+
+  const {
+    events,
+    hobbies,
+    loading,
+    joinedEvents,
+    getEvents,
+    handleJoinEvent,
+    getFilteredEvents,
+    getPendingEventsCount,
+  } = useEvents();
+
   useEffect(() => {
-    getHobbies();
+    const currentUserString = localStorage.getItem("currentUser");
+    if (currentUserString) {
+      setCurrentUser(JSON.parse(currentUserString));
+    }
   }, []);
 
-  return (
-    <div className="flex flex-col items-center ">
-      <div className="text-center py-10">
-        <h1 className="text-slate-800 text-3xl font-semibold">
-          Цайны цагаараа хоббигоороо нэгдье
-        </h1>
-        <p className="text-slate-600 text-2xl font-medium ">
-          Та өөрийн дуртай ямар ч сэдвээ ажлынхантайгаа хуваалцах боломжтой.
-        </p>
-      </div>
+  const filteredEvents = getFilteredEvents(selectedHobby);
+  const pendingEventsCount = getPendingEventsCount();
 
-      <div className="flex flex-col h-screen items-center w-full">
-        <h2 className="text-slate-800 text-2xl font-normal pb-10">
-          Та өөрийн дуртай хэдэн ч сэдвийг сонгосон болно ☺️
-        </h2>
-        <div className="grid grid-cols-4 gap-5 ">
-          {loading ? (
-            <div className="col-span-4 text-center py-8">
-              <p>Хоббинууд ачаалж байна...</p>
-            </div>
-          ) : hobbies.length > 0 ? (
-            hobbies.map((hobby) => {
-              return (
-                <Link href={`/user/event/${hobby._id}`} key={hobby._id}>
-                  <Card className="p-0 w-[202px] h-[290px] flex flex-col gap-3 box-border">
-                    <div className=" w-full rounded-3xl h-[224px] bg-white overflow-hidden relative">
-                      <Image
-                        src={hobby.image}
-                        fill={true}
-                        alt="sport"
-                        className="place-self-center"
-                        style={{ objectFit: "contain" }}
-                      />
-                    </div>
-                    <p className="bg-slate-50 text-center rounded-b-2xl text-lg py-3 text-slate-800">
-                      {hobby.title}
-                    </p>
-                  </Card>
-                </Link>
-              );
-            })
-          ) : (
-            <div className="col-span-4 text-center py-8">
-              <p className="text-gray-500">Одоогоор хобби байхгүй байна.</p>
-            </div>
-          )}
+  // Add event dialog logic
+  const openAddDialog = () => {
+    setAddDialogOpen(true);
+    setAddDialogHobby(selectedHobby === "all" ? "" : selectedHobby);
+  };
+
+  const handleJoinLeave = (eventId: string) => {
+    handleJoinEvent(eventId, currentUser);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p>Ачааллаж байна...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center min-h-screen bg-[#f8fafc]">
+      <div className="text-center py-10 flex justify-between items-center w-full max-w-5xl mx-auto">
+        <h1 className="text-slate-800 text-3xl font-semibold">
+          Олуулаа илүү хөгжилтэй
+        </h1>
+        <div className="ml-auto">
+          <AddEventCard onClick={openAddDialog} />
         </div>
+      </div>
+      <div className="w-full max-w-5xl flex flex-col gap-6">
+        {/* Filter and summary cards */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-2">
+          <HobbyFilter
+            selectedHobby={selectedHobby}
+            onHobbyChange={setSelectedHobby}
+            hobbies={hobbies}
+          />
+          <div className="flex flex-1 gap-4 justify-end">
+            <SummaryCard
+              icon={CalendarDays}
+              value={pendingEventsCount}
+              label="Хүлээгдэж буй эвентүүд"
+              bgColor="bg-orange-50"
+              iconColor="text-orange-400"
+              textColor="text-orange-500"
+              labelColor="text-orange-900"
+            />
+            <SummaryCard
+              icon={Users}
+              value={activeEmployeeCount}
+              label="Идэвхтэй байгаа ажилчид"
+              bgColor="bg-green-50"
+              iconColor="text-green-400"
+              textColor="text-green-500"
+              labelColor="text-green-900"
+            />
+          </div>
+        </div>
+        {/* Event grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-6">
+          {/* Event cards */}
+          {filteredEvents.map((event) => (
+            <EventCard
+              key={event._id}
+              event={event}
+              isJoined={joinedEvents.includes(event._id)}
+              onJoinLeave={handleJoinLeave}
+            />
+          ))}
+        </div>
+        {/* AddEventDialog with hobby selection if needed */}
+        {addDialogOpen && (
+          <AddEventDialog
+            hobbyId={addDialogHobby}
+            currentUser={currentUser}
+            onEventCreated={() => { getEvents(); setAddDialogOpen(false); }}
+            requireHobbySelection={selectedHobby === "all"}
+            allHobbies={hobbies}
+            onHobbyChange={setAddDialogHobby}
+            open={addDialogOpen}
+            onOpenChange={setAddDialogOpen}
+          />
+        )}
       </div>
     </div>
   );

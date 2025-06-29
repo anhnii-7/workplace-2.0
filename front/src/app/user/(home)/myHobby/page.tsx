@@ -6,11 +6,11 @@ import axios from "axios";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { DialogDemo } from "../components/addHobby";
+import { AddEventCard } from "../components/AddEventCard";
 
 const myHobby = () => {
     const [myHobbies, setMyHobbies] = useState<Hobby[]>([]);
     const [hobbies, setHobbies] = useState<Hobby[]>([]);
-    const [loading, setLoading] = useState(true);
 
     const getMyHobbies = async () => {
         try {
@@ -27,7 +27,6 @@ const myHobby = () => {
     
     const getHobbies = async () => {
         try {
-            setLoading(true);
             const response = await axios.get('/api/hobby');
             const data = response.data as { success: boolean; data: Hobby[]; message?: string };
             console.log(data, "hobby response");
@@ -41,8 +40,6 @@ const myHobby = () => {
         } catch (error) {
             console.error("Error fetching hobbies:", error);
             setHobbies([]);
-        } finally {
-            setLoading(false);
         }
     }
 
@@ -53,13 +50,16 @@ const myHobby = () => {
 
     return (
         <div>
-            <h1 className="text-4xl font-semibold text-slate-700 text-center p-4">Миний хобби</h1>
+            <div className="text-center py-10 flex justify-between items-center w-full max-w-5xl mx-auto">
+                <h1 className="text-slate-800 text-3xl font-semibold">
+                    Олуулаа илүү хөгжилтэй
+                </h1>
+                <div className="ml-auto">
+                    <AddEventCard onClick={() => {}} />
+                </div>
+            </div>
             <div className="grid grid-cols-4 gap-5 w-[868px] place-self-center items-center py-24">
-                {loading ? (
-                    <div className="col-span-4 text-center py-8">
-                        <p>Хоббинууд ачаалж байна...</p>
-                    </div>
-                ) : myHobbies.length > 0 ? (
+                {myHobbies.length > 0 ? (
                     myHobbies.map((hobby) => {
                         return (
                             <Card className="p-0 w-[202px] h-[288px] flex flex-col gap-3" key={hobby._id}>
