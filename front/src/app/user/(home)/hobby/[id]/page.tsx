@@ -18,6 +18,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import Link from "next/link"
+
 
 export type User = {
   _id: string
@@ -56,33 +58,48 @@ export type HobbyInfo = {
 
 export default function HobbyInsertPage() {
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [users, setUsers] = useState<User[]>([]);
   const [hobbies, setHobbies] = useState<HobbyInfo[]>([])
-  const [currentUser, setCurrentUser] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [checkUserTitle, setCheckUserTitle] = useState<string>("all");
+  const [currentHobby, setCurrentHobby] = useState<HobbyInfo | null>(null);
+  console.log("checkUserTitle", setCheckUserTitle);
+  console.log("filteredUsers", filteredUsers);
+  console.log("selectedCategory", selectedCategory);
   const [loadingUsers, setLoadingUsers] = useState<Record<string, boolean>>({});
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const params = useParams();
-  console.log(users, "USERS")
 
   useEffect(() => {
-  const getUsers = async () => {
-    const response = await axios.get(`/api/user/by-hobby?id=${params.id}`);
-    const currentUserString = localStorage.getItem("currentUser");
-    if (!currentUserString) {
-      router.push("/login");
-      return;
-    }
-    const currentUser = JSON.parse(currentUserString);
-    setCurrentUser(currentUser);
-    
-    const filteredUsers = response.data.data.filter((user: User) => user._id !== currentUser._id);
-    setUsers(filteredUsers);
-  }
-  getUsers();
-}, [params.id]);
+    const getUsers = async () => {
+      const response = await axios.get(`/api/user/by-hobby?id=${params.id}`);
+      const currentUserString = localStorage.getItem("currentUser");
+      if (!currentUserString) {
+        router.push("/login");
+        return;
+      }
+      const currentUser = JSON.parse(currentUserString);
+      setCurrentUser(currentUser);
 
+      const filteredUsers = response.data.data.filter((user: User) => user._id !== currentUser._id);
+      setUsers(filteredUsers);
+      // setFilteredUsers(filteredUsers);
+      const hobbyResponse = await axios.get('/api/hobby');
+      const matchedHobby = hobbyResponse.data.data.find((h: HobbyInfo) => h._id === params.id);
+      setCurrentHobby(matchedHobby);
+    }
+    getUsers();
+  }, [params.id]);
+  useEffect(() => {
+    if (selectedCategory === "all") {
+      setCurrentHobby(null);
+    } else {
+      const matchedHobby = hobbies.find(h => h.title === selectedCategory);
+      setCurrentHobby(matchedHobby || null);
+    }
+  }, [selectedCategory, hobbies]);
   useEffect(() => {
     const getHobbies = async () => {
       const response = await axios.get('/api/hobby');
@@ -91,32 +108,39 @@ export default function HobbyInsertPage() {
     getHobbies();
   }, []);
 
-  const handleSendRequest = async (toUserId: string) => {
-     setLoadingUsers(prev => ({ ...prev, [toUserId]: true }));
-    try {
-      // const selectedUser = users.find(user => user._id === toUserId);
-      
-      // if (!selectedUser?.availableSchedules || selectedUser.availableSchedules.length === 0) {
-      //   toast.error("Энэ хэрэглэгчид уулзах боломжтой цаг алга байна", {
-      //     position: "top-center",
-      //     duration: 3000,
-      //   });
-      //   return;
-      // }
+  useEffect(() => {
+    // console.log("FILTERED USERS", selectedCategory);
+    // console.log("USERS", users);
+    if (selectedCategory === "all") {
+      setFilteredUsers(users);
+    } else {
+      // const filtered = users.filter(user =>
+      //  console.log(user.hobbyInfo?.title === selectedCategory)
+      // );
+      console.log(users, "Naraa");
+      // setFilteredUsers(filtered);
+    }
+  }, [selectedCategory, users]);
 
-      // const selectedDate = selectedUser.availableSchedules[0];
-      
+  const handleHobbyChange = (hobbyId: string) => {
+    if (hobbyId === "all") {
+      return;
+    }
+    router.push(`/user/hobby/${hobbyId}`);
+  };
+
+  const handleSendRequest = async (toUserId: string) => {
+    setLoadingUsers(prev => ({ ...prev, [toUserId]: true }));
+    try {
       await axios.post("/api/request", {
         from: currentUser._id,
         to: toUserId,
         message: "Сонирхлоороо холбогдох хүсэлт илгээж байна",
-        // selectedSchedule: selectedDate,
-        status: "pending", 
-        isActive: true    
+        status: "pending",
+        isActive: true
       });
       setShowSuccessDialog(true);
-      
-    
+
       setTimeout(() => {
         setShowSuccessDialog(false);
       }, 3000);
@@ -124,7 +148,7 @@ export default function HobbyInsertPage() {
     } catch (error: any) {
       console.error("Error creating request:", error);
       let errorMessage = "Хүсэлт илгээхэд алдаа гарлаа";
-      
+
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
       } else if (error.message) {
@@ -148,74 +172,94 @@ export default function HobbyInsertPage() {
         </h1>
 
         <div className="mb-8">
-          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+         <Select
+            value={params.id as string}
+            onValueChange={handleHobbyChange}
+          >
             <SelectTrigger className="w-48 bg-blue-50 border-blue-200">
-              <SelectValue placeholder='Сонирхол сонгох' />
+              <SelectValue>
+                {currentHobby ? currentHobby.title : 'Сонирхол сонгох'}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="all">Бүх сонирхол</SelectItem>
               {hobbies.map(hobby => (
-                <SelectItem value={hobby.title} key={hobby._id}>{hobby.title}</SelectItem>
+                <SelectItem value={hobby._id} key={hobby._id}>
+                  {hobby.title}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
-
-          {/* <AddEventDialog hobbyId={hobbyId} onEventCreated={handleEventCreated} /> */}
         </div>
 
+        
+          {/* <Link href="/user/hobby/685794d7ba3a1fd08e086659">Naka</Link> */}
+        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 py-3">
-          {users.map((user) => (
-            <Card key={user._id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
-              <CardContent className="p-4">
-                <div className="flex flex-col items-center">
-                  <Avatar className="w-24 h-24 mb-3">
-                    <AvatarImage src={`/avatars/${user._id}.jpg`} alt={user.name} />
-                    <AvatarFallback className="bg-gray-200 text-gray-600 text-xl">
-                      {user.lastName.slice(0, 1)}{user.name.slice(0, 1)}
-                    </AvatarFallback>
-                  </Avatar>
+          {filteredUsers.length > 0 ? (
+            filteredUsers.map((user) => (
+              <Card key={user._id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex flex-col items-center">
+                    <Avatar className="w-24 h-24 mb-3">
+                      <AvatarImage src={`/avatars/${user._id}.jpg`} alt={user.name} />
+                      <AvatarFallback className="bg-gray-200 text-gray-600 text-xl">
+                        {user.lastName.slice(0, 1)}{user.name.slice(0, 1)}
+                      </AvatarFallback>
+                    </Avatar>
 
-                  <div className="flex flex-col gap-1 py-[6px] text-center w-full">
-                    <div className="w-full">
-                      <h3 className="font-semibold text-gray-800 text-lg">
-                        {user.lastName.slice(0, 1)}.{user.name}
-                      </h3>
+                    <div className="flex flex-col gap-1 py-[6px] text-center w-full">
+                      <div className="w-full">
+                        <h3 className="font-semibold text-gray-800 text-lg">
+                          {user.lastName.slice(0, 1)}.{user.name}
+                        </h3>
+                      </div>
+
+                      <div className="w-full">
+                        <span className="text-sm font-normal text-gray-600">
+                          {user.departmentInfo?.jobTitleInfo?.title || "Алба байхгүй"}
+                        </span>
+                      </div>
+
+                      <div className="w-full">
+                        <span className="text-sm font-normal text-gray-500">
+                          {user.departmentInfo?.title || "Хэлтэс байхгүй"}
+                        </span>
+                      </div>
                     </div>
 
-                    <div className="w-full">
-                      <span className="text-sm font-normal text-gray-600">
-                        {user.departmentInfo?.jobTitleInfo?.title || "Алба байхгүй"}
-                      </span>
+                    <div className="grid grid-cols-1 gap-2 w-full my-3">
+                      <Badge
+                        variant="secondary"
+                        className="flex w-full rounded-full py-1 px-3 text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer transition-colors"
+                      >
+                        {user.hobbyInfo?.title || "Сонирхол байхгүй"}
+                      </Badge>
                     </div>
 
-                    <div className="w-full">
-                      <span className="text-sm font-normal text-gray-500">
-                        {user.departmentInfo?.title || "Хэлтэс байхгүй"}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-2 w-full my-3">
-                    <Badge
-                      variant="secondary"
-                      className="flex w-full rounded-full py-1 px-3 text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer transition-colors"
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full bg-blue-50 text-sm text-blue-600 border-blue-200 py-2 rounded-md hover:bg-blue-100 transition-colors"
+                      onClick={() => handleSendRequest(user._id)}
+                      disabled={loadingUsers[user._id]}
                     >
-                      {user.hobbyInfo?.title || "Сонирхол байхгүй"}
-                    </Badge>
+                      {loadingUsers[user._id] ? "Илгээж байна..." : "Хүсэлт илгээх"}
+                    </Button>
                   </div>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full bg-blue-50 text-sm text-blue-600 border-blue-200 py-2 rounded-md hover:bg-blue-100 transition-colors"
-                   onClick={() => handleSendRequest(user._id)}
-                    disabled={loadingUsers[user._id]} // Use specific loading state
-                  >
-                   {loadingUsers[user._id] ? "Илгээж байна..." : "Хүсэлт илгээх"}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <div className="col-span-4 text-center py-8">
+              <p className="text-gray-500">
+                {selectedCategory === "all"
+                  ? "Одоогоор хэрэглэгч байхгүй байна."
+                  : `${selectedCategory} сонирхолтой хэрэглэгч олдсонгүй.`}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
