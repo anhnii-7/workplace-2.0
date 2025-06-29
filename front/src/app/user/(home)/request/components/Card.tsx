@@ -75,9 +75,7 @@ const Card = ({notif, direction} : CardProps) => {
                 <div className='bg-slate-50 rounded-md px-3 py-2'>
                     <span className='text-sm font-normal'>
                         {
-                            notif
-                                ?.message || notif
-                                    ?.description || "description"
+                            notif?.request[0]?.message|| "description"
                         }
                     </span>
                 </div>
