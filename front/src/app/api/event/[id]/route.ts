@@ -176,7 +176,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       { status: 500 },
     )
   }
-}
+} 
 
 // PATCH /api/event/[id]/join - Join an event
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
