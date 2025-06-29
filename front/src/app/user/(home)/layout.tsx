@@ -12,7 +12,8 @@ export default function DashboardLayout({
         {/* <Header /> */}
         <SidebarProvider>
           <AppSidebar />
-          <main className="w-full h-screen p-10">{children}</main>
+          <main className="w-full h-screen">
+            <div className="p-10">{children}</div></main>
         </SidebarProvider>
       </div>
     </section>

@@ -114,7 +114,7 @@ const MyHobby = () => {
   }
 
   return (
-    <div className="grid gap-10">
+    <div className="flex flex-col items-center gap-10">
       <h1 className="text-4xl font-semibold text-slate-700 text-center p-4">
         Миний хобби
       </h1>

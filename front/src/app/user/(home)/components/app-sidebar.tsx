@@ -64,7 +64,7 @@ export function AppSidebar() {
     <Sidebar className="border-none">
       <SidebarContent className="rounded-[0px_24px_24px_0px] overflow-hidden px-3">
         <SidebarGroup>
-          <Link href="/user" className="no-underline shadow-[0px_0px_4px_2px_rgba(125,168,225,0.12)]">
+          <Link href="/user" className="no-underline shadow-[0px_0px_4px_2px_rgba(125,168,225,0.12)] my-10">
             <SidebarGroupLabel className="flex items-center gap-3 my-10  ">
               <Avatar className="w-[60px] h-[60px] rounded-md">
                 <AvatarImage src="https://github.com/shadcn.png" />
