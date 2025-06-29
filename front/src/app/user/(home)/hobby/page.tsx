@@ -16,7 +16,7 @@ export default function WishPage() {
   const [hobbies, setHobbies] = useState<Hobby[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // console.log(baseUrl, "baseUrl")
+  
   const getHobbies = async () => {
     try {
       setLoading(true);
@@ -37,7 +37,7 @@ export default function WishPage() {
       setLoading(false);
     }
   };
-  // console.log(hobbies, "hobbies");
+  
   useEffect(() => {
     getHobbies();
   }, []);

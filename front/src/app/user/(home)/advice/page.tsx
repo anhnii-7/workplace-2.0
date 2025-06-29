@@ -177,31 +177,23 @@ export default function WishPage() {
   const fetchRequests = async (userId: string) => {
     try {
       const response = await axios.get("/api/request", {
-        params: {
-          userId,
-          type: "all",
-        },
+        params: { userId, type: "all" }
       });
-      const data = response.data as { success: boolean; data: Request[]; message?: string };
-      console.log(data, "Response data")
+
       
-      if (data.success && data.data) {
-        setRequests({
-          sent: data.data.filter(
-            (req: Request) => typeof req.from !== "string" && req.from._id === userId
-          ),
-          received: data.data.filter(
-            (req: Request) => typeof req.to !== "string" && req.to._id === userId
-          ),
-        });
-      } else {
-        console.error("Failed to fetch requests:", data.message);
-        setRequests({ sent: [], received: [] });
-      }
+      const processedRequests = {
+        sent: response.data.requests.filter(
+          (req: Request) => typeof req.from !== 'string' && req.from._id === userId
+        ),
+        received: response.data.requests.filter(
+          (req: Request) => typeof req.to !== 'string' && req.to._id === userId
+        ),
+      };
+
+      setRequests(processedRequests);
     } catch (error) {
       console.error("Error fetching requests:", error);
       toast.error("Failed to load requests");
-      setRequests({ sent: [], received: [] });
     }
   };
 
@@ -514,12 +506,12 @@ export default function WishPage() {
                           )} */}
                         </div>
 
-                        {request.status === 'accepted' && request.meetingLocation && (
+                        {/* {request.status === 'accepted' && request.meetingLocation && (
                           <div className="mt-2 flex items-center gap-2 text-sm">
                             <MapPin className="w-4 h-4" />
                             <span>{request.meetingLocation}</span>
                           </div>
-                        )}
+                        )} */}
                       </Card>
                     ))}
                   </div>
