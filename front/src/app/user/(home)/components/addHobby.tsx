@@ -257,7 +257,7 @@ export function AddHobbyDailog({
         </div>
       </DialogTrigger>
 
-      <DialogContent className="h-[1084px] w-[988px] box-border flex flex-col justify-between">
+      <DialogContent className=" w-[988px] box-border flex flex-col justify-between">
         <DialogHeader>
           <DialogTitle className="flex justify-center text-slate-700 text-2xl font-semibold leading-8">
             Өөрийн дуртай хэдэн ч төрлийн сонирхлыг сонгох боломжтой
