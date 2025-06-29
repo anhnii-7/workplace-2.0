@@ -70,7 +70,30 @@ export default function HobbyInsertPage() {
   console.log("selectedCategory", selectedCategory);
   const [loadingUsers, setLoadingUsers] = useState<Record<string, boolean>>({});
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [pendingRequests, setPendingRequests] = useState<Record<string, boolean>>({});
   const params = useParams();
+  console.log(pendingRequests, "Pending Requests");
+    useEffect(() => {
+    const fetchPendingRequests = async () => {
+      if (!currentUser?._id) return;
+      
+      try {
+        const response = await axios.get(`/api/request?userId=${currentUser._id}&type=sent&status=pending`);
+        const requests = response.data.requests || [];
+        
+        const pendingMap = requests.reduce((acc: Record<string, boolean>, request: any) => {
+          acc[request.to._id] = true;
+          return acc;
+        }, {});
+        
+        setPendingRequests(pendingMap);
+      } catch (error) {
+        console.error("Error fetching pending requests:", error);
+      }
+    };
+
+    fetchPendingRequests();
+  }, [currentUser?._id]);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -129,7 +152,7 @@ export default function HobbyInsertPage() {
     router.push(`/user/hobby/${hobbyId}`);
   };
 
-  const handleSendRequest = async (toUserId: string) => {
+const handleSendRequest = async (toUserId: string) => {
     setLoadingUsers(prev => ({ ...prev, [toUserId]: true }));
     try {
       await axios.post("/api/request", {
@@ -139,30 +162,21 @@ export default function HobbyInsertPage() {
         status: "pending",
         isActive: true
       });
+      
+      // Update pending requests state
+      setPendingRequests(prev => ({ ...prev, [toUserId]: true }));
       setShowSuccessDialog(true);
-
+      
       setTimeout(() => {
         setShowSuccessDialog(false);
       }, 3000);
-
     } catch (error: any) {
-      console.error("Error creating request:", error);
-      let errorMessage = "Хүсэлт илгээхэд алдаа гарлаа";
-
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-
-      toast.error(errorMessage, {
-        position: "top-center",
-        duration: 3000,
-      });
+      // ... (keep your existing error handling)
     } finally {
       setLoadingUsers(prev => ({ ...prev, [toUserId]: false }));
     }
   };
+
 
   return (
     <div className="min-h-screen w-full p-6">
@@ -178,11 +192,11 @@ export default function HobbyInsertPage() {
           >
             <SelectTrigger className="w-48 bg-blue-50 border-blue-200">
               <SelectValue>
-                {currentHobby ? currentHobby.title : 'Сонирхол сонгох'}
+                {currentHobby ? currentHobby.title : ''}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Бүх сонирхол</SelectItem>
+              {/* <SelectItem value="all">Бүх сонирхол</SelectItem> */}
               {hobbies.map(hobby => (
                 <SelectItem value={hobby._id} key={hobby._id}>
                   {hobby.title}
@@ -238,15 +252,21 @@ export default function HobbyInsertPage() {
                       </Badge>
                     </div>
 
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full bg-blue-50 text-sm text-blue-600 border-blue-200 py-2 rounded-md hover:bg-blue-100 transition-colors"
-                      onClick={() => handleSendRequest(user._id)}
-                      disabled={loadingUsers[user._id]}
-                    >
-                      {loadingUsers[user._id] ? "Илгээж байна..." : "Хүсэлт илгээх"}
-                    </Button>
+                    {!pendingRequests[user._id] ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full bg-blue-50 text-sm text-blue-600 border-blue-200 py-2 rounded-md hover:bg-blue-100 transition-colors"
+                    onClick={() => handleSendRequest(user._id)}
+                    disabled={loadingUsers[user._id]}
+                  >
+                    {loadingUsers[user._id] ? "Илгээж байна..." : "Хүсэлт илгээх"}
+                  </Button>
+                ) : (
+                  <div className="text-center text-sm text-gray-500 py-2">
+                    Хүсэлт илгээгдсэн
+                  </div>
+                )}
                   </div>
                 </CardContent>
               </Card>
