@@ -1,12 +1,9 @@
 "use client"
 import SideBar from '@/components/SideBar'
 import React from 'react'
-import Image from 'next/image'
-import { Command, User } from 'lucide-react'
 import { Calendar } from "@/components/ui/calendar"
 import EmployeeProfile from '../user/(home)/components/EmployeeProfile'
 import LeaderboardEmployee from '../user/(home)/components/LeaderboardEmployee'
-import { useState } from 'react'
 const page = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date())
   return (
