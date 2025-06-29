@@ -72,12 +72,11 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
     
     try {
       setLoading(true)
-      const response = await axios.get('/api/event')
-      const responseData = response.data as { success: boolean; data: Event[]; count: number };
+      const response = await axios.get<{ success: boolean; data: Event[]; count: number }>('/api/event')
       
-      if (responseData.success) {
+      if (response.data.success) {
         // Filter events for this specific hobby
-        const hobbyEvents = responseData.data.filter((event: Event) => 
+        const hobbyEvents = response.data.data.filter((event: Event) => 
           event.eventType._id === hobbyId
         )
         setEvents(hobbyEvents)
