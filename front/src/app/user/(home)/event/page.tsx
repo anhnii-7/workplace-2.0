@@ -196,11 +196,11 @@ export default function EventPage() {
   const handleEditEvent = async () => {
     if (!editEvent) return;
     try {
-      const response = await axios.patch(`/api/event/${editEvent._id}`, {
+      const response = await axios.put(`/api/event/${editEvent._id}`, {
         ...editEvent,
+        eventType: typeof editEvent.eventType === 'object' ? editEvent.eventType._id : editEvent.eventType,
         maxParticipants: Number(editEvent.maxParticipants),
         eventDate: new Date(editEvent.eventDate).toISOString(),
-        action: "edit",
       });
       const responseData = response.data as { success: boolean; data: Event; message: string };
       if (responseData.success) {
