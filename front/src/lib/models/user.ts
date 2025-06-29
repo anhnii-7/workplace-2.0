@@ -47,6 +47,9 @@ const userSchema = new mongoose.Schema({
         type: [String],  //  ["06.28", "07.02"]
         default: []
     },
+    image: {
+        type: String
+    }
 })
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
