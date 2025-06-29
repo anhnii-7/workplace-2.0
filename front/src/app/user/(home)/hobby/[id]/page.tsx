@@ -61,24 +61,27 @@ export default function HobbyInsertPage() {
   const [hobbies, setHobbies] = useState<HobbyInfo[]>([])
   const [currentUser, setCurrentUser] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState<Record<string, boolean>>({});
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const params = useParams();
   console.log(users, "USERS")
+
   useEffect(() => {
-    const getUsers = async () => {
-      const response = await axios.get(`/api/user/by-hobby?id=${params.id}`);
-    
-      setUsers(response.data.data);
-    }
-    getUsers();
+  const getUsers = async () => {
+    const response = await axios.get(`/api/user/by-hobby?id=${params.id}`);
     const currentUserString = localStorage.getItem("currentUser");
     if (!currentUserString) {
       router.push("/login");
       return;
     }
-    const user = JSON.parse(currentUserString);
-    setCurrentUser(user);
-  }, [params.id]);
+    const currentUser = JSON.parse(currentUserString);
+    setCurrentUser(currentUser);
+    
+    const filteredUsers = response.data.data.filter((user: User) => user._id !== currentUser._id);
+    setUsers(filteredUsers);
+  }
+  getUsers();
+}, [params.id]);
 
   useEffect(() => {
     const getHobbies = async () => {
@@ -89,30 +92,28 @@ export default function HobbyInsertPage() {
   }, []);
 
   const handleSendRequest = async (toUserId: string) => {
-    setIsLoading(true);
+     setLoadingUsers(prev => ({ ...prev, [toUserId]: true }));
     try {
-      const selectedUser = users.find(user => user._id === toUserId);
+      // const selectedUser = users.find(user => user._id === toUserId);
       
-      if (!selectedUser?.availableSchedules || selectedUser.availableSchedules.length === 0) {
-        toast.error("Энэ хэрэглэгчид уулзах боломжтой цаг алга байна", {
-          position: "top-center",
-          duration: 3000,
-        });
-        return;
-      }
+      // if (!selectedUser?.availableSchedules || selectedUser.availableSchedules.length === 0) {
+      //   toast.error("Энэ хэрэглэгчид уулзах боломжтой цаг алга байна", {
+      //     position: "top-center",
+      //     duration: 3000,
+      //   });
+      //   return;
+      // }
 
-      const selectedDate = selectedUser.availableSchedules[0];
+      // const selectedDate = selectedUser.availableSchedules[0];
       
       await axios.post("/api/request", {
         from: currentUser._id,
         to: toUserId,
         message: "Сонирхлоороо холбогдох хүсэлт илгээж байна",
-        selectedSchedule: selectedDate,
+        // selectedSchedule: selectedDate,
         status: "pending", 
         isActive: true    
       });
-
-    
       setShowSuccessDialog(true);
       
     
@@ -135,7 +136,7 @@ export default function HobbyInsertPage() {
         duration: 3000,
       });
     } finally {
-      setIsLoading(false);
+      setLoadingUsers(prev => ({ ...prev, [toUserId]: false }));
     }
   };
 
@@ -158,7 +159,7 @@ export default function HobbyInsertPage() {
             </SelectContent>
           </Select>
 
-          {/* <AddEventDialog hobbyId={hobbyId} currentUser={currentUser} onEventCreated={handleEventCreated} /> */}
+          {/* <AddEventDialog hobbyId={hobbyId} onEventCreated={handleEventCreated} /> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 py-3">
@@ -206,10 +207,10 @@ export default function HobbyInsertPage() {
                     variant="outline"
                     size="sm"
                     className="w-full bg-blue-50 text-sm text-blue-600 border-blue-200 py-2 rounded-md hover:bg-blue-100 transition-colors"
-                    onClick={() => handleSendRequest(user._id)}
-                    disabled={isLoading}
+                   onClick={() => handleSendRequest(user._id)}
+                    disabled={loadingUsers[user._id]} // Use specific loading state
                   >
-                    {isLoading ? "Илгээж байна..." : "Хүсэлт илгээх"}
+                   {loadingUsers[user._id] ? "Илгээж байна..." : "Хүсэлт илгээх"}
                   </Button>
                 </div>
               </CardContent>
