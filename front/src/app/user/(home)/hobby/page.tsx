@@ -42,7 +42,7 @@ export default function WishPage() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center pb-10">
       <p className="text-slate-800 text-2xl font-medium text-center py-4 px-6">
        Та дурын сэдвээ сонгоно уу
       </p>
