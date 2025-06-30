@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CalendarSearch, Users, Plus, Calendar, User } from "lucide-react";
+import { CalendarSearch, Users, Plus, Calendar, User, Clock, Pin, Map, MapIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -126,16 +126,16 @@ export default function EventPage() {
       };
       const response = await axios.post("/api/event", eventData);
       const responseData = response.data as { success: boolean; data: Event; message: string };
-       // Find the selected hobby and get its users array
-       const selectedHobbyObj = hobbies.find(hobby => hobby._id === newEvent.eventType);
-       const toUsers = selectedHobbyObj?.users || [];
-       const notificationResponse = await axios.post("/api/notification", {
+      // Find the selected hobby and get its users array
+      const selectedHobbyObj = hobbies.find(hobby => hobby._id === newEvent.eventType);
+      const toUsers = selectedHobbyObj?.users || [];
+      const notificationResponse = await axios.post("/api/notification", {
         from: currentUser._id,
         to: toUsers,
         type: "Event",
         typeId: response.data.data._id
       });
-      const notification = notificationResponse.data as {success: boolean; data: Request; message: string}
+      const notification = notificationResponse.data as { success: boolean; data: Request; message: string }
       if (responseData.success) {
         setShowSuccessBanner(true);
         setTimeout(() => setShowSuccessBanner(false), 4000);
@@ -228,10 +228,9 @@ export default function EventPage() {
       toast.error(error.response?.data?.message || "Эвент засахад алдаа гарлаа");
     }
   };
-  // console.log("test")
-  console.log(hobbies)
+
   return (
-    <div className="min-h-screen bg-gray-50 w-full">
+    <div className="min-h-screen w-full">
       {showSuccessBanner && (
         <div className="fixed top-8 right-8 z-50 bg-white border border-blue-100 rounded-xl shadow-lg px-8 py-4 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
           <div className="flex items-center gap-2 mb-1">
@@ -242,58 +241,56 @@ export default function EventPage() {
           <div className="text-gray-600 text-base">Та хүсэлт хэсгээс хариугаа хянах боломжтой, баярлалаа</div>
         </div>
       )}
-      <div className="w-full px-6 py-6">
+      <p className="text-slate-800 text-2xl font-medium text-center py-4 px-6">
+        Олуулаа илүү хөгжилтэй
+      </p>
+      <div className="w-full">
         {/* Hobby filter dropdown */}
-        <div className="flex justify-start mb-6">
+        <div className="grid grid-cols-2 gap-5 my-10">
           <Select value={selectedHobby} onValueChange={setSelectedHobby}>
-            <SelectTrigger className="w-60 bg-white border-gray-200 shadow-sm">
+            <SelectTrigger className="w-full bg-white border-[#E5EFF8] px-4 py-[10px]">
               <SelectValue placeholder="Бүх эвент" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Бүх эвент</SelectItem>
+              <SelectItem value="all" className="text-sm text-slate-600">Бүх эвент</SelectItem>
               {hobbies.map(hobby => (
-                <SelectItem value={hobby._id} key={hobby._id}>{hobby.title}</SelectItem>
+                <SelectItem value={hobby._id} key={hobby._id} className=" text-sm text-slate-600">{hobby.title}</SelectItem>
               ))}
             </SelectContent>
           </Select>
+          <div></div>
         </div>
-        <h1 className="text-3xl font-semibold text-gray-800 text-center mb-8">
-          Олуулаа илүү хөгжилтэй
-        </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <Card className="bg-white shadow-sm">
+        <div className="flex flex-cols-2 gap-5 mb-5">
+          <Card className="bg-orange-50 border border-orange-200 w-full p-0">
             <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="bg-yellow-50 p-4 rounded-xl">
-                  <CalendarSearch className="w-8 h-8 text-yellow-600" />
+              <div className="flex items-center gap-3">
+                <div className="bg-orange-100 p-5 rounded-lg">
+                  <CalendarSearch className="w-6 h-6 text-yellow-900" />
                 </div>
                 <div>
-                  <p className="text-2xl font-semibold text-gray-800">
+                  <p className="text-2xl font-semibold text-slate-800">
                     {loading ? "..." : filteredEvents.filter((e) => e.participants.length < e.maxParticipants).length}
                   </p>
-                  <p className="text-gray-600">Хүлээгдэж буй эвентүүд</p>
+                  <p className="text-base text-gray-600">Хүлээгдэж буй эвентүүд</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-white shadow-sm">
+          <Card className="bg-green-50 border border-green-200 w-full p-0">
             <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="bg-green-50 p-4 rounded-xl">
-                  <Users className="w-8 h-8 text-green-600" />
+              <div className="flex items-center gap-3">
+                <div className="bg-green-100 p-5 rounded-lg">
+                  <Users className="w-6 h-6 text-green-900" />
                 </div>
                 <div>
-                  <p className="text-2xl font-semibold text-gray-800">
+                  <p className="text-2xl font-semibold text-slate-800">
                     {loading ? "..." : filteredEvents.reduce((total, event) => total + event.participants.length, 0)}
                   </p>
-                  <p className="text-gray-600">Идэвхтэй байгаа ажилчид</p>
+                  <p className="text-base text-gray-600">Идэвхтэй байгаа ажилчид</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-        </div>
-        <div className="mb-8">
-          
         </div>
         <div>
           {loading ? (
@@ -301,15 +298,15 @@ export default function EventPage() {
               <p>Эвентүүд ачаалж байна...</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-5">
               {/* Add Event Card - always first */}
               <Dialog open={isCreateEventOpen} onOpenChange={setIsCreateEventOpen}>
                 <DialogTrigger asChild>
                   <Card
-                    className="flex items-center justify-center h-56 min-h-[220px] bg-blue-50 border-2 border-dashed border-blue-200 cursor-pointer hover:bg-blue-100 transition-colors shadow-none"
+                    className="flex items-center justify-center h-56 h-full bg-[#E5EFF8] border-none cursor-pointer"
                     style={{ minHeight: 220 }}
                   >
-                    <Plus className="w-16 h-16 text-blue-400" />
+                    <Plus className="w-15 h-15 text-slate-400" />
                   </Card>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[500px]">
@@ -417,48 +414,56 @@ export default function EventPage() {
                 const remainingSpots = event.maxParticipants - event.participants.length;
                 const canEdit = currentUser && event.organizer === currentUser.name;
                 return (
-                  <Card key={event._id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
+                  <Card key={event._id} className="bg-[#E5EFF8] border-none rounded-xl p-0">
                     <CardContent className="p-6">
-                      <div className="space-y-4">
+                      <div className="space-y-5 ">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                              <Calendar className="w-5 h-5 text-blue-600" />
+                            <div className="p-5 bg-blue-100 rounded-lg flex items-center justify-center">
+                              <Calendar color="#1E3A8A" className="w-6 h-6" />
                             </div>
-                            <div>
-                              <h3 className="font-semibold text-gray-800">{event.name}</h3>
-                              <p className="text-sm text-gray-500">{event.eventType.title}</p>
+                            <div className="flex flex-col gap-1">
+                              <h3 className="font-semibold text-slate-700 text-2xl">{event.name}</h3>
+                              <p className="text-base text-gray-600">{event.eventType.title}</p>
                             </div>
                           </div>
                           <Badge
                             className={
                               isFull
-                                ? "bg-red-100 text-red-700"
-                                : "bg-blue-100 text-blue-700"
+                                ? "bg-red-50 text-red-900 py-1 px-3 rounded-full"
+                                : "bg-blue-50 text-blue-900 py-1 px-3 rounded-full"
                             }
                           >
                             {isFull ? "Дүүрсэн" : `${remainingSpots} хүн дутуу`}
                           </Badge>
                         </div>
-                        <p className="text-sm text-gray-600">{event.description}</p>
-                        <div className="space-y-2">
-                          <div className="flex items-center space-x-2 text-sm text-gray-500">
-                            <Calendar className="w-4 h-4" />
-                            <span>{formatDate(event.eventDate)}</span>
-                            <span className="ml-4">🕐 {event.eventTime}</span>
+                        <p className="text-base text-slate-600">{event.description}</p>
+                        <div>
+                          <div className="grid grid-cols-2 gap-5 mb-3">
+                            <div className="flex items-center text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
+                              <Calendar className="w-4 h-4" />
+                              <p>{formatDate(event.eventDate)}</p>
+                            </div>
+                            <div className="flex items-center text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
+                              <Clock className="w-4 h-4" />
+                              <p>{event.eventTime}</p>
+                            </div>
                           </div>
-                          <div className="flex items-center space-x-2 text-sm text-gray-500">
-                            <span className="ml-4">📍 {event.eventLocation}</span>
-                          </div>
-                          <div className="flex items-center space-x-2 text-sm text-gray-500">
-                            <Users className="w-4 h-4" />
-                            <span>
-                              {event.participants.length}/{event.maxParticipants} хүн бүртгүүлсэн байна
-                            </span>
+                          <div className="grid grid-cols-2 gap-5">
+                            <div className="flex items-center text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
+                              <MapIcon className="w-4 h-4" />
+                              <p>{event.eventLocation}</p>
+                            </div>
+                            <div className="flex items-center text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
+                              <Users className="w-4 h-4" />
+                              <p>
+                                {event.participants.length}/{event.maxParticipants} хүн бүртгүүлсэн байна
+                              </p>
+                            </div>
                           </div>
                         </div>
-                        <div className="flex space-x-2">
-                          {event.organizer === currentUser.name&& <Button size="sm" variant="outline" className="flex-1" disabled={!canEdit}
+                        <div className="flex gap-2">
+                          {event.organizer === currentUser.name && <Button variant="outline" className="flex-1 py-[10px] text-sm text-blue-400 hover:bg-white hover:text-blue-400 rounded-md border-blue-400 font-medium" disabled={!canEdit}
                             onClick={() => {
                               if (canEdit) {
                                 setEditEvent(event);
@@ -469,14 +474,12 @@ export default function EventPage() {
                           </Button>
                           }
                           <Button
-                            size="sm"
-                            className={`flex-1 transition-colors ${
-                              isJoined
-                                ? "bg-green-500 hover:bg-green-600 text-white"
-                                : isFull
-                                ? "bg-gray-400 cursor-not-allowed"
-                                : "bg-blue-500 hover:bg-blue-600 text-white"
-                            }`}
+                            className={`flex-1 transition-colors ${isJoined
+                              ? "bg-green-500 text-white py-[10px] text-sm hover:bg-none hover:bg-green-500  font-medium"
+                              : isFull
+                                ? "bg-gray-400 cursor-not-allowed py-[10px] text-sm hover:bg-gray-400 font-medium"
+                                : "bg-blue-200 text-blue-900 py-[10px] text-sm hover:bg-blue-200 font-medium"
+                              }`}
                             onClick={() => !isFull && handleJoinEvent(event._id)}
                             disabled={isFull && !isJoined}
                           >
@@ -565,6 +568,6 @@ export default function EventPage() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </div >
   );
 }
