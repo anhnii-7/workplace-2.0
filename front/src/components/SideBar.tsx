@@ -37,18 +37,20 @@ const items = [
 const SideBar = () => {
     const pathname = usePathname();
     const [currentUser, setCurrentUser] = useState<any>(null);
-  
+    
     useEffect(() => {
       const currentUserString = localStorage.getItem("currentUser");
       setCurrentUser(currentUserString ? JSON.parse(currentUserString) : null);
     }, []);
+    const profile = currentUser?.image || "/avatar.png";
+    console.log(currentUser)
     return (
         <div
-            className='w-[302px] bg-[#E5EFF8] rounded-[0px_24px_24px_0px] h-auto px-5 py-10 flex flex-col gap-10'
+            className='w-[302px] bg-[#E5EFF8] rounded-[0px_24px_24px_0px] px-5 py-10 flex flex-col gap-10 fixed h-screen'
         >
             <div className='w-[262px] flex items-center gap-3 p-2 rounded-md shadow-[0px_0px_4px_2px_rgba(125,168,225,0.12)]'>
                 <Image
-                    src="https://res.cloudinary.com/dl3wkodkk/image/upload/v1748261376/07e9eaaf-18e3-40b0-86be-ea5e0781c68d_esxixq.jpg"
+                    src={profile}
                     alt="Logo"
                     width={200}
                     height={60}

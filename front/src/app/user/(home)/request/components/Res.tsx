@@ -13,16 +13,28 @@ export const ResBody = () => {
       fetch(`/api/notification?to=${user._id}`)
         .then((res) => res.json())
         .then((data) => {
-          // Only show notifications where to === current user
-          setNotifications(data.data.filter((n: any) => n.to === user._id));
+          // Only show notifications where current user's ID is in the toUser array
+          setNotifications(data.data.filter((n: any) => {
+            // Check if toUser exists and is an array, then check if it includes the user ID
+            if (n.toUser && Array.isArray(n.toUser)) {
+              return n.toUser.some((userObj: any) => userObj._id === user._id);
+            }
+            // Fallback: check the original 'to' field if it's an array
+            if (n.to && Array.isArray(n.to)) {
+              return n.to.includes(user._id);
+            }
+            // Fallback: check if 'to' is a single value
+            return n.to === user._id;
+          }));
         });
     }
   }, []);
   console.log(notifications , "res")
   if (!currentUser) return null;
-  // console.log(notifications)
+  // console.log(currentUser._id)
+
   return (
-    <div className="grid grid-cols-2 gap-5 mx-[60px]">
+    <div className="grid grid-cols-2 gap-5">
       {notifications.length === 0 && (
         <div className="col-span-2 text-center text-gray-400">Ирсэн хүсэлт алга байна</div>
       )}
