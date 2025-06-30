@@ -59,7 +59,7 @@ export default function WishPage() {
                 <Card className="p-0 w-[267.5px] h-[288px] flex flex-col gap-3 box-border border border-[#B8D5ED]">
                   <div className=" w-full rounded-3xl h-[224px] bg-white overflow-hidden relative">
                     <Image
-                      src={hobby.image}
+                      src={hobby?.image}
                       fill={true}
                       alt="sport"
                       className="place-self-center"
@@ -67,7 +67,7 @@ export default function WishPage() {
                     />
                   </div>
                   <p className="bg-slate-50 text-center rounded-b-2xl text-lg py-3 text-slate-800">
-                    {hobby.title}
+                    {hobby?.title}
                   </p>
                 </Card>
               </Link>

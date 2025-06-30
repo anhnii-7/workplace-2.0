@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { CalendarSearch, Users, Plus,Calendar, User } from "lucide-react"
+import { CalendarSearch, Users, Plus, Calendar, User } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -69,18 +69,18 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
 
   const fetchEvents = async () => {
     if (!hobbyId) return;
-    
+
     try {
       setLoading(true)
       const response = await axios.get<{ success: boolean; data: Event[]; count: number }>('/api/event')
-      
+
       if (response.data.success) {
         // Filter events for this specific hobby
-        const hobbyEvents = response.data.data.filter((event: Event) => 
+        const hobbyEvents = response.data.data.filter((event: Event) =>
           event.eventType._id === hobbyId
         )
         setEvents(hobbyEvents)
-        
+
         // Update joined events based on current user's participation
         if (currentUser) {
           const userJoinedEvents = hobbyEvents
@@ -111,9 +111,9 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
         toast.error("Хэрэглэгчийн мэдээлэл олдсонгүй");
         return;
       }
-      
+
       const currentUser = JSON.parse(currentUserString);
-      
+
       const eventData = {
         ...newEvent,
         maxParticipants: parseInt(newEvent.maxParticipants),
@@ -123,12 +123,12 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
 
       const response = await axios.post('/api/event', eventData)
       const responseData = response.data as { success: boolean; data: Event; message: string };
-      
+
       if (responseData.success) {
         toast.success("Эвент амжилттай үүсгэгдлээ!")
         setIsCreateEventOpen(false)
         setIsSuccessOpen(true)
-        
+
         // Reset form
         setNewEvent({
           name: "",
@@ -139,7 +139,7 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
           maxParticipants: "",
           description: "",
         })
-        
+
         // Refresh events
         fetchEvents()
       } else {
@@ -170,7 +170,7 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
 
       if (responseData.success) {
         // Update local state
-    setJoinedEvents((prev) => {
+        setJoinedEvents((prev) => {
           if (isCurrentlyJoined) {
             return prev.filter((id) => id !== eventId);
           } else {
@@ -179,8 +179,8 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
         });
 
         // Update events list with the updated event
-        setEvents((prevEvents) => 
-          prevEvents.map((event) => 
+        setEvents((prevEvents) =>
+          prevEvents.map((event) =>
             event._id === eventId ? responseData.data : event
           )
         );
@@ -202,13 +202,12 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
   console.log(events)
   console.log("test")
   return (
-    <div className="min-h-screen bg-gray-50 w-full">
+    <div className="min-h-screen w-full">
       <div className="w-full px-6 py-6">
         {/* Header */}
-        <h1 className="text-3xl font-semibold text-gray-800 text-center mb-8">
-          Сонирхлоороо нэгдэн цагийг хамтдаа өнгөрүүлцгээе
-        </h1>
-
+        <p className="text-slate-800 text-2xl font-medium text-center py-4 px-6">
+          Олуулаа илүү хөгжилтэй
+        </p>
         {/* Controls */}
         <div className="flex justify-between items-center mb-8">
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
@@ -369,7 +368,7 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
                 const isJoined = joinedEvents.includes(event._id)
                 const isFull = event.participants.length >= event.maxParticipants
                 const remainingSpots = event.maxParticipants - event.participants.length
-                
+
                 return (
                   <Card key={event._id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
                     <CardContent className="p-6">
@@ -422,13 +421,12 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
                           </Button>
                           <Button
                             size="sm"
-                            className={`flex-1 transition-colors ${
-                              isJoined
+                            className={`flex-1 transition-colors ${isJoined
                                 ? "bg-green-500 hover:bg-green-600 text-white"
                                 : isFull
                                   ? "bg-gray-400 cursor-not-allowed"
                                   : "bg-blue-500 hover:bg-blue-600 text-white"
-                            }`}
+                              }`}
                             onClick={() => !isFull && handleJoinEvent(event._id)}
                             disabled={isFull && !isJoined}
                           >
