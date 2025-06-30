@@ -351,16 +351,16 @@ export default function WishPage() {
               {filteredUsers.map((user) => (
                 <Card
                   key={user._id}
-                  className="p-4 hover:shadow-lg transition-shadow w-[359px] flex flex-col gap-3"
+                  className="p-4 hover:shadow-lg transition-shadow w-[399px] flex flex-col gap-3"
                 >
-                  <div className="flex justify-around gap-4  items-center">
+                  <div className="flex justify-around gap-4  items-center ">
                     <div className="flex flex-col items-center gap-4">
                       <Avatar className="w-24 h-24 rounded-lg">
                         <AvatarImage
                           src={`${user.image}`}
                           alt={`${user.name} ${user.lastName}`}
                         />
-                        <AvatarFallback className="text-[28px]">
+                        <AvatarFallback className="text-[28px] text-red-500">
                           {user.name.charAt(0)}
                           {user.lastName.charAt(0)}
                         </AvatarFallback>
