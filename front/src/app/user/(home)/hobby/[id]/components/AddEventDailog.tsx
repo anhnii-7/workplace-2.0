@@ -206,6 +206,31 @@ export function AddEventDialog({ hobbyId, onEventCreated, currentUser }: AddEven
                 )}
               />
               <div className="grid grid-cols-2 gap-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full mb-4"
+                  onClick={() => {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    const formattedDate = tomorrow.toISOString().split('T')[0];
+                    
+                    form.reset({
+                      name: "Сагсан бөмбөгийн тэмцээн",
+                      eventType: hobbyId,
+                      eventDate: formattedDate,
+                      eventTime: "14:00",
+                      eventLocation: "MCS Arena, 3-р давхар",
+                      maxParticipants: "20",
+                      description: "Сагсан бөмбөгийн тэмцээн - Асуух зүйл байвал > 99123489",
+                    });
+                  }}
+                  disabled={isLoading}
+                >
+                  Жишээ өгөгдөл
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-6">
                 <Button 
                   type="button"
                   variant="outline" 

@@ -59,6 +59,8 @@ export default function EventPage() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   const [response, setResponse] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     // Get current user from localStorage
     const currentUserString = localStorage.getItem("currentUser");
@@ -391,6 +393,29 @@ export default function EventPage() {
                       />
                     </div>
                   </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full mb-4"
+                    onClick={() => {
+                      const tomorrow = new Date();
+                      tomorrow.setDate(tomorrow.getDate() + 1);
+                      const formattedDate = tomorrow.toISOString().split('T')[0];
+                      
+                      setNewEvent({
+                        name: "Сагсан бөмбөгийн тэмцээн",
+                        eventType: hobbies[0]?._id || "",
+                        eventDate: formattedDate,
+                        eventTime: "14:00",
+                        eventLocation: "MCS Arena, 3-р давхар",
+                        maxParticipants: "20",
+                        description: "Сагсан бөмбөгийн тэмцээн - Асуух зүйл байвал > 99123489",
+                      });
+                    }}
+                    disabled={isLoading}
+                  >
+                    Жишээ өгөгдөл
+                  </Button>
                   <div className="flex gap-3">
                     <Button variant="outline" className="flex-1" onClick={() => setIsCreateEventOpen(false)}>
                       Буцах
@@ -569,5 +594,6 @@ export default function EventPage() {
         </DialogContent>
       </Dialog>
     </div >
+    // Fill with mock data2
   );
 }
