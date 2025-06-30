@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "to (userId) or from (userId) is required" }, { status: 400 });
     }
     const match: any = {};
-    if (to) match.to = new (require('mongoose')).Types.ObjectId(to);
+    if (to) match.to = { $in: [new (require('mongoose')).Types.ObjectId(to)] };
     if (from) match.from = new (require('mongoose')).Types.ObjectId(from);
     const notifications = await Notification.aggregate([
       { $match: match },
@@ -78,7 +78,8 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: true, data: notification }, { status: 201 });
     } catch (error) {
         console.error("Error creating notification:", error);
-        return NextResponse.json({ error: "Failed to create notification" }, { status: 500 });
+        const message = error instanceof Error ? error.message : "Failed to create notification";
+        return NextResponse.json({ error: "Failed to create notification", message }, { status: 500 });
     }
 }
 

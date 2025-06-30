@@ -18,16 +18,16 @@ interface CardProps {
     notif: any;
     direction: 'sent' | 'recieved'; // Note the correct spelling
 }
-
 const Card = ({notif, direction} : CardProps) => {
     // Choose the correct user aggregate based on direction
     const main = direction === 'recieved'
-        ? notif.fromUser
-        : notif.toUser;
+    ? notif.fromUser
+    : notif.toUser;
     // {     notif.type === "Event" ? (       <div> {/* Event UI */} </div>     ) :
     // notif.type === "Request" ? (       <div> {/* Request UI */} </div>     ) :
     // null   }
     // console.log(direction)
+    console.log(notif)
     return (<> {
         notif.type === "Request"
             ? (<div
@@ -36,7 +36,7 @@ const Card = ({notif, direction} : CardProps) => {
                     `
                 }>
                     {
-                        notif?.request[0]?.status==="pending" ? (<>
+                        notif?.request[0]?.status==="pending" && direction === "sent"? (<>
                         <div className={`w-[334px] bg-amber-50 border-amber-100 flex items-center py-2.5 px-4 rounded-md gap-2`}>
                             <Clock4 className='h-4 w-4'
                                 color='#334155'
@@ -45,7 +45,7 @@ const Card = ({notif, direction} : CardProps) => {
                                 Хүсэлт хүлээгдэж байна
                             </span>
                         </div>  
-                        </>): notif?.request[0]?.status === "accepted" ?(<>
+                        </>): notif?.request[0]?.status === "accepted" && direction === "sent" ?(<>
                             <div className={`w-[334px] bg-green-50 border-green-800 flex py-2.5 px-4 rounded-md gap-2 flex-col`}>
                             <div className='flex gap-3'>
                                 <CheckCheck className='h-4 w-4'
@@ -134,7 +134,7 @@ const Card = ({notif, direction} : CardProps) => {
                     ) : null}
                 </div>
             </div>
-            ): notif.type === "Event"? (
+            ): notif.type === "Event" && direction !== "sent" ? (
             <div
                 className='w-[535px] h-[324px] bg-[#E5EFF8] rounded-lg p-6 flex flex-col gap-5 [&>*]:box-border'>
                 <div className='flex gap-5 justify-between'>
