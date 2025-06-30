@@ -165,8 +165,8 @@ const handleSubmit = async (e: React.FormEvent) => {
     className="w-full mb-4"
     onClick={() => {
       setFormData({
-        email: 'oyunbat@example.com',
-        password: 'oyunbat1234'
+        email: 'baterdene@example.com',
+        password: 'password123'
       });
       setErrors({});
       setLoginError('');

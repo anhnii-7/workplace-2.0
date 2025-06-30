@@ -31,7 +31,8 @@ const Card = ({notif, direction} : CardProps) => {
     return (<> {
         notif.type === "Request"
             ? (<div
-                className={`w-[535px] bg-[#E5EFF8] rounded-lg p-6 flex flex-col gap-10
+                // className={`w-[535px] bg-[#E5EFF8] rounded-lg p-6 flex flex-col gap-10
+                 className={`w-full bg-[#E5EFF8] rounded-lg p-6 flex flex-col gap-10
                     ${direction === "sent" ? "h-[348px]":"h-[324px]"}
                     `
                 }>
@@ -138,7 +139,8 @@ const Card = ({notif, direction} : CardProps) => {
             </div>
             ): notif.type === "Event" && direction !== "sent" ? (
             <div
-                className='w-[535px] h-[324px] bg-[#E5EFF8] rounded-lg p-6 flex flex-col gap-5 [&>*]:box-border'>
+                // className='w-[535px] h-[324px] bg-[#E5EFF8] rounded-lg p-6 flex flex-col gap-5 [&>*]:box-border'>
+                className='w-full h-[324px] bg-[#E5EFF8] rounded-lg p-6 flex flex-col gap-5 [&>*]:box-border'>
                 <div className='flex gap-5 justify-between'>
                     <div className='rounded-lg flex items-center gap-3'>
                         <div
