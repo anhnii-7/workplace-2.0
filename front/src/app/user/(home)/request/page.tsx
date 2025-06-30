@@ -5,7 +5,7 @@ import { ResBody } from "./components/Res";
 
 export default function RequestPage() {
   return (
-    <div className="w-full h-screen ">
+    <div className="w-full h-screen px-5">
       <div className="text-center pb-[60px]">
         <h1 className="text-slate-700 text-2xl leading-8 font-semibold">
           Танд ирсэн мэдэгдлүүд

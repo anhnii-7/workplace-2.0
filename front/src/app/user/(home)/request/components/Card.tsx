@@ -37,13 +37,15 @@ const Card = ({notif, direction} : CardProps) => {
                 }>
                     {
                         notif?.request[0]?.status==="pending" && direction === "sent"? (<>
-                        <div className={`w-[334px] bg-amber-50 border-amber-100 flex items-center py-2.5 px-4 rounded-md gap-2`}>
-                            <Clock4 className='h-4 w-4'
-                                color='#334155'
-                            />
-                            <span className='text-sm font-medium text-slate-700'>
-                                Хүсэлт хүлээгдэж байна
-                            </span>
+                        <div className='w-[487px] py-3 flex items-center'>
+                            <div className={`w-[334px] bg-amber-50 border-amber-100 flex items-center py-2.5 px-4 rounded-md gap-2`}>
+                                <Clock4 className='h-4 w-4'
+                                    color='#334155'
+                                />
+                                <span className='text-sm font-medium text-slate-700'>
+                                    Хүсэлт хүлээгдэж байна
+                                </span>
+                            </div>    
                         </div>  
                         </>): notif?.request[0]?.status === "accepted" && direction === "sent" ?(<>
                             <div className={`w-[334px] bg-green-50 border-green-800 flex py-2.5 px-4 rounded-md gap-2 flex-col`}>
