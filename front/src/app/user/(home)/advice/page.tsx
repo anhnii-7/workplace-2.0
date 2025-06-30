@@ -66,6 +66,7 @@ interface User {
   hobby: string;
   experience: string;
   menteesCount?: number;
+  image?: string;
 
   hobbyInfo: {
     _id: string;
@@ -356,7 +357,7 @@ export default function WishPage() {
                     <div className="flex flex-col items-center gap-4">
                       <Avatar className="w-24 h-24 rounded-lg">
                         <AvatarImage
-                          src={`/avatars/${user._id}.jpg`}
+                          src={`${user.image}`}
                           alt={`${user.name} ${user.lastName}`}
                         />
                         <AvatarFallback className="text-[28px]">
