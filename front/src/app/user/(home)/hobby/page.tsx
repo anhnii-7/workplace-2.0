@@ -11,6 +11,7 @@ export type Hobby = {
   title: string;
   _id: string;
   image: string;
+  users: string[];
 };
 export default function WishPage() {
   const [hobbies, setHobbies] = useState<Hobby[]>([]);

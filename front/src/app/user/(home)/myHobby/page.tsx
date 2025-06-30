@@ -1,124 +1,145 @@
-"use client";
-import { useEffect, useState } from "react";
-import { Hobby } from "../hobby/page";
-import axios from "axios";
-import Image from "next/image";
-import { AddHobbyDailog } from "../components/addHobby";
+"use client"
+
+import { useEffect, useState } from "react"
+import type { Hobby } from "../hobby/page"
+import axios from "axios"
+import Image from "next/image"
+import { AddHobbyDialog } from "../components/addHobby"
 
 const MyHobby = () => {
-  const [myHobbies, setMyHobbies] = useState<Hobby[]>([]);
-  const [allHobbies, setAllHobbies] = useState<Hobby[]>([]);
-  const [userId, setUserId] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [myHobbies, setMyHobbies] = useState<Hobby[]>([])
+  const [allHobbies, setAllHobbies] = useState<Hobby[]>([])
+  const [userId, setUserId] = useState<string>("")
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Эхлээд userId-г авна
+  // localStorage-с userId болон hobby мэдээлэл авах
   useEffect(() => {
-    const userRes = localStorage.getItem("currentUser");
+    const userRes = localStorage.getItem("currentUser")
     if (userRes) {
-      const user = JSON.parse(userRes);
-      setMyHobbies(user.hobbyInfo || []);
-      setUserId(user._id);
-    }
-  }, []);
+      const user = JSON.parse(userRes)
+      console.log("localStorage user:", user)
+      setUserId(user._id)
 
-  // Хэрэглэгчийн хоббиуд болон бүх хоббиудыг авах
+      // localStorage-д hobbies байвал myHobbies-д тохируулах
+      if (user.hobbies && Array.isArray(user.hobbies)) {
+        setMyHobbies(user.hobbies)
+      }
+    }
+  }, [])
+
+  // Хэрэглэгчийн hobby болон бүх hobby-г API-с авах
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) return
 
     const fetchData = async () => {
       try {
-        // Хэрэглэгчийн хоббиудыг авах
-        const userHobbiesResponse = await axios.get(`/api/user/by-hobby/${userId}`);
-        let userHobbyData = userHobbiesResponse.data;
+        // GET user hobby
+        const userRes = await fetch(`/api/user/by-hobby/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
 
-        if (userHobbyData && typeof userHobbyData === "object" && !Array.isArray(userHobbyData)) {
-          userHobbyData = userHobbyData.hobbies || userHobbyData.data || userHobbyData;
-        }
+        const res = await userRes.json()
+        const userHobbyData = res.data || res.hobbies || res
+        console.log("User hobby data:", userHobbyData)
 
-        // Бүх хоббиудыг авах
-        const allHobbiesResponse = await axios.get('/api/hobby');
-        let allHobbyData = allHobbiesResponse.data;
+        let userHobbies: Hobby[] = []
 
-        if (allHobbyData && typeof allHobbyData === "object") {
-          if (allHobbyData.success && allHobbyData.data) {
-            allHobbyData = allHobbyData.data;
-          } else if (allHobbyData.hobbies && Array.isArray(allHobbyData.hobbies)) {
-            allHobbyData = allHobbyData.hobbies;
+        // Response format шалгах
+        if (Array.isArray(userHobbyData) && userHobbyData.length > 0) {
+          const userObj = userHobbyData[0]
+          if (Array.isArray(userObj.hobbies)) {
+            userHobbies = userObj.hobbies
           }
         }
 
-        // State-г шинэчлэх
-        if (Array.isArray(userHobbyData)) {
-          setMyHobbies(userHobbyData);
-        } else {
-          console.error("User hobbies data is not an array:", userHobbyData);
+        if (userHobbies.length > 0) {
+          setMyHobbies(userHobbies)
+
+          // localStorage шинэчлэх
+          const currentUserStr = localStorage.getItem("currentUser")
+          if (currentUserStr) {
+            const currentUser = JSON.parse(currentUserStr)
+            currentUser.hobbies = userHobbies
+            localStorage.setItem("currentUser", JSON.stringify(currentUser))
+          }
         }
 
-        if (Array.isArray(allHobbyData)) {
-          setAllHobbies(allHobbyData);
-        } else {
-          console.error("All hobbies data is not an array:", allHobbyData);
+        // GET all hobbies
+        const allHobbyRes = await axios.get("/api/hobby")
+        const hobbyData = allHobbyRes.data
+
+        let allFromAPI: Hobby[] = []
+        if (Array.isArray(hobbyData?.data)) {
+          allFromAPI = hobbyData.data
+        } else if (Array.isArray(hobbyData?.hobbies)) {
+          allFromAPI = hobbyData.hobbies
+        } else if (Array.isArray(hobbyData)) {
+          allFromAPI = hobbyData
         }
 
+        if (allFromAPI.length > 0) {
+          setAllHobbies(allFromAPI)
+        }
       } catch (error) {
-        console.error("Failed to fetch data:", error);
+        console.error("Алдаа гарлаа:", error)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    fetchData();
-  }, [userId]);
+    fetchData()
+  }, [userId])
 
-  // Хобби нэмэгдсэний дараа currentUser-г шинэчлэх callback функц
+  // Хобби нэмэх үед дуудагдах callback
   const handleHobbiesAdded = async (addedHobbyIds: string[]) => {
     try {
-      if (!Array.isArray(allHobbies)) {
-        console.error("allHobbies is not an array:", allHobbies);
-        return;
+      // API-аас хэрэглэгчийн шинэчлэгдсэн хоббиудыг авах
+      const userRes = await fetch(`/api/user/by-hobby/${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      const res = await userRes.json()
+      const userHobbyData = res.data || res.hobbies || res
+
+      let updatedHobbies: Hobby[] = []
+      if (Array.isArray(userHobbyData) && userHobbyData.length > 0) {
+        const userObj = userHobbyData[0]
+        if (Array.isArray(userObj.hobbies)) {
+          updatedHobbies = userObj.hobbies
+        }
       }
 
-      // Нэмэгдсэн хоббиудын мэдээллийг allHobbies array-с олох
-      const addedHobbies = allHobbies.filter(hobby => 
-        hobby && hobby._id && addedHobbyIds.includes(hobby._id)
-      );
-      
-      console.log("Added hobbies:", addedHobbies);
-      
-      // myHobbies state-г шинэчлэх
-      setMyHobbies(prev => [...prev, ...addedHobbies]);
-      
-      // localStorage дахь currentUser-г шинэчлэх
-      const userRes = localStorage.getItem("currentUser");
-      if (userRes) {
-        const user = JSON.parse(userRes);
-        user.hobbyInfo = [...(user.hobbyInfo || []), ...addedHobbies];
-        localStorage.setItem("currentUser", JSON.stringify(user));
+      // State шинэчлэх
+      setMyHobbies(updatedHobbies)
+
+      // localStorage шинэчлэх
+      const currentUserStr = localStorage.getItem("currentUser")
+      if (currentUserStr) {
+        const currentUser = JSON.parse(currentUserStr)
+        currentUser.hobbies = updatedHobbies
+        localStorage.setItem("currentUser", JSON.stringify(currentUser))
+        console.log("Updated localStorage with new hobbies:", updatedHobbies)
       }
     } catch (error) {
-      console.error("Error updating user hobbies:", error);
+      console.error("Хобби шинэчлэхэд алдаа гарлаа:", error)
     }
-  };
+  }
 
   if (isLoading) {
-    return (
-      <div className="grid gap-10">
-        <h1 className="text-4xl font-semibold text-slate-700 text-center p-4">
-          Миний хобби
-        </h1>
-        <div className="flex justify-center">
-          <p className="text-slate-500">Хобби ачааллаж байна...</p>
-        </div>
-      </div>
-    );
+    return <div className="text-center p-10 text-slate-500">Хобби ачааллаж байна...</div>
   }
 
   return (
     <div className="flex flex-col items-center gap-10">
-      <h1 className="text-4xl font-semibold text-slate-700 text-center p-4">
-        Миний хобби
-      </h1>
-      <div className="grid grid-cols-4 gap-5 w-full ">
+      <h1 className="text-4xl font-semibold text-slate-700 text-center p-4">Миний хобби</h1>
+
+      <div className="grid grid-cols-4 gap-5 w-full">
         {myHobbies.map((hobby) => (
           <div
             key={hobby._id}
@@ -126,8 +147,8 @@ const MyHobby = () => {
           >
             <div className="w-[140px] h-[224px] flex items-center place-self-center">
               <Image
-                src={hobby.image}
-                alt={hobby.title}
+                src={hobby.image || "/placeholder.svg"}
+                alt={hobby.title || "Хобби зураг"}
                 style={{ objectFit: "contain" }}
                 width={140}
                 height={224}
@@ -139,15 +160,10 @@ const MyHobby = () => {
           </div>
         ))}
 
-        {/* Хобби нэмэх диалог */}
-        <AddHobbyDailog 
-          hobbies={allHobbies}
-          userId={userId}
-          onHobbiesAdded={handleHobbiesAdded}
-        />
+        <AddHobbyDialog hobbies={allHobbies} userId={userId} onHobbiesAdded={handleHobbiesAdded} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MyHobby;
+export default MyHobby
