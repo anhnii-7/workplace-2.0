@@ -6,6 +6,7 @@ import type { Hobby } from "../hobby/page"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import axios from "axios"
+import { toast } from "sonner"
 
 interface DialogDemoProps {
   hobbies: Hobby[]
@@ -21,6 +22,7 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([])
   const [userExistingHobbies, setUserExistingHobbies] = useState<Hobby[]>([])
   const [loading, setLoading] = useState(false)
+  
 
   // API-аас бүх хоббиудыг авах функц
   const getAllHobbies = async () => {
@@ -47,60 +49,62 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
     } catch (error) {
       console.error("Error fetching all hobbies:", error)
       setAllHobbies([])
+      toast.error("Хоббиудыг ачааллахад алдаа гарлаа")
     } finally {
       setLoading(false)
     }
   }
 
-  // Хэрэглэгчийн одоо байгаа хоббиудыг авах
-  const getUserHobbies = async (userId: string) => {
-    try {
-      console.log("Fetching user hobbies for userId:", userId)
+ // Хэрэглэгчийн одоо байгаа хоббиудыг авах
+ const getUserHobbies = async (userId: string) => {
+  try {
+    console.log("Fetching user hobbies for userId:", userId)
 
-      // localStorage-с эхлээд авах
-      const currentUserStr = localStorage.getItem("currentUser")
-      if (currentUserStr) {
-        const currentUser = JSON.parse(currentUserStr)
-        if (currentUser.hobbies && Array.isArray(currentUser.hobbies)) {
-          setUserExistingHobbies(currentUser.hobbies)
-          console.log("User hobbies from localStorage:", currentUser.hobbies)
-          return
-        }
+    // localStorage-с эхлээд авах
+    const currentUserStr = localStorage.getItem("currentUser")
+    if (currentUserStr) {
+      const currentUser = JSON.parse(currentUserStr)
+      if (currentUser.hobbies && Array.isArray(currentUser.hobbies)) {
+        setUserExistingHobbies(currentUser.hobbies)
+        console.log("User hobbies from localStorage:", currentUser.hobbies)
+        return
       }
-
-      // API-аас авах
-      const response = await axios.get(`/api/user/by-hobby/${userId}`)
-      const userHobbyData = response.data
-      console.log("User hobby API response:", userHobbyData)
-
-      let extractedHobbies: Hobby[] = []
-
-      // API response format шалгах
-      if (Array.isArray(userHobbyData) && userHobbyData.length > 0) {
-        const userObj = userHobbyData[0]
-        if (Array.isArray(userObj.hobbies)) {
-          extractedHobbies = userObj.hobbies
-        }
-      } else if (userHobbyData?.data && Array.isArray(userHobbyData.data)) {
-        extractedHobbies = userHobbyData.data
-      } else if (userHobbyData?.hobbies && Array.isArray(userHobbyData.hobbies)) {
-        extractedHobbies = userHobbyData.hobbies
-      }
-
-      console.log("Extracted user hobbies:", extractedHobbies)
-      setUserExistingHobbies(extractedHobbies)
-
-      // localStorage шинэчлэх
-      if (currentUserStr) {
-        const currentUser = JSON.parse(currentUserStr)
-        currentUser.hobbies = extractedHobbies
-        localStorage.setItem("currentUser", JSON.stringify(currentUser))
-      }
-    } catch (error) {
-      console.error("Error fetching user hobbies:", error)
-      setUserExistingHobbies([])
     }
+
+    // API-аас авах
+    const response = await axios.get(`/api/user/by-hobby/${userId}`)
+    const userHobbyData = response.data
+    console.log("User hobby API response:", userHobbyData)
+
+    let extractedHobbies: Hobby[] = []
+
+    // API response format шалгах
+    if (Array.isArray(userHobbyData) && userHobbyData.length > 0) {
+      const userObj = userHobbyData[0]
+      if (Array.isArray(userObj.hobbies)) {
+        extractedHobbies = userObj.hobbies
+      }
+    } else if (userHobbyData?.data && Array.isArray(userHobbyData.data)) {
+      extractedHobbies = userHobbyData.data
+    } else if (userHobbyData?.hobbies && Array.isArray(userHobbyData.hobbies)) {
+      extractedHobbies = userHobbyData.hobbies
+    }
+
+    console.log("Extracted user hobbies:", extractedHobbies)
+    setUserExistingHobbies(extractedHobbies)
+
+    // localStorage шинэчлэх
+    if (currentUserStr) {
+      const currentUser = JSON.parse(currentUserStr)
+      currentUser.hobbies = extractedHobbies
+      localStorage.setItem("currentUser", JSON.stringify(currentUser))
+    }
+  } catch (error) {
+    console.error("Error fetching user hobbies:", error)
+    setUserExistingHobbies([])
+    toast.error("Хэрэглэгчийн хобби ачааллахад алдаа гарлаа")
   }
+}
 
   // UserId тохируулах
   useEffect(() => {
@@ -140,6 +144,7 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
 
     if (isAlreadyOwned) {
       console.log("Cannot select - user already has this hobby")
+      toast.warning("Та энэ хоббиг аль хэдийн нэмсэн байна")
       return // Хэрэглэгчийн одоо байгаа хобби бол сонгох боломжгүй
     }
 
@@ -153,12 +158,12 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
   // Сонгосон хоббиудыг хадгалах
   const handleSaveHobbies = async () => {
     if (selectedHobbies.length === 0) {
-      alert("Хобби сонгоно уу!")
+      toast.warning("Хобби сонгоно уу!")
       return
     }
 
     if (!userId) {
-      alert("Хэрэглэгч олдсонгүй. Дахин нэвтэрнэ үү.")
+      toast.error("Хэрэглэгч олдсонгүй. Дахин нэвтэрнэ үү.")
       return
     }
 
@@ -219,10 +224,12 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
 
       if (errors.length > 0) {
         console.error("Errors adding hobbies:", errors)
-        alert(`Зарим хобби нэмэхэд алдаа гарлаа: ${errors.join(", ")}`)
+        toast.error(`Зарим хобби нэмэхэд алдаа гарлаа: ${errors.join(", ")}`)
       } else {
         // Амжилттай нэмэгдсэн
         console.log("Hobbies added successfully")
+        const addedCount = selectedHobbies.length
+        toast.success('Таны хобби амжилттай нэмэгдлээ')
       }
 
       // Callback дуудах
@@ -238,7 +245,7 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
       setIsOpen(false)
     } catch (error) {
       console.error("Network error:", error)
-      alert("Хобби нэмэхэд алдаа гарлаа!")
+      toast.error("Хобби нэмэхэд алдаа гарлаа!")
     } finally {
       setIsLoading(false)
     }
@@ -277,8 +284,8 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
       </DialogTrigger>
 
       <DialogContent className="w-[988px] max-w-[90vw] box-border flex flex-col justify-between max-h-[90vh]">
-        <DialogHeader>
-          <DialogTitle className="flex justify-center text-slate-700 text-2xl font-semibold leading-8">
+      <DialogHeader className="pb-2">
+          <DialogTitle className="flex justify-center text-slate-700 text-2xl font-semibold leading-8 py-1">
             Өөрийн дуртай хэдэн ч төрлийн сонирхлыг сонгох боломжтой
           </DialogTitle>
         </DialogHeader>
@@ -327,12 +334,6 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
                   >
                     {hobby.title}
                   </p>
-
-              
-
-               
-
-                  
                 </div>
               )
             })
@@ -341,7 +342,6 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
 
         <DialogFooter className="w-full">
           <div className="w-full space-y-3">
-         
             <button
               className={`w-full px-4 rounded-md py-3 text-sm font-medium leading-5 transition-colors ${
                 isLoading
@@ -358,8 +358,8 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
                 : !userId
                   ? "Хэрэглэгч олдсонгүй"
                   : selectedHobbies.length > 0
-                    ? `Hэмэх`
-                    : "Hэмэх"}
+                    ? `Нэмэх`
+                    : "Нэмэх"}
             </button>
           </div>
         </DialogFooter>

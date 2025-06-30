@@ -137,7 +137,7 @@ const MyHobby = () => {
 
   return (
     <div className="flex flex-col items-center gap-10">
-      <h1 className="text-4xl font-semibold text-slate-700 text-center p-4">Миний хобби</h1>
+      <h1 className="text-2xl font-normal text-slate-700 text-center py-[14px] px-[24px]">Миний хобби</h1>
 
       <div className="grid grid-cols-4 gap-5 w-full">
         {myHobbies.map((hobby) => (
