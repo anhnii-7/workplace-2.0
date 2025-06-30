@@ -34,6 +34,7 @@ export type User = {
   hobbyInfo: HobbyInfo
   department: string
   departmentInfo: DepartmentInfo
+  image?: string
   availableSchedules?: string[]
   createdAt?: Date
   updatedAt?: Date
@@ -220,12 +221,13 @@ const handleSendRequest = async (toUserId: string) => {
               <Card key={user._id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
                 <CardContent className="p-4">
                   <div className="flex flex-col items-center">
-                    <Avatar className="w-24 h-24 mb-3">
-                      <AvatarImage src={`/avatars/${user._id}.jpg`} alt={user.name} />
+                    <div className="w-26 h-24 mb-3">
+                      <Image src={`${user.image}`} alt="image" width={124} height={120}></Image>
+                      {/* <AvatarImage src={`/avatars/${user._id}.jpg`} alt={user.name} />
                       <AvatarFallback className="bg-gray-200 text-gray-600 text-xl">
                         {user.lastName.slice(0, 1)}{user.name.slice(0, 1)}
-                      </AvatarFallback>
-                    </Avatar>
+                      </AvatarFallback> */}
+                    </div>
 
                     <div className="flex flex-col gap-1 py-[6px] text-center w-full">
                       <div className="w-full">
