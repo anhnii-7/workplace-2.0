@@ -351,16 +351,16 @@ export default function WishPage() {
               {filteredUsers.map((user) => (
                 <Card
                   key={user._id}
-                  className="p-4 hover:shadow-lg transition-shadow w-[399px] flex flex-col gap-3"
+                  className="p-4 hover:shadow-lg transition-shadow w-[359px] flex flex-col gap-3"
                 >
-                  <div className="flex justify-around gap-4  items-center ">
+                  <div className="flex justify-around gap-4  items-center">
                     <div className="flex flex-col items-center gap-4">
                       <Avatar className="w-24 h-24 rounded-lg">
                         <AvatarImage
                           src={`${user.image}`}
                           alt={`${user.name} ${user.lastName}`}
                         />
-                        <AvatarFallback className="text-[28px] text-red-500">
+                        <AvatarFallback className="text-[28px]">
                           {user.name.charAt(0)}
                           {user.lastName.charAt(0)}
                         </AvatarFallback>
@@ -486,7 +486,7 @@ export default function WishPage() {
                             </Badge>
                           </div>
                           <div className="flex gap-3">
-                            <div className="w-[60px] h-[60px] rounded-md bg-blue-200 flex items-center justify-center">img</div>
+                            <div className="w-[60px] h-[60px] rounded-md bg-blue-200 flex items-center justify-center"></div>
                             <div className="flex flex-col gap-2 justify-center">
                               <div className="flex gap-2"><User2 className="w-[16px] h-[16px]" />
                                 <span className="font-normal text-sm">
@@ -536,7 +536,7 @@ export default function WishPage() {
                       <Card key={request._id} className="p-4">
                         <div className="flex flex-col gap-2 items-center">
                           <div className="flex gap-3 justify-around">
-                            <div className="w-[60px] h-[60px] rounded-md bg-blue-200 flex items-center justify-center">img</div>
+                            <div className="w-[60px] h-[60px] rounded-md bg-blue-200 flex items-center justify-center"></div>
                             <div className="flex flex-col gap-2  justify-center ">
                               <div className="flex gap-2"><User2 className="w-[16px] h-[16px]" />
                                 <span className="font-normal text-sm">
