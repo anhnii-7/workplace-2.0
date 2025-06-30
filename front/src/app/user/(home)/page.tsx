@@ -11,7 +11,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative h-full flex items-center justify-center bg-[#f5f8fd md:bg-red-500 lg:bg-green-500 xl:bg-blue-500">
+    <div className="relative h-full flex items-center justify-center bg-[#f5f8fd ">
     
       <div className="relative w-full h-full bg-[#eaf2fc] rounded-3xl shadow-lg flex items-center lg:flex-col xl:flex-row justify-around px-24 py-10 overflow-hidden border border-blue-100">
 
