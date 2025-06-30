@@ -8,10 +8,10 @@ export default function DashboardLayout({
   return (
     <section>
       <div className="flex ">
-        <SideBar  />
+     
+        <SideBar />
           <main className="w-full h-screen p-10 ml-[302px]">{children}</main>
       </div>
     </section>
   );
 }
- 
