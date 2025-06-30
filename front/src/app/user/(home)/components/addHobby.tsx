@@ -34,7 +34,7 @@ export function AddHobbyDailog({
   const [availableHobbies, setAvailableHobbies] = useState<Hobby[]>([]);
   const [loading, setLoading] = useState(false);
   const [userExistingHobbies, setUserExistingHobbies] = useState<Hobby[]>([]);
-
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
   // API-аас бүх хоббиудыг авах функц
   const getAllHobbies = async () => {
     try {
@@ -186,7 +186,22 @@ export function AddHobbyDailog({
           }),
         })
       );
-
+      selectedHobbies.forEach(async (hobbyId) => {
+        // Fetch the hobby to get existing users
+        const res = await fetch(`/api/hobby/${hobbyId}`);
+        const hobby = await res.json();
+        const existingUsers = hobby.users || [];
+      
+        await fetch(`/api/hobby/${hobbyId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            users: [...existingUsers, currentUser._id],
+          }),
+        });
+      });
       const responses = await Promise.all(promises);
 
       // Алдаа шалгах

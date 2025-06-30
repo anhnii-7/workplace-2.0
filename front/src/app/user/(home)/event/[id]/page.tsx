@@ -199,7 +199,8 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
     const date = new Date(dateString);
     return date.toLocaleDateString('mn-MN', { month: '2-digit', day: '2-digit' });
   };
-
+  console.log(events)
+  console.log("test")
   return (
     <div className="min-h-screen bg-gray-50 w-full">
       <div className="w-full px-6 py-6">

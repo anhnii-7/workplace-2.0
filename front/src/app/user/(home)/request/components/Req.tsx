@@ -31,9 +31,9 @@ export const ReqBody = () => {
       {notifications.length === 0 && (
         <div className="col-span-2 text-center text-gray-400">Илгээсэн хүсэлт алга байна</div>
       )}
-      {notifications.map((notif) => {
+      {notifications.map((notif, index) => {
         if (currentUser._id === notif.from) {
-          return <Card notif={notif} direction="sent" key={notif._id}/>;
+          return <Card notif={notif} direction="sent" key={notif._id+index}/>;
         }
         return null;
       })}

@@ -202,3 +202,98 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     )
   }
 }
+  
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    await dbConnect()
+    const { id } = await params
+
+    if (!isValidObjectId(id)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid hobby ID format",
+        },
+        { status: 400 },
+      )
+    }
+
+    const body = await req.json()
+
+    // Validate users array if provided
+    if (body.users !== undefined) {
+      if (!Array.isArray(body.users)) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Users must be an array of ObjectIds",
+          },
+          { status: 400 },
+        )
+      }
+      body.users = body.users.map((userId: string) => {
+        if (!isValidObjectId(userId)) {
+          throw new Error("Invalid user ID format")
+        }
+        return userId
+      })
+      // Use $addToSet to add users without duplicates
+      const hobby = await Hobby.findByIdAndUpdate(
+        id,
+        { $addToSet: { users: { $each: body.users } } },
+        { new: true, runValidators: true }
+      )
+      if (!hobby) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Hobby not found",
+          },
+          { status: 404 },
+        )
+      }
+      return NextResponse.json(
+        {
+          success: true,
+          data: hobby,
+          message: "Hobby updated successfully",
+        },
+        { status: 200 },
+      )
+    }
+
+    // If no users array, fallback to default update logic
+    const hobby = await Hobby.findByIdAndUpdate(id, body, {
+      new: true,
+      runValidators: true,
+    })
+
+    if (!hobby) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Hobby not found",
+        },
+        { status: 404 },
+      )
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: hobby,
+        message: "Hobby updated successfully",
+      },
+      { status: 200 },
+    )
+  } catch (error: any) {
+    console.error("Error updating hobby:", error)
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to update hobby",
+      },
+      { status: 500 },
+    )
+  }
+}

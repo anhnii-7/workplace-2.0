@@ -34,6 +34,7 @@ interface Hobby {
   _id: string;
   title: string;
   image?: string;
+  users?: string[]; // Array of user IDs
 }
 
 export default function EventPage() {
@@ -57,7 +58,7 @@ export default function EventPage() {
   const [editEvent, setEditEvent] = useState<Event | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
-
+  const [response, setResponse] = useState<any>(null);
   useEffect(() => {
     // Get current user from localStorage
     const currentUserString = localStorage.getItem("currentUser");
@@ -125,6 +126,16 @@ export default function EventPage() {
       };
       const response = await axios.post("/api/event", eventData);
       const responseData = response.data as { success: boolean; data: Event; message: string };
+       // Find the selected hobby and get its users array
+       const selectedHobbyObj = hobbies.find(hobby => hobby._id === newEvent.eventType);
+       const toUsers = selectedHobbyObj?.users || [];
+       const notificationResponse = await axios.post("/api/notification", {
+        from: currentUser._id,
+        to: toUsers,
+        type: "Event",
+        typeId: response.data.data._id
+      });
+      const notification = notificationResponse.data as {success: boolean; data: Request; message: string}
       if (responseData.success) {
         setShowSuccessBanner(true);
         setTimeout(() => setShowSuccessBanner(false), 4000);
@@ -140,6 +151,7 @@ export default function EventPage() {
           description: "",
         });
         fetchEvents();
+
       } else {
         toast.error(responseData.message || "Алдаа гарлаа");
       }
@@ -216,7 +228,8 @@ export default function EventPage() {
       toast.error(error.response?.data?.message || "Эвент засахад алдаа гарлаа");
     }
   };
-
+  // console.log("test")
+  console.log(hobbies)
   return (
     <div className="min-h-screen bg-gray-50 w-full">
       {showSuccessBanner && (
@@ -445,7 +458,7 @@ export default function EventPage() {
                           </div>
                         </div>
                         <div className="flex space-x-2">
-                          <Button size="sm" variant="outline" className="flex-1" disabled={!canEdit}
+                          {event.organizer === currentUser.name&& <Button size="sm" variant="outline" className="flex-1" disabled={!canEdit}
                             onClick={() => {
                               if (canEdit) {
                                 setEditEvent(event);
@@ -454,6 +467,7 @@ export default function EventPage() {
                             }}>
                             Засах
                           </Button>
+                          }
                           <Button
                             size="sm"
                             className={`flex-1 transition-colors ${

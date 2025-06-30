@@ -18,16 +18,17 @@ export const ResBody = () => {
         });
     }
   }, []);
-  console.log(notifications[3] , "res")
+  console.log(notifications , "res")
   if (!currentUser) return null;
-  console.log(notifications)
+  // console.log(notifications)
   return (
     <div className="grid grid-cols-2 gap-5 mx-[60px]">
       {notifications.length === 0 && (
         <div className="col-span-2 text-center text-gray-400">Ирсэн хүсэлт алга байна</div>
       )}
       {notifications.map((notif) => {
-        if (currentUser._id === notif.to) {
+        // Handle notif.to as array or single value
+        if (Array.isArray(notif.to) ? notif.to.includes(currentUser._id) : currentUser._id === notif.to) {
           return <Card notif={notif} direction="recieved" key={notif._id}/>;
         }
         return null;
