@@ -234,11 +234,11 @@ export default function EventPage() {
   return (
     <div className="min-h-screen w-full">
       {showSuccessBanner && (
-        <div className="fixed top-8 right-8 z-50 bg-white border border-blue-100 rounded-xl shadow-lg px-8 py-4 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
+        <div className="fixed w-[375px] h-[100px] top-8 right-8 z-50 bg-white border border-blue-100 rounded-xl shadow-lg px-8 py-4 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-yellow-400 text-2xl">✨</span>
-            <span className="font-bold text-lg text-gray-800 underline">Таны эвент амжилттай үүсгэгдлээ</span>
-            <span className="text-yellow-400 text-2xl">✨</span>
+            <span className="text-yellow-400 w-[23px] h-[28px]">✨</span>
+            <span className="font-medium text-lg text-slate-800">Таны эвент амжилттай үүсгэгдлээ</span>
+            <span className="text-yellow-400 w-[23px] h-[28px]">✨</span>
           </div>
           <div className="text-gray-600 text-base">Та хүсэлт хэсгээс хариугаа хянах боломжтой, баярлалаа</div>
         </div>
@@ -311,22 +311,32 @@ export default function EventPage() {
                     <Plus className="w-15 h-15 text-slate-400" />
                   </Card>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[500px] box-border h-fit">
-                  <DialogHeader>
-                    <DialogTitle className="text-xl font-semibold">Шинэ эвент үүсгэх</DialogTitle>
-                    <p className="text-sm text-gray-600">
+                <DialogContent className="w-[744px] bg-[#E5EFF8] box-border h-fit">
+                  <DialogHeader className="gap-1">
+                    <DialogTitle className="text-2xl text-slate-700 font-medium">Шинэ эвент үүсгэх</DialogTitle>
+                    <p className="text-lg text-slate-700 font-normal--">
                       Хамт олонтойгоо цагийг илүү зугаатай өнгөрөөх боломжийг бүтээцгээе
                     </p>
                   </DialogHeader>
                   <div className="space-y-4 py-4">
                     <div>
-                      <Label htmlFor="eventHobby">Хобби</Label>
+                      <Label htmlFor="eventName" className="text-lg font-medium text-slate-700 mb-3">Эвентийн нэр</Label>
+                      <Input
+                        id="eventName"
+                        placeholder="Энд бичиж оруулна уу ..."
+                        className="text-slate-700 text-sm font-normal bg-white"
+                        value={newEvent.name}
+                        onChange={(e) => setNewEvent({ ...newEvent, name: e.target.value })}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="eventHobby" className="text-lg font-medium text-slate-700 mb-3">Төрөл</Label>
                       <Select
                         value={newEvent.eventType}
                         onValueChange={val => setNewEvent({ ...newEvent, eventType: val })}
                       >
                         <SelectTrigger id="eventHobby" className="w-full bg-white border-gray-200">
-                          <SelectValue placeholder="Хобби сонгох" />
+                          <SelectValue placeholder="Эвэнт үүсгэх төрлөө сонгоно уу..." className="text-slate-700 text-sm font-normal" />
                         </SelectTrigger>
                         <SelectContent>
                           {hobbies.map(hobby => (
@@ -335,58 +345,54 @@ export default function EventPage() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div>
-                      <Label htmlFor="eventName">Эвентийн нэр</Label>
-                      <Input
-                        id="eventName"
-                        placeholder="Энд бичих орууна уу ..."
-                        value={newEvent.name}
-                        onChange={(e) => setNewEvent({ ...newEvent, name: e.target.value })}
-                      />
-                    </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="eventDate">Өдөр</Label>
+                        <Label htmlFor="eventDate" className="text-lg font-medium text-slate-700 mb-3">Өдөр</Label>
                         <Input
                           id="eventDate"
                           type="date"
+                          className="text-slate-700 text-sm font-normal bg-white"
                           value={newEvent.eventDate}
                           onChange={(e) => setNewEvent({ ...newEvent, eventDate: e.target.value })}
                         />
                       </div>
                       <div>
-                        <Label htmlFor="eventTime">Цаг</Label>
+                        <Label htmlFor="eventTime" className="text-lg font-medium text-slate-700 mb-3">Цаг</Label>
                         <Input
                           id="eventTime"
                           type="time"
+                          className="text-slate-700 text-sm font-normal bg-white"
                           value={newEvent.eventTime}
                           onChange={(e) => setNewEvent({ ...newEvent, eventTime: e.target.value })}
                         />
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="eventLocation">Хаяг</Label>
+                      <Label htmlFor="eventLocation" className="text-lg font-medium text-slate-700 mb-3">Хаяг</Label>
                       <Input
                         id="eventLocation"
-                        placeholder="Энд бичих орууна уу ..."
+                        placeholder="Энд бичиж оруулна уу ..."
+                        className="text-slate-700 text-sm font-normal bg-white"
                         value={newEvent.eventLocation}
                         onChange={(e) => setNewEvent({ ...newEvent, eventLocation: e.target.value })}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="eventLimit">Хүний хязгаар</Label>
+                      <Label htmlFor="eventLimit" className="text-lg font-medium text-slate-700 mb-3">Хүний хязгаар</Label>
                       <Input
                         id="eventLimit"
                         type="number"
-                        placeholder="Энд бичих орууна уу ..."
+                        className="text-slate-700 text-sm font-normal bg-white"
+                        placeholder="Энд бичиж оруулна уу ..."
                         value={newEvent.maxParticipants}
                         onChange={(e) => setNewEvent({ ...newEvent, maxParticipants: e.target.value })}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="eventDescription">Тайлбар</Label>
+                      <Label htmlFor="eventDescription" className="text-lg font-medium text-slate-700 mb-3">Тайлбар</Label>
                       <Textarea
                         id="eventDescription"
+                        className="text-slate-700 text-sm font-normal bg-white"
                         placeholder="Асуух зүйл байвал > 99123489"
                         value={newEvent.description}
                         onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
@@ -401,7 +407,7 @@ export default function EventPage() {
                       const tomorrow = new Date();
                       tomorrow.setDate(tomorrow.getDate() + 1);
                       const formattedDate = tomorrow.toISOString().split('T')[0];
-                      
+
                       setNewEvent({
                         name: "Сагсан бөмбөгийн тэмцээн",
                         eventType: hobbies[0]?._id || "",
@@ -417,7 +423,7 @@ export default function EventPage() {
                     Жишээ өгөгдөл
                   </Button>
                   <div className="flex gap-3 ">
-                    <Button variant="outline" className="flex-1" onClick={() => setIsCreateEventOpen(false)}>
+                    <Button variant="outline" className="flex-1 border border-blue-200 text-blue-500" onClick={() => setIsCreateEventOpen(false)}>
                       Буцах
                     </Button>
                     <Button className="flex-1 bg-blue-500 hover:bg-blue-600" onClick={async () => {

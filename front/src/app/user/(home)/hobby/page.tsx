@@ -62,7 +62,7 @@ export default function WishPage() {
                       src={hobby?.image}
                       fill={true}
                       alt="sport"
-                      className="place-self-center"
+                      className="place-self-center p-10"
                       style={{ objectFit: "contain" }}
                     />
                   </div>
