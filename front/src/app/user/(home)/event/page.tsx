@@ -311,7 +311,7 @@ export default function EventPage() {
                     <Plus className="w-15 h-15 text-slate-400" />
                   </Card>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[500px]">
+                <DialogContent className="sm:max-w-[500px] box-border h-fit">
                   <DialogHeader>
                     <DialogTitle className="text-xl font-semibold">Шинэ эвент үүсгэх</DialogTitle>
                     <p className="text-sm text-gray-600">
@@ -416,7 +416,7 @@ export default function EventPage() {
                   >
                     Жишээ өгөгдөл
                   </Button>
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 ">
                     <Button variant="outline" className="flex-1" onClick={() => setIsCreateEventOpen(false)}>
                       Буцах
                     </Button>
