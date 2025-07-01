@@ -1,5 +1,6 @@
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button'
+import axios from 'axios';
 import {
     BookOpenCheck,
     Calendar,
@@ -28,6 +29,18 @@ const Card = ({notif, direction} : CardProps) => {
     // null   }
     // console.log(direction)
     console.log(notif)
+    const handleAcceptRequest = async (requestId: string) => {
+        console.log(requestId)
+        const response = await axios.put(`/api/request/${requestId}`, {
+            status: "accepted"
+        })
+    }
+    const handleDeclineRequest = async (requestId: string) => {
+        console.log(requestId)
+        const response = await axios.put(`/api/request/${requestId}`, {
+            status: "declined"
+        })
+    }
     return (<> {
         notif.type === "Request"
             ? (<div
@@ -80,7 +93,7 @@ const Card = ({notif, direction} : CardProps) => {
                         className='flex-1 bg-slate-50 rounded-lg flex items-center px-3 py-4.5 gap-3'>
                         <Image
                             src={main
-                                ?.avatar || "/avatar.png"}
+                                ?.image || "/avatar.png"}
                             width={64}
                             height={64}
                             alt='User'
@@ -127,10 +140,10 @@ const Card = ({notif, direction} : CardProps) => {
                 <div className='flex gap-5'>
                     {direction === "recieved" ? (
                         <>
-                            <Button className='flex-1 text-sm font-medium text-blue-400 border-blue-400 border-1 bg-white'>
+                            <Button className='flex-1 text-sm font-medium text-blue-400 border-blue-400 border-1 bg-white' onClick={() => handleDeclineRequest(notif.request[0]._id)}>
                                 Татгалзах
                             </Button>
-                            <Button className='flex-1 text-sm font-medium text-blue-900 bg-blue-200'>
+                            <Button className='flex-1 text-sm font-medium text-blue-900 bg-blue-200' onClick={() => handleAcceptRequest(notif.request[0]._id)}>
                                 Зөвшөөрөх
                             </Button>
                         </>

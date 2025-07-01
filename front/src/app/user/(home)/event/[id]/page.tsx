@@ -119,7 +119,7 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
         ...newEvent,
         maxParticipants: parseInt(newEvent.maxParticipants),
         eventDate: new Date(newEvent.eventDate).toISOString(),
-        organizer: currentUser.name, // Add the current user's name as organizer
+        organizer: currentUser._id, // Add the current user's name as organizer
       }
 
       const response = await axios.post('/api/event', eventData)

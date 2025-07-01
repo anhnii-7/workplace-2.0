@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CalendarSearch, Users, Plus, Calendar, User, Clock, Pin, Map, MapIcon } from "lucide-react";
+import { CalendarSearch, Users, Plus, Calendar, User, Clock, Pin, Map, MapIcon, BookOpenCheck } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,10 @@ interface Event {
     title: string;
     image: string;
   };
+  participantUsers: {
+    _id: string;
+    name: string;
+  }[];
 }
 
 interface Hobby {
@@ -38,7 +42,7 @@ interface Hobby {
   users?: string[]; // Array of user IDs
 }
 
-export default function EventPage() {
+export default function test() {
   const [events, setEvents] = useState<Event[]>([]);
   const [joinedEvents, setJoinedEvents] = useState<string[]>([]);
   const [isCreateEventOpen, setIsCreateEventOpen] = useState(false);
@@ -232,7 +236,7 @@ export default function EventPage() {
       toast.error(error.response?.data?.message || "Эвент засахад алдаа гарлаа");
     }
   };
-
+  console.log(events)
   return (
     <div className="min-h-screen w-full">
       {showSuccessBanner && (
@@ -307,7 +311,7 @@ export default function EventPage() {
               <Dialog open={isCreateEventOpen} onOpenChange={setIsCreateEventOpen}>
                 <DialogTrigger asChild>
                   <Card
-                    className="flex items-center justify-center h-56 h-full bg-[#E5EFF8] border-none cursor-pointer"
+                    className="flex items-center justify-center h-full bg-[#E5EFF8] border-none cursor-pointer"
                     style={{ minHeight: 220 }}
                   >
                     <Plus className="w-15 h-15 text-slate-400" />
@@ -449,7 +453,127 @@ export default function EventPage() {
                 const canEdit = currentUser && event.organizer === currentUser.name;
                 const currentParticipants = event.participants.length;
                 return (
-                  <EventCard key={event._id} event={event} />
+                  <Card key={event._id} className="bg-[#E5EFF8] border-none rounded-xl p-0">
+                    <CardContent className="p-6">
+                      <div className="space-y-5 ">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className="p-5 bg-blue-100 rounded-lg flex items-center justify-center">
+                              <Calendar color="#1E3A8A" className="w-6 h-6" />
+                            </div>
+                            <div className="flex flex-col gap-1">
+                              <h3 className="font-semibold text-slate-700 text-2xl">{event.name}</h3>
+                              <p className="text-base text-gray-600">{event.eventType.title}</p>
+                            </div>
+                          </div>
+                          <Badge
+                            className={
+                              isFull
+                                ? "bg-red-50 text-red-900 py-1 px-3 rounded-full"
+                                : "bg-blue-50 text-blue-900 py-1 px-3 rounded-full"
+                            }
+                          >
+                            {isFull ? "Дүүрсэн" : `${remainingSpots} хүн дутуу`}
+                          </Badge>
+                        </div>
+                        <p className="text-base text-slate-600">{event.description}</p>
+                        <div>
+                          <div className="grid grid-cols-2 gap-5 mb-3">
+                            <div className="flex items-center text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
+                              <Calendar className="w-4 h-4" />
+                              <p>{formatDate(event.eventDate)}</p>
+                            </div>
+                            <div className="flex items-center text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
+                              <Clock className="w-4 h-4" />
+                              <p>{event.eventTime}</p>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 gap-5">
+                            <div className="flex items-center text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
+                              <MapIcon className="w-4 h-4" />
+                              <p>{event.eventLocation}</p>
+                            </div>
+                            {
+                              event.participants.length == event.maxParticipants && event.organizer == currentUser._id ? (
+                                <div className="flex items-center text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
+                                  <Users className="w-4 h-4" />
+                                  <p>
+                                    {
+                                      <Dialog open={showParticipants} onOpenChange={setShowParticipants}>
+                                      <DialogTrigger asChild>
+                                        <Button
+                                          className="w-full mt-2 bg-[#FFE9A0] text-[#B08500] border border-[#FFD36A] hover:bg-[#FFD36A] font-semibold rounded-lg"
+                                          variant="outline"
+                                          onClick={() => setShowParticipants(true)}
+                                        >
+                                          Бүртгүүлсэн ажилчдыг харах
+                                        </Button>
+                                      </DialogTrigger>
+                                      <DialogContent className="max-w-2xl w-full bg-[#FFF9E6]">
+                                        <DialogTitle className="sr-only">Бүртгүүлсэн ажилчид</DialogTitle>
+                                        <div className="flex items-center gap-4 mb-6">
+                                          <div className="bg-[#FFF6D1] p-4 rounded-xl">
+                                            <BookOpenCheck className="text-yellow-700 w-8 h-8" />
+                                          </div>
+                                          <div>
+                                            <h2 className="text-2xl font-bold text-slate-800">{event.name}</h2>
+                                            <p className="text-lg text-slate-600">Эвентэд нэгдсэн хүмүүс</p>
+                                          </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                          {event.participantUsers.map((user: any) => (
+                                            <div key={user._id} className="flex items-center border border-yellow-200 rounded-lg p-3 bg-white gap-4">
+                                              <img src={user.image || '/default-avatar.png'} alt={user.name} className="w-16 h-16 rounded-lg object-cover" />
+                                              <div>
+                                                <div className="font-bold text-slate-800">{user.lastName} {user.name}</div>
+                                                <div className="text-slate-500">{user.departmentInfo?.jobTitleInfo?.title || ''}</div>
+                                              </div>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </DialogContent>
+                                    </Dialog>
+                                    }
+                                  </p>
+                                </div>
+                              ) : (
+                                <div className="flex items-center text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
+                                  <Users className="w-4 h-4" />
+                                  <p>
+                                    {event.participants.length}/{event.maxParticipants} хүн бүртгүүлсэн байна
+                                  </p>
+                                </div>
+                              )
+                            }
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          {event.organizer === currentUser.name && <Button variant="outline" className="flex-1 py-[10px] text-sm text-blue-400 hover:bg-white hover:text-blue-400 rounded-md border-blue-400 font-medium" disabled={!canEdit}
+                            onClick={() => {
+                              if (canEdit) {
+                                setEditEvent(event);
+                                setIsEditOpen(true);
+                              }
+                            }}>
+                            Засах
+                          </Button>
+                          }
+                          <Button
+                            className={`flex-1 transition-colors ${isJoined
+                              ? "bg-green-500 text-white py-[10px] text-sm hover:bg-none hover:bg-green-500  font-medium"
+                              : isFull
+                                ? "bg-gray-400 cursor-not-allowed py-[10px] text-sm hover:bg-gray-400 font-medium"
+                                : "bg-blue-200 text-blue-900 py-[10px] text-sm hover:bg-blue-200 font-medium"
+                              }`}
+                            onClick={() => !isFull && handleJoinEvent(event._id)}
+                            disabled={isFull && !isJoined}
+                          >
+                            {isJoined ? "Орсон" : isFull ? "Дүүрсэн" : "Эвентэд нэгдэх"}
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 );
               })}
             </div>
