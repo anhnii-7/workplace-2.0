@@ -113,6 +113,7 @@ export default function WishPage() {
     message: "",
     selectedDate: "",
   });
+  console.log(users, "USERS");
   // console.log("Requestssss", requests)
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"send" | "received">("send");
@@ -416,21 +417,33 @@ export default function WishPage() {
       {/* Sidebar */}
       <div className="w-96 space-y-6">
         {/* Leaderboard */}
-        <Card className="p-6">
-          <CardHeader>
-            <CardTitle className="text-center text-gray-500">
-              Уулзалтын тоогоор тэргүүлэгчдийн жагсаалт
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <EmployeeProfile />
-            <div className="space-y-3 mt-4">
-              <LeaderboardEmployee />
-              <LeaderboardEmployee />
-            </div>
-          </CardContent>
-        </Card>
-
+      // In your WishPage component, update the leaderboard section like this:
+<Card className="p-6">
+  <CardHeader>
+    <CardTitle className="text-center text-gray-500">
+      Уулзалтын тоогоор тэргүүлэгчдийн жагсаалт
+    </CardTitle>
+  </CardHeader>
+  <CardContent>
+    <EmployeeProfile />
+    <div className="space-y-3 mt-4">
+      {/* {users
+        .filter(user => user.role === 'mentor') // Only show mentors in leaderboard
+        .sort((a, b) => (b.menteesCount || 0) - (a.menteesCount || 0)) // Sort by menteesCount descending
+        .slice(0, 2) // Show top 5
+        .map((user, index) => (
+          <LeaderboardEmployee 
+            key={user._id} 
+            user={{
+              ...user,
+              menteesCount: user.menteesCount ?? 0, // Ensure menteesCount is always a number
+              rank: index + 1 // Add rank position
+            }} 
+          />
+        ))} */}
+    </div>
+  </CardContent>
+</Card>
         {/* Calendar */}
         {/* <Card className="p-6">
           <CardHeader>
@@ -537,7 +550,7 @@ export default function WishPage() {
                 )}
               </TabsContent>
 
-              <TabsContent value="received" className="mt-4">
+              <TabsContent value="received" className="mt-4 ">
 
                 {requests.received.length === 0 ? (
                   <p className="text-center text-gray-500 py-4">Хүлээн авсан хүсэлт байхгүй</p>
@@ -547,12 +560,23 @@ export default function WishPage() {
                       <Card key={request._id} className="p-4">
                         <div className="flex flex-col gap-2 items-center">
                           <div className="flex gap-3 justify-around">
-                            <div className="w-[60px] h-[60px] rounded-md bg-blue-200 flex items-center justify-center"></div>
+                            <div className="w-[60px] h-[60px] rounded-md bg-blue-200 flex items-center justify-center">
+                                <Image
+                                src={
+                                  typeof request.from !== 'string' && request.from.image
+                                    ? request.from.image
+                                    : '/default-profile.png'
+                                }
+                                alt="profileimage"
+                                width={60}
+                                height={60}
+                              />
+                            </div>
                             <div className="flex flex-col gap-2  justify-center ">
                               <div className="flex gap-2"><User2 className="w-[16px] h-[16px]" />
                                 <span className="font-normal text-sm">
-                                  {typeof request.to !== 'string' ?
-                                    `${request.to.name} ${request.to.lastName}` : 'Unknown'}
+                                  {typeof request.from !== 'string' ?
+                                    `${request.from.name} ${request.from.lastName}` : 'Unknown'}
                                 </span>
                               </div>
                               <div className="flex gap-2">
@@ -573,30 +597,37 @@ export default function WishPage() {
 
                           </div>
                           <div>
-                            {request.status === 'pending' && (
-                              <div className="flex gap-2">
-                                <Button
-                                  className="border border-blue-400 text-blue-400 hover:bg-blue-50 bg-white"
-                                  size="sm"
-                                  onClick={() => updateRequest(request._id, 'accepted')}
-                                >
-                                  Зөвшөөрөх
-                                </Button>
-                                <Button
-                                  className="border border-red-400 text-red-400 hover:text-red-400 bg-white"
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    const notes = prompt('Татгалзах шалтгаанаа бичнэ үү:');
-                                    if (notes !== null) {
-                                      updateRequest(request._id, 'declined', notes);
-                                    }
-                                  }}
-                                >
-                                  Татгалзах
-                                </Button>
-                              </div>
-                            )}
+      {request.status === 'pending' ? (
+                  <div className="flex gap-2">
+                    <Button
+                      className="border border-blue-400 text-blue-400 hover:bg-blue-50 bg-white"
+                      size="sm"
+                      onClick={() => updateRequest(request._id, 'accepted')}
+                    >
+                      Зөвшөөрөх
+                    </Button>
+                    <Button
+                      className="border border-red-400 text-red-400 hover:text-red-400 bg-white"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const notes = prompt('Татгалзах шалтгаанаа бичнэ үү:');
+                        if (notes !== null) {
+                          updateRequest(request._id, 'declined', notes);
+                        }
+                      }}
+                    >
+                      Татгалзах
+                    </Button>
+                  </div>
+                ) : (
+                  <Badge 
+                    variant={request.status === 'accepted' ? 'default' : 'destructive'}
+                    className="opacity-70 bg-blue-400"
+                  >
+                    {request.status === 'accepted' ? 'Зөвшөөрсөн' : 'Татгалзсан'}
+                  </Badge>
+                )}
                           </div>
                         </div>
 
@@ -607,7 +638,7 @@ export default function WishPage() {
                             <p className="text-sm text-gray-600">{request.mentorNotes}</p>
                           </div>
                         )} */}
-                        {request.status === 'accepted' && (
+                        {/* {request.status === 'accepted' && (
                           <div className="mt-3 space-y-2">
                             {request.meetingLocation && (
                               <div className="flex items-center gap-2 text-sm">
@@ -622,7 +653,7 @@ export default function WishPage() {
                               </div>
                             )}
                           </div>
-                        )}
+                        )} */}
                       </Card>
                     ))}
                   </div>
