@@ -159,10 +159,27 @@ const handleSubmit = async (e: React.FormEvent) => {
                   Forgot password?
                 </Link>
               </div>
-              <Button
+                <div className='grid grid-cols-2 gap-4'>
+                                <Button
     type="button"
     variant="outline"
-    className="w-full mb-4"
+    className=" mb-4"
+    onClick={() => {
+      setFormData({
+        email: 'ganbat@example.com',
+        password: 'ganbat1234'
+      });
+      setErrors({});
+      setLoginError('');
+    }}
+    disabled={isLoading}
+  >
+    Newbie
+  </Button>
+                <Button
+    type="button"
+    variant="outline"
+    className=" mb-4"
     onClick={() => {
       setFormData({
         email: 'baterdene@example.com',
@@ -173,8 +190,9 @@ const handleSubmit = async (e: React.FormEvent) => {
     }}
     disabled={isLoading}
   >
-    Fill with mock data
+    Mentor
   </Button>
+                </div>
               <Button
                 type="submit"
                 className="w-full"
@@ -196,16 +214,8 @@ const handleSubmit = async (e: React.FormEvent) => {
               </p>
             </div>
 
-            {/* Demo credentials info */}
-            <div className="mt-4 p-3 bg-muted/50 rounded-md">
-              <p className="text-xs text-muted-foreground text-center">
-                <strong>Demo Credentials:</strong><br />
-                • ajiltan@gmail.com (new user)<br />
-                • mentor@gmail.com (mentor)<br />
-                • ajiltan2@gmail.com (old user)<br />
-                Any password with 6+ characters will work
-              </p>
-            </div>
+     
+            
           </CardContent>
         </Card>
       </div>
