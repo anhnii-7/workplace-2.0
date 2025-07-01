@@ -41,7 +41,7 @@
           </div>
         <div className=" relative z-10 flex items-center justify-center"> 
           <motion.div initial={{opacity:0 , x:100}}  animate={{ opacity: 1, x: 0 }}  transition={{ duration: 0.5 ,delay:0.4}} >
-            <Image src={`/container.png`} width={423} height={499} className="w-[423px] h-[499px] " alt="containerIMG"></Image>
+            <Image src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751359678/container_hsdb2q.png`} width={423} height={499} className="w-[423px] h-[499px] " alt="containerIMG"></Image>
         </motion.div>
         <motion.div 
     initial={{ opacity: 0, scale: -0.5 }}
@@ -51,7 +51,7 @@
     }}
   >
     <Image 
-      src={`/naraoyunbat.png`} 
+      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751359461/naraoyunbat_mzoucc.png`} 
       width={240} 
       height={240} 
       className="w-[240px] h-[240px] absolute -top-20 -left-10" 
@@ -67,7 +67,7 @@
     }}
   >
     <Image 
-      src={`/aricin.png`} 
+      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751359638/aricin_mozkbc.png`} 
       width={223} 
       height={223} 
       className="w-[223px] h-[223px] absolute top-24 -right-20" 
@@ -83,7 +83,7 @@
     }}
   >
     <Image 
-      src={`/oyujam.png`} 
+      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751359609/oyujam_arn6gy.png`} 
       width={180} 
       height={180} 
       className="w-[180px] h-[180px] absolute bottom-30 left-4" 
@@ -99,7 +99,7 @@
     }}
   >
     <Image 
-      src={`/arijam.png`} 
+      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751359575/arijam_sg1cqd.png`} 
       width={220} 
       height={220} 
       className="w-[220px] h-[220px] absolute -bottom-16 right-8" 
