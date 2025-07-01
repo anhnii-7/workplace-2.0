@@ -222,7 +222,6 @@ export default function HobbyInsertPage() {
                       {/* {user.hobbyInfo?.title || "Сонирхол байхгүй"} */}
                     </div>
 
-                    {!pendingRequests[user._id] ? (
                       <Button
                         className="w-full bg-[#E5EFF8] text-sm font-medium text-blue-900 border-blue-200 py-[10px] rounded-md hover:bg-blue-100 transition-colors"
                         onClick={() => handleSendRequest(user._id)}
@@ -230,11 +229,8 @@ export default function HobbyInsertPage() {
                       >
                         {loadingUsers[user._id] ? "Илгээж байна..." : "Хүсэлт илгээх"}
                       </Button>
-                    ) : (
-                      <Button className="w-full opacity-50 bg-[#E5EFF8] text-sm font-medium text-blue-900 border-blue-200 py-[10px] rounded-md hover:bg-blue-100 transition-colors">
-                        Хүсэлт илгээгдсэн
-                      </Button>
-                    )}
+                    
+                    
                   </div>
                 </CardContent>
               </Card>
