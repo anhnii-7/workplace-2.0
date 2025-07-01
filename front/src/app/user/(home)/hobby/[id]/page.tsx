@@ -11,7 +11,6 @@ import { useParams } from "next/navigation"
 import { useRouter } from "next/navigation"
 import SuccessDialog from "./components/SuccessDialog"
 
-
 export type User = {
   _id: string
   email: string
@@ -62,6 +61,7 @@ export default function HobbyInsertPage() {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [pendingRequests, setPendingRequests] = useState<Record<string, boolean>>({});
   const [response, setResponse] = useState<any>([]);
+
   const params = useParams();
   useEffect(() => {
     const fetchPendingRequests = async () => {
@@ -161,7 +161,6 @@ export default function HobbyInsertPage() {
     }
   };
 
-  console.log(response);
   return (
     <div className="min-h-screen w-full">
       <div className="w-full">
@@ -169,19 +168,19 @@ export default function HobbyInsertPage() {
           Цайны цагийн сонирхолтой яриа
         </h1>
 
-        <div className="grid grid-cols-2 gap-5 my-10 text-blue-900 font-medium">
+        <div className="grid grid-cols-2 gap-5 my-10 text-slate-900 text-sm font-medium">
           <Select
             value={params.id as string}
             onValueChange={handleHobbyChange}
           >
-            <SelectTrigger className="w-full bg-[#E5EFF8] border-blue-200 rounded-md">
-              <SelectValue className="text-blue-900 text-sm">
+            <SelectTrigger className="w-full bg-white border border-amber-200 rounded-md">
+              <SelectValue className="text-slate-900 text-sm">
                 {currentHobby ? currentHobby.title : ''}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {hobbies.map(hobby => (
-                <SelectItem value={hobby._id} key={hobby._id} className="text-blue-900 text-sm">
+                <SelectItem value={hobby._id} key={hobby._id} className="text-slate-900 text-sm">
                   {hobby.title}
                 </SelectItem>
               ))}
@@ -194,7 +193,7 @@ export default function HobbyInsertPage() {
           {filteredUsers.length > 0 ? (
             filteredUsers.map((user) => (
               <div key={user._id} className="relative group">
-                <Card className="bg-white px-3 border-1 border-amber-100 py-6 w-[267.5px] h-[286px] group-hover:opacity-70 group-hover:border-1 group-hover:border-amber-200   transition-all duration-300">
+                <Card className="bg-white px-3 border-1 border-amber-100 py-6 w-[267.5px] h-[284px] group-hover:opacity-70 group-hover:border-1 group-hover:border-amber-200 transition-all duration-300">
                   <CardContent className="p-0 group-hover:blur-xs">
                     <div className="flex flex-col items-center object-fit">
                       <div className="w-[124px] h-[120px] rounded-xl relative">
@@ -221,7 +220,7 @@ export default function HobbyInsertPage() {
                             <Badge
                               variant="secondary"
                               key={hobby._id}
-                              className="flex w-full rounded-full py-1 px-3 text-xs bg-[#f1ffee] font-medium text-slate-800 hover:bg-blue-100 cursor-pointer transition-colors"
+                              className={`flex w-full rounded-full py-1 px-3 text-xs bg-red-50 font-medium text-slate-800 hover:bg-amber-100 cursor-pointer transition-colors`}
                             >
                               {hobby.title}
                             </Badge>
