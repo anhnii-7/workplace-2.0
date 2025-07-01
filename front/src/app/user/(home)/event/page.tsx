@@ -240,7 +240,7 @@ export default function test() {
   return (
     <div className="min-h-screen w-full">
       {showSuccessBanner && (
-        <div className="fixed w-[375px] h-[100px] top-8 right-8 z-50 bg-white border border-blue-100 rounded-xl shadow-lg px-8 py-4 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
+        <div className="fixed w-[375px] h-[100px] top-8 right-8 z-50 bg-white border bg-amber-100 rounded-xl shadow-lg px-8 py-4 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-yellow-400 w-[23px] h-[28px]">✨</span>
             <span className="font-medium text-lg text-slate-800">Таны эвент амжилттай үүсгэгдлээ</span>
@@ -256,7 +256,7 @@ export default function test() {
         {/* Hobby filter dropdown */}
         <div className="grid grid-cols-2 gap-5 my-10">
           <Select value={selectedHobby} onValueChange={setSelectedHobby}>
-            <SelectTrigger className="w-full bg-white border-[#E5EFF8] px-4 py-[10px]">
+            <SelectTrigger className="w-full bg-white border-amber-200 px-4 py-[10px]">
               <SelectValue placeholder="Бүх эвент" />
             </SelectTrigger>
             <SelectContent>
@@ -311,16 +311,16 @@ export default function test() {
               <Dialog open={isCreateEventOpen} onOpenChange={setIsCreateEventOpen}>
                 <DialogTrigger asChild>
                   <Card
-                    className="flex items-center justify-center h-full bg-[#E5EFF8] border-none cursor-pointer"
+                    className="flex items-center justify-center h-full bg-amber-50 border-none cursor-pointer"
                     style={{ minHeight: 220 }}
                   >
                     <Plus className="w-15 h-15 text-slate-400" />
                   </Card>
                 </DialogTrigger>
-                <DialogContent className="w-[744px] bg-[#E5EFF8] box-border h-fit px-10 py-15 top-[50%]">
+                <DialogContent className="w-[744px] bg-background box-border h-fit px-10 py-15 top-[50%]">
                   <DialogHeader className="gap-1">
                     <DialogTitle className="text-2xl text-slate-700 font-medium">Шинэ эвент үүсгэх</DialogTitle>
-                    <p className="text-lg text-slate-700 font-normal">
+                    <p className="text-lg  text-slate-700 font-normal">
                       Хамт олонтойгоо цагийг илүү зугаатай өнгөрөөх боломжийг бүтээцгээе
                     </p>
                   </DialogHeader>
@@ -330,7 +330,7 @@ export default function test() {
                       <Input
                         id="eventName"
                         placeholder="Энд бичиж оруулна уу ..."
-                        className="text-slate-700 text-sm font-normal bg-white"
+                        className="text-slate-700 border-amber-200 text-sm font-normal bg-white"
                         value={newEvent.name}
                         onChange={(e) => setNewEvent({ ...newEvent, name: e.target.value })}
                       />
@@ -341,7 +341,7 @@ export default function test() {
                         value={newEvent.eventType}
                         onValueChange={val => setNewEvent({ ...newEvent, eventType: val })}
                       >
-                        <SelectTrigger id="eventHobby" className="w-full bg-white border-gray-200">
+                        <SelectTrigger id="eventHobby" className="w-full bg-white border-amber-200">
                           <SelectValue placeholder="Эвэнт үүсгэх төрлөө сонгоно уу..." className="text-slate-700 text-sm font-normal" />
                         </SelectTrigger>
                         <SelectContent>
@@ -357,7 +357,7 @@ export default function test() {
                         <Input
                           id="eventDate"
                           type="date"
-                          className="text-slate-700 text-sm font-normal bg-white"
+                          className="text-slate-700 border-amber-200 text-sm font-normal bg-white"
                           value={newEvent.eventDate}
                           onChange={(e) => setNewEvent({ ...newEvent, eventDate: e.target.value })}
                         />
@@ -367,7 +367,7 @@ export default function test() {
                         <Input
                           id="eventTime"
                           type="time"
-                          className="text-slate-700 text-sm font-normal bg-white"
+                          className="text-slate-700 border-amber-200 text-sm font-normal bg-white"
                           value={newEvent.eventTime}
                           onChange={(e) => setNewEvent({ ...newEvent, eventTime: e.target.value })}
                         />
@@ -378,7 +378,7 @@ export default function test() {
                       <Input
                         id="eventLocation"
                         placeholder="Энд бичиж оруулна уу ..."
-                        className="text-slate-700 text-sm font-normal bg-white"
+                        className="text-slate-700 border-amber-200 text-sm font-normal bg-white"
                         value={newEvent.eventLocation}
                         onChange={(e) => setNewEvent({ ...newEvent, eventLocation: e.target.value })}
                       />
@@ -388,7 +388,7 @@ export default function test() {
                       <Input
                         id="eventLimit"
                         type="number"
-                        className="text-slate-700 text-sm font-normal bg-white"
+                        className="text-slate-700 border-amber-200 text-sm font-normal bg-white"
                         placeholder="Энд бичиж оруулна уу ..."
                         value={newEvent.maxParticipants}
                         onChange={(e) => setNewEvent({ ...newEvent, maxParticipants: e.target.value })}
@@ -399,7 +399,7 @@ export default function test() {
                       <Input
                         id="eventDescription"
                         type="text"
-                        className="text-slate-700 text-sm font-normal bg-white"
+                        className="text-slate-700 border-amber-200 text-sm font-normal bg-white"
                         placeholder="Асуух зүйл байвал > 99123489"
                         value={newEvent.description}
                         onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
@@ -430,10 +430,10 @@ export default function test() {
                     Жишээ өгөгдөл
                   </Button>
                   <div className="flex gap-3 ">
-                    <Button variant="outline" className="flex-1 border border-blue-200 text-blue-500" onClick={() => setIsCreateEventOpen(false)}>
+                    <Button variant="outline" className="flex-1 border border-amber-200 text-amber-200 hover:bg-background" onClick={() => setIsCreateEventOpen(false)}>
                       Буцах
                     </Button>
-                    <Button className="flex-1 bg-blue-500 hover:bg-blue-600" onClick={async () => {
+                    <Button className="flex-1 bg-amber-200 hover:bg-amber-200" onClick={async () => {
                       if (!newEvent.eventType) {
                         toast.error("Хобби сонгоно уу!");
                         return;
@@ -453,13 +453,13 @@ export default function test() {
                 const canEdit = currentUser && event.organizer === currentUser.name;
                 const currentParticipants = event.participants.length;
                 return (
-                  <Card key={event._id} className="bg-[#E5EFF8] border-none rounded-xl p-0">
+                  <Card key={event._id} className="bg-amber-50 border-none rounded-xl p-0">
                     <CardContent className="p-6">
                       <div className="space-y-5 ">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-3">
-                            <div className="p-5 bg-blue-100 rounded-lg flex items-center justify-center">
-                              <Calendar color="#1E3A8A" className="w-6 h-6" />
+                            <div className="p-5 bg-yellow-100 rounded-lg flex items-center justify-center">
+                              <Calendar color="#78350F" className="w-6 h-6" />
                             </div>
                             <div className="flex flex-col gap-1">
                               <h3 className="font-semibold text-slate-700 text-2xl">{event.name}</h3>
@@ -469,11 +469,11 @@ export default function test() {
                           <Badge
                             className={
                               isFull
-                                ? "bg-red-50 text-red-900 py-1 px-3 rounded-full"
-                                : "bg-blue-50 text-blue-900 py-1 px-3 rounded-full"
+                                ? "bg-amber-900 text-background py-1 px-3 rounded-full"
+                                : "bg-amber-900 text-background py-1 px-3 rounded-full"
                             }
                           >
-                            {isFull ? "Дүүрсэн" : `${remainingSpots} хүн дутуу`}
+                            {isFull ? "Хүний тоо бүрдсэн" : `${remainingSpots} хүн дутуу`}
                           </Badge>
                         </div>
                         <p className="text-base text-slate-600">{event.description}</p>
@@ -509,7 +509,7 @@ export default function test() {
                                           Бүртгүүлсэн ажилчдыг харах
                                         </Button>
                                       </DialogTrigger>
-                                      <DialogContent className="max-w-2xl w-full bg-[#FFF9E6]">
+                                      <DialogContent className="w-[510px] h-fit px-10 pt-[31px] pb-[74px] bg-background">
                                         <DialogTitle className="sr-only">Бүртгүүлсэн ажилчид</DialogTitle>
                                         <div className="flex items-center gap-4 mb-6">
                                           <div className="bg-[#FFF6D1] p-4 rounded-xl">
@@ -548,7 +548,7 @@ export default function test() {
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          {event.organizer === currentUser.name && <Button variant="outline" className="flex-1 py-[10px] text-sm text-blue-400 hover:bg-white hover:text-blue-400 rounded-md border-blue-400 font-medium" disabled={!canEdit}
+                          {event.organizer === currentUser.name && <Button variant="outline" className="flex-1 py-[10px] text-sm text-blue-500 hover:bg-white hover:text-blue-400 rounded-md border-blue-400 font-medium" disabled={!canEdit}
                             onClick={() => {
                               if (canEdit) {
                                 setEditEvent(event);
@@ -562,8 +562,8 @@ export default function test() {
                             className={`flex-1 transition-colors ${isJoined
                               ? "bg-green-500 text-white py-[10px] text-sm hover:bg-none hover:bg-green-500  font-medium"
                               : isFull
-                                ? "bg-gray-400 cursor-not-allowed py-[10px] text-sm hover:bg-gray-400 font-medium"
-                                : "bg-blue-200 text-blue-900 py-[10px] text-sm hover:bg-blue-200 font-medium"
+                                ? "bg-background text-brand-300 py-[10px] text-sm hover:bg-gray-400 font-medium"
+                                : "bg-amber-200 text-amber-900 py-[10px] text-sm hover:bg-blue-200 font-medium"
                               }`}
                             onClick={() => !isFull && handleJoinEvent(event._id)}
                             disabled={isFull && !isJoined}
@@ -582,7 +582,7 @@ export default function test() {
       </div>
       {/* Edit Event Dialog */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[500px] ">
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold">Эвент засах</DialogTitle>
           </DialogHeader>
