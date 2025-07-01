@@ -414,10 +414,9 @@ export default function WishPage() {
         </div>
       </div>
 
-      {/* Sidebar */}
+     
       <div className="w-96 space-y-6">
-        {/* Leaderboard */}
-      // In your WishPage component, update the leaderboard section like this:
+      
 <Card className="p-6">
   <CardHeader>
     <CardTitle className="text-center text-gray-500">
@@ -425,22 +424,30 @@ export default function WishPage() {
     </CardTitle>
   </CardHeader>
   <CardContent>
-    <EmployeeProfile />
+    
+    <EmployeeProfile 
+      topLeader={
+        users
+          .filter(user => user.role === 'mentor')
+          .sort((a, b) => (b.menteesCount || 0) - (a.menteesCount || 0))
+          .map(user => ({ ...user, menteesCount: user.menteesCount ?? 0 }))[0]
+      } 
+    />
     <div className="space-y-3 mt-4">
-      {/* {users
-        .filter(user => user.role === 'mentor') // Only show mentors in leaderboard
-        .sort((a, b) => (b.menteesCount || 0) - (a.menteesCount || 0)) // Sort by menteesCount descending
-        .slice(0, 2) // Show top 5
+      {users
+        .filter(user => user.role === 'mentor') 
+        .sort((a, b) => (b.menteesCount || 0) - (a.menteesCount || 0)) 
+        .slice(1, 3)
         .map((user, index) => (
           <LeaderboardEmployee 
             key={user._id} 
             user={{
               ...user,
-              menteesCount: user.menteesCount ?? 0, // Ensure menteesCount is always a number
-              rank: index + 1 // Add rank position
+              menteesCount: user.menteesCount ?? 0, 
+              rank: index + 2 
             }} 
           />
-        ))} */}
+        ))}
     </div>
   </CardContent>
 </Card>
