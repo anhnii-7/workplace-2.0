@@ -12,7 +12,47 @@
 
     return (
     <div className="flex items-center justify-center h-screen">
-      <motion.div initial={{opacity:0 , y:-100}}  animate={{ opacity: 1, y: 0 }}  transition={{ duration: 0.5 }}   className="w-[1090px] h-[742px] bg-amber-50 rounded-[24px] flex justify-around items-center ">
+      <motion.div initial={{opacity:0 , y:-100}}  animate={{ opacity: 1, y: 0 }}  transition={{ duration: 0.5 }}   className="w-[1090px] h-[742px] bg-amber-50 rounded-[24px] flex justify-around items-center relative z-20">
+               <motion.div 
+    initial={{ opacity: 0, scale: -0.5 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{
+      duration: 0.4 ,delay:0.4,
+    }}
+  >
+    <Image 
+      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363331/greee-1_jcxmpi.png`} 
+      width={171} 
+      height={149} 
+      className="w-[171px] h-[149px] absolute -bottom-20 left-10 z-10 " 
+      alt="containerIMG"
+      priority 
+    />
+        <Image 
+      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363216/green-2_ktnkvs.png`} 
+      width={240} 
+      height={240} 
+      className="w-[70px] h-[94px] absolute bottom-20 -right-10 z-10 " 
+      alt="containerIMG"
+      priority 
+    />
+        <Image 
+      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363167/red-ball_v73ekg.png`} 
+      width={124} 
+      height={124} 
+      className="w-[124px] h-[124px] absolute -top-15 -right-10 z-10 " 
+      alt="containerIMG"
+      priority 
+    />
+        <Image 
+      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363263/green_z5wo1z.png`} 
+      width={94} 
+      height={100} 
+      className="w-[94px] h-[100px] absolute -top-14 -left-10 z-10 " 
+      alt="containerIMG"
+      priority 
+    />
+  </motion.div>
         <div>      
             <motion.div   className="relative z-20 flex flex-col gap-[40px]  justify-center items-start">
             <motion.h1 initial={{opacity:0 , x:-100}}  animate={{ opacity: 1, x: 0 }}  transition={{ duration: 0.5  ,delay:0.3}} className="font-medium  w-[481px] h-[40px] text-[36px]  text-gray-800 leading-tight 
@@ -110,27 +150,7 @@
         </div>
       </motion.div>
     </div>
-      // <div className="relative h-full flex items-center justify-center bg-[#f5f8fd ">
-      
-      //   <div className="relative w-full h-full bg-[#eaf2fc] rounded-3xl shadow-lg flex items-center lg:flex-col xl:flex-row justify-around px-24 py-10 overflow-hidden border border-blue-100">
 
-          // <motion.div initial={{opacity:0 , x:-100}}  animate={{ opacity: 1, x: 0 }}  transition={{ duration: 0.5 }}  className="relative z-20 flex-1 flex flex-col items-start justify-center pl-2 xl:ml-[10px]">
-          //   <h1 className="font-semibold  w-[481px] text-[36px]  text-gray-800 leading-tight mb-6 ">
-          //      Өдөр болгон шинэ боломж
-          //   </h1>
-          //   <p className="font-normal w-[481px] text-[22px] text-gray-700 max-w-[600px] mb-8">
-          //   Та зөвхөн ажил биш, сонирхлоороо холбогдож кино үзэх, ном унших, спорт эсвэл зүгээр л кофе уух гээд хоббигоороо дамжуулан хамт олонтойгоо ойртон дотносох боломжийг бид танд бүрдүүлж өгье.
-          //   </p>
-          //   <button
-          //     className="w-[481px] h-12 bg-blue-100 rounded-md text-blue-600 text-lg font-medium hover:bg-blue-200 transition"
-          //     onClick={handleStartClick}
-          //   >
-          //     Мөс хагалъя 
-          //   </button>
-          // </motion.div>
-          // <motion.div initial={{opacity:0 , x:100}}  animate={{ opacity: 1, x: 0 }}  transition={{ duration: 0.5 }} ><Image src={`/container.png`} width={500} height={700} className="w-[800px] h-[600px] xl:mr-[40px] lg:w-[600px] lg:h-[500px]" alt="containerIMG"></Image></motion.div>
-      //   </div>
-      // </div>
     );
   }
 

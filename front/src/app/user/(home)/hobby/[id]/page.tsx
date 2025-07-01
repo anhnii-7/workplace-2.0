@@ -193,18 +193,13 @@ export default function HobbyInsertPage() {
         <div className="grid grid-cols-4 gap-5">
           {filteredUsers.length > 0 ? (
             filteredUsers.map((user) => (
-              <Card key={user._id} className="bg-white px-3 py-6 w-[267.5px] h-[332px]">
+              <Card key={user._id} className="bg-white px-3 py-6 w-[267.5px] h-auto">
                 <CardContent className="p-0">
                   <div className="flex flex-col items-center object-fit">
 
                    <div className="w-[124px] h-[120px] rounded-xl relative">
                    <Image src={`${user.image}`} alt="image" className="object-fill absolute border-none rounded-xl" fill />
-                    {/* <AvatarImage src={`/avatars/${user._id}.jpg`} alt={user.name} />
-                      <AvatarFallback className="bg-gray-200 text-gray-600 text-xl">
-                        {user.lastName.slice(0, 1)}{user.name.slice(0, 1)}
-                      </AvatarFallback> */}
                    </div>
-
 
                     <div className="flex flex-col gap-1 my-3 text-center w-full">
                       <p className="font-semibold text-slate-800 text-lg">
@@ -227,13 +222,13 @@ export default function HobbyInsertPage() {
                       {/* {user.hobbyInfo?.title || "Сонирхол байхгүй"} */}
                     </div>
 
-                      <Button
+                      {/* <Button
                         className="w-full bg-[#E5EFF8] text-sm font-medium text-blue-900 border-blue-200 py-[10px] rounded-md hover:bg-blue-100 transition-colors"
                         onClick={() => handleSendRequest(user._id)}
                         disabled={loadingUsers[user._id]}
                       >
                         {loadingUsers[user._id] ? "Илгээж байна..." : "Хүсэлт илгээх"}
-                      </Button>
+                      </Button> */}
                     
                     
                   </div>
