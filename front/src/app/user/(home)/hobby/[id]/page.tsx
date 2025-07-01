@@ -175,7 +175,7 @@ export default function HobbyInsertPage() {
             onValueChange={handleHobbyChange}
           >
             <SelectTrigger className="w-full bg-[#E5EFF8] border-blue-200 rounded-md">
-              <SelectValue  className="text-blue-900 text-sm">
+              <SelectValue className="text-blue-900 text-sm">
                 {currentHobby ? currentHobby.title : ''}
               </SelectValue>
             </SelectTrigger>
@@ -193,47 +193,57 @@ export default function HobbyInsertPage() {
         <div className="grid grid-cols-4 gap-5">
           {filteredUsers.length > 0 ? (
             filteredUsers.map((user) => (
-              <Card key={user._id} className="bg-white px-3 py-6 w-[267.5px] h-auto">
-                <CardContent className="p-0">
-                  <div className="flex flex-col items-center object-fit">
+              <div key={user._id} className="relative group">
+                <Card className="bg-white px-3 border-1 border-amber-100 py-6 w-[267.5px] h-[286px] group-hover:opacity-70 group-hover:border-1 group-hover:border-amber-200   transition-all duration-300">
+                  <CardContent className="p-0 group-hover:blur-xs">
+                    <div className="flex flex-col items-center object-fit">
+                      <div className="w-[124px] h-[120px] rounded-xl relative">
+                        <Image
+                          src={`${user.image}`}
+                          alt="image"
+                          className="object-fill absolute border-none rounded-xl"
+                          fill
+                        />
+                      </div>
 
-                   <div className="w-[124px] h-[120px] rounded-xl relative">
-                   <Image src={`${user.image}`} alt="image" className="object-fill absolute border-none rounded-xl" fill />
-                   </div>
+                      <div className="flex flex-col gap-1 my-3 text-center w-full">
+                        <p className="font-semibold text-slate-800 text-lg">
+                          {user.lastName.slice(0, 1)}.{user.name}
+                        </p>
+                        <p className="text-sm font-normal text-gray-600">
+                          {user.departmentInfo?.jobTitleInfo?.title || "Алба байхгүй"}
+                        </p>
+                      </div>
 
-                    <div className="flex flex-col gap-1 my-3 text-center w-full">
-                      <p className="font-semibold text-slate-800 text-lg">
-                        {user.lastName.slice(0, 1)}.{user.name}
-                      </p>
-                      <p className="text-sm font-normal text-gray-600">
-                        {user.departmentInfo?.jobTitleInfo?.title || "Алба байхгүй"}
-                      </p>
+                      <div className="grid grid-cols-2 gap-2 w-full pt-4">
+                        {Array.isArray(user.hobbyInfo)
+                          ? (user.hobbyInfo as HobbyInfo[]).slice(0, 2).map((hobby: HobbyInfo) => (
+                            <Badge
+                              variant="secondary"
+                              key={hobby._id}
+                              className="flex w-full rounded-full py-1 px-3 text-xs bg-[#f1ffee] font-medium text-slate-800 hover:bg-blue-100 cursor-pointer transition-colors"
+                            >
+                              {hobby.title}
+                            </Badge>
+                          ))
+                          : <div>{(user.hobbyInfo as HobbyInfo)?.title || "Сонирхол байхгүй"}</div>
+                        }
+                      </div>
                     </div>
+                  </CardContent>
+                </Card>
 
-                    <div className="grid grid-cols-2 gap-3 w-full my-3">
-                      {Array.isArray(user.hobbyInfo)
-                        ? (user.hobbyInfo as HobbyInfo[]).slice(0, 2).map((hobby: HobbyInfo) => (<Badge
-                          variant="secondary"
-                          key={hobby._id}
-                          className="flex w-full rounded-full py-1 px-3 text-xs bg-[#f1ffee] font-medium text-slate-800 hover:bg-blue-100 cursor-pointer transition-colors"
-                        >{hobby.title} </Badge>))
-                        : <div>{(user.hobbyInfo as HobbyInfo)?.title || "Сонирхол байхгүй"}</div>
-                      }
-                      {/* {user.hobbyInfo?.title || "Сонирхол байхгүй"} */}
-                    </div>
 
-                      {/* <Button
-                        className="w-full bg-[#E5EFF8] text-sm font-medium text-blue-900 border-blue-200 py-[10px] rounded-md hover:bg-blue-100 transition-colors"
-                        onClick={() => handleSendRequest(user._id)}
-                        disabled={loadingUsers[user._id]}
-                      >
-                        {loadingUsers[user._id] ? "Илгээж байна..." : "Хүсэлт илгээх"}
-                      </Button> */}
-                    
-                    
-                  </div>
-                </CardContent>
-              </Card>
+                <div className="absolute bottom-4 left-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                  <Button
+                    className="pointer-events-auto text-sm font-medium text-amber-900 border-blue-200 py-[10px] rounded-md hover:bg-amber-300 transition-colors w-[230px] bg-amber-200"
+                    onClick={() => handleSendRequest(user._id)}
+                    disabled={loadingUsers[user._id]}
+                  >
+                    {loadingUsers[user._id] ? "Илгээж байна..." : "Хүсэлт илгээх"}
+                  </Button>
+                </div>
+              </div>
             ))
           ) : (
             <div className="col-span-4 text-center py-8">
