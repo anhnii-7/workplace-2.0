@@ -45,41 +45,43 @@ const SideBar = () => {
     const profile = currentUser?.image || "/avatar.png";
     console.log(currentUser)
     return (
-        <div
-            className={`w-[302px] bg-amber-50 rounded-[0px_24px_24px_0px] px-5 py-10 flex flex-col gap-10 fixed h-screen ${pathname === "/user/advice" || pathname === "/user/hobby" ? "bg-amber-50": "bg-white border border-amber-200" }`}
-        > 
-            <div className='w-[262px] flex items-center gap-3 p-2 rounded-md shadow-[0px_0px_4px_2px_rgba(255,188,74,0.12)] bg-amber-50'>
-                <Image
-                    src={profile}
-                    alt="Logo"
-                    width={200}
-                    height={60}
-                    className="object-cover rounded-lg h-[60px] w-[60px]"
-                />
-                <div>
-                    <Link href="/user">
-                        <h6 className='text-sm text-slate-700 font-semibold'>{currentUser?.name}</h6>
-                        <p className='text-xs font-normal text-slate-500'>{currentUser?.departmentInfo?.jobTitleInfo.title}</p>
-                    </Link>
+        <div className='w-[302px]'>
+            <div
+                className={`w-[302px] bg-amber-50 rounded-[0px_24px_24px_0px] px-5 py-10 flex flex-col gap-10 fixed left-0 bottom-0 h-screen ${pathname === "/user/advice" || pathname === "/user/hobby" ? "bg-amber-50": "bg-white border border-amber-200" }`}
+            > 
+                <div className='w-[262px] flex items-center gap-3 p-2 rounded-md shadow-[0px_0px_4px_2px_rgba(255,188,74,0.12)] bg-amber-50'>
+                    <Image
+                        src={profile}
+                        alt="Logo"
+                        width={200}
+                        height={60}
+                        className="object-cover rounded-lg h-[60px] w-[60px]"
+                    />
+                    <div>
+                        <Link href="/user">
+                            <h6 className='text-sm text-slate-700 font-semibold'>{currentUser?.name}</h6>
+                            <p className='text-xs font-normal text-slate-500'>{currentUser?.departmentInfo?.jobTitleInfo.title}</p>
+                        </Link>
+                    </div>
                 </div>
-            </div>
-            <div className='w-[262px] flex flex-col gap-2'>
-                {
-                    items.map((i,index) => {
-                        const isActive = pathname === i.url;
-                        return (
-                            <Link key={index} href={i.url} className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-150 ${isActive
-                                    ? "text-amber-900 bg-amber-100"
-                                    : "text-slate-700 bg-white"
-                                }`}>
-                                <i.icon className='text-slate-700 w-4 h-4' />
-                                <h6 className='text-sm text-slate-700 font-normal'>{i.title}</h6>
-                            </Link>
-                        )
-                    })
-                }
-            </div>
+                <div className='w-[262px] flex flex-col gap-2'>
+                    {
+                        items.map((i,index) => {
+                            const isActive = pathname === i.url;
+                            return (
+                                <Link key={index} href={i.url} className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-150 ${isActive
+                                        ? "text-amber-900 bg-amber-100"
+                                        : "text-slate-700 bg-white"
+                                    }`}>
+                                    <i.icon className='text-slate-700 w-4 h-4' />
+                                    <h6 className='text-sm text-slate-700 font-normal'>{i.title}</h6>
+                                </Link>
+                            )
+                        })
+                    }
+                </div>
 
+            </div>
         </div>
     )
 }
