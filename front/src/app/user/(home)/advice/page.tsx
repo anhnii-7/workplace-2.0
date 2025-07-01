@@ -55,7 +55,7 @@ import EmployeeProfile from "../components/EmployeeProfile";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { ReqDailogpage } from "./components/ReqDailog";
-
+import Image from "next/image";
 interface User {
 
   _id: string;
@@ -432,7 +432,7 @@ export default function WishPage() {
         </Card>
 
         {/* Calendar */}
-        <Card className="p-6">
+        {/* <Card className="p-6">
           <CardHeader>
             <CardTitle className="text-lg font-semibold text-center">
               Боломжит өдрөө сонгоорой
@@ -447,7 +447,7 @@ export default function WishPage() {
               captionLayout="dropdown"
             />
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Requests */}
         <Card className="p-6 ">
@@ -486,7 +486,18 @@ export default function WishPage() {
                             </Badge>
                           </div>
                           <div className="flex gap-3">
-                            <div className="w-[60px] h-[60px] rounded-md bg-blue-200 flex items-center justify-center"></div>
+                            <div className="w-[60px] h-[60px] rounded-md bg-blue-200 flex items-center justify-center">
+                              <Image
+                                src={
+                                  typeof request.to !== 'string' && request.to.image
+                                    ? request.to.image
+                                    : '/default-profile.png'
+                                }
+                                alt="profileimage"
+                                width={60}
+                                height={60}
+                              />
+                            </div>
                             <div className="flex flex-col gap-2 justify-center">
                               <div className="flex gap-2"><User2 className="w-[16px] h-[16px]" />
                                 <span className="font-normal text-sm">
