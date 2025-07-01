@@ -30,7 +30,7 @@ export default function SuccessDialog({ open, onOpenChange }: SuccessDialogProps
             </div>
           </DialogTitle>
           <DialogDescription className="text-center">
-            <Image src={`/alertpinguin.png`} alt="image" width={320} height={320} style={{ objectFit: "fill" }} className="absolute inset-x-0 bottom-0 mx-auto"></Image>
+            <Image src={`/ice-cube.gif`} alt="image" width={320} height={320} style={{ objectFit: "fill" }} className="absolute inset-x-0 bottom-0 mx-auto"></Image>
           </DialogDescription>
         </DialogHeader>
       </DialogContent>
