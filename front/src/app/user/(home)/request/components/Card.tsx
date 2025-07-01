@@ -46,19 +46,18 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
     }
     return (<> {
         notif.type === "Request" ? (<div
-                // className={`w-[535px] bg-[#E5EFF8] rounded-lg p-6 flex flex-col gap-10
-                 className={`w-full bg-[#E5EFF8] rounded-lg p-6 flex flex-col gap-10
+                 className={`w-full bg-amber-50 h-fit rounded-lg p-6 flex flex-col gap-10
                     ${direction === "sent" ? "h-[348px]":"h-[324px]"}
                     `
                 }>
                     {
                         notif?.request[0]?.status==="pending" && direction === "sent"? (<>
                         <div className='w-[487px] py-3 flex items-center'>
-                            <div className={`w-[334px] bg-amber-50 border-amber-100 flex items-center py-2.5 px-4 rounded-md gap-2`}>
+                            <div className={`w-[334px] bg-orange-100 border-amber-100 flex items-center py-2.5 px-4 rounded-md gap-2`}>
                                 <Clock4 className='h-4 w-4'
-                                    color='#334155'
+                                    color='#78350F'
                                 />
-                                <span className='text-sm font-medium text-slate-700'>
+                                <span className='text-sm font-medium text-amber-900'>
                                     Хүсэлт хүлээгдэж байна
                                 </span>
                             </div>    
@@ -90,7 +89,7 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                 <div className='flex gap-5'>
                     
                     <div
-                        className='flex-1 bg-slate-50 rounded-lg flex items-center px-3 py-4.5 gap-3'>
+                        className='flex-1 bg-white rounded-lg flex items-center px-3 py-4.5 gap-3'>
                         <Image
                             src={main
                                 ?.image || "/avatar.png"}
@@ -107,7 +106,7 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                             }
                         </span>
                     </div>
-                    <div className='flex-1 bg-slate-50 rounded-lg py-4 px-3 gap-1'>
+                    <div className='flex-1 bg-white rounded-lg py-4 px-3 gap-1'>
                         <div className='flex items-center gap-3 py-1'>
                             <User className='text-slate-700 text-base font-medium w-5 h-5'/>
                             <span className='text-slate-700 text-base font-medium'>
@@ -130,7 +129,7 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                         </div>
                     </div>
                 </div>
-                <div className='bg-slate-50 rounded-md px-3 py-2'>
+                <div className='bg-white rounded-md px-3 py-2'>
                     <span className='text-sm font-normal'>
                         {
                             notif?.request[0]?.message|| "description"
@@ -140,10 +139,10 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                 <div className='flex gap-5'>
                     {direction === "recieved" ? (
                         <>
-                            <Button className='flex-1 text-sm font-medium text-blue-400 border-blue-400 border-1 bg-white' onClick={() => handleDeclineRequest(notif.request[0]._id)}>
+                            <Button className='flex-1 text-sm font-medium text-black border-amber-200 border-1 bg-white hover:bg-white' onClick={() => handleDeclineRequest(notif.request[0]._id)}>
                                 Татгалзах
                             </Button>
-                            <Button className='flex-1 text-sm font-medium text-blue-900 bg-blue-200' onClick={() => handleAcceptRequest(notif.request[0]._id)}>
+                            <Button className='flex-1 text-sm font-medium text-amber-900 bg-amber-200 hover:bg-amber-200' onClick={() => handleAcceptRequest(notif.request[0]._id)}>
                                 Зөвшөөрөх
                             </Button>
                         </>
@@ -153,12 +152,12 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
             ): notif.type === "Event" && direction !== "sent" ? (
             <div
                 // className='w-[535px] h-[324px] bg-[#E5EFF8] rounded-lg p-6 flex flex-col gap-5 [&>*]:box-border'>
-                className='w-full h-[324px] bg-[#E5EFF8] rounded-lg p-6 flex flex-col gap-5 [&>*]:box-border'>
+                className='w-full h-[324px] bg-amber-50 rounded-lg p-6 flex flex-col gap-5 [&>*]:box-border'>
                 <div className='flex gap-5 justify-between'>
                     <div className='rounded-lg flex items-center gap-3'>
                         <div
-                            className='w-16 h-16 bg-slate-50 rounded-lg flex justify-center items-center'>
-                            <Calendar className='h-6 w-6' color='#1E3A8A'/>
+                            className='w-16 h-16 bg-yellow-100 rounded-lg flex justify-center items-center'>
+                            <Calendar className='h-6 w-6' color='#78350F'/>
                         </div>
                         <div className='flex flex-col'>
                             <span className='text-2xl text-slate-700 font-semibold'>
@@ -178,7 +177,7 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                         </div>
                     </div>
                     <Badge
-                        className='bg-blue-900 text-sx font-medium w-fit h-fit flex items-center rounded-full px-3 py-1'>
+                        className='bg-amber-900 text-sx font-medium w-fit h-fit flex items-center rounded-full px-3 py-1'>
                         <span className='text-white'>
                             2 хүн дутуу
                         </span>
@@ -192,7 +191,7 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                     }
                 </span>
                 <div className='grid grid-cols-2 grid-rows-2 gap-x-5 gap-y-3'>
-                    <div className='flex gap-2 py-2 px-4 items-center bg-slate-50 rounded-md'>
+                    <div className='flex gap-2 py-2 px-4 items-center bg-white rounded-md'>
                         <CalendarDays className='h-4 w-4'/>
                         <span>
                             {
@@ -207,7 +206,7 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                         </span>
 
                     </div>
-                    <div className='flex gap-2 py-2 px-4 items-center bg-slate-50 rounded-md'>
+                    <div className='flex gap-2 py-2 px-4 items-center bg-white rounded-md'>
                         <Clock3 className='h-4 w-4'/>
                         <span>
                             {
@@ -217,7 +216,7 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                             }
                         </span>
                     </div>
-                    <div className='flex gap-2 py-2 px-4 items-center bg-slate-50 rounded-md'>
+                    <div className='flex gap-2 py-2 px-4 items-center bg-white rounded-md'>
                         <MapPin className='h-4 w-4'/>
                         <span>
                             {
@@ -227,7 +226,7 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                             }
                         </span>
                     </div>
-                    <div className='flex gap-2 py-2 px-4 items-center bg-slate-50 rounded-md'>
+                    <div className='flex gap-2 py-2 px-4 items-center bg-white rounded-md'>
                         <Users className='h-4 w-4'/>
                         <span>
                             {
@@ -238,7 +237,7 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                         </span>
                     </div>
                 </div>
-                <Button className='flex-1 text-sm font-medium text-blue-900 bg-blue-200'>Эвентэд нэгдэх</Button>
+                <Button className='flex-1 text-sm font-medium text-amber-900 bg-amber-200 hover:bg-amber-200 hover:text-amber-900'>Эвентэд нэгдэх</Button>
             </div>
             ) : null }
         </>
