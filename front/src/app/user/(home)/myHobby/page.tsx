@@ -5,6 +5,7 @@ import type { Hobby } from "../hobby/page"
 import axios from "axios"
 import Image from "next/image"
 import { AddHobbyDialog } from "../components/addHobby"
+import { Card } from "@/components/ui/card"
 
 const MyHobby = () => {
   const [myHobbies, setMyHobbies] = useState<Hobby[]>([])
@@ -141,23 +142,20 @@ const MyHobby = () => {
 
       <div className="grid grid-cols-4 gap-5 w-full">
         {myHobbies.map((hobby) => (
-          <div
-            key={hobby._id}
-            className="w-[267px] h-[288px] flex flex-col gap-3 border-1 border-[#B8D5ED] rounded-3xl bg-[#E5EFF8] box-border justify-between"
-          >
-            <div className="w-[140px] h-[224px] flex items-center place-self-center">
+          <Card  key={hobby._id} className="p-0 w-[268px] h-[288px] flex flex-col gap-3 box-border border border-amber-200 bg-amber-50">
+            <div className=" w-full rounded-3xl h-[224px] bg-amber-50 overflow-hidden relative">
               <Image
-                src={hobby.image || "/placeholder.svg"}
-                alt={hobby.title || "Хобби зураг"}
+                src={hobby?.image}
+                fill={true}
+                alt="sport"
+                className="place-self-center p-9"
                 style={{ objectFit: "contain" }}
-                width={140}
-                height={224}
               />
             </div>
-            <p className="bg-slate-50 text-center leading-7 rounded-b-3xl text-lg py-3 text-slate-800 font-medium">
-              {hobby.title}
+            <p className="bg-amber-100 text-center rounded-b-2xl text-lg py-3 text-amber-900">
+              {hobby?.title}
             </p>
-          </div>
+          </Card>
         ))}
 
         <AddHobbyDialog hobbies={allHobbies} userId={userId} onHobbiesAdded={handleHobbiesAdded} />

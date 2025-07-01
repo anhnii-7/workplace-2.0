@@ -129,7 +129,7 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
   // Dialog нээгдэх үед хэрэглэгчийн хоббиудыг шинэчлэх
   useEffect(() => {
     if (isOpen && userId) {
-      console.log("Dialog opened, refreshing user hobbies for userId:", userId)
+      // console.log("Dialog opened, refreshing user hobbies for userId:", userId)
       getUserHobbies(userId)
       setSelectedHobbies([]) // Reset selection when dialog opens
     }
@@ -137,13 +137,13 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
 
   // Хобби сонгох/сонгохгүй байх
   const toggleHobby = (hobbyId: string) => {
-    console.log("Toggling hobby:", hobbyId)
+    // console.log("Toggling hobby:", hobbyId)
 
     // Хэрэглэгчийн одоо байгаа хобби эсэхийг шалгах
     const isAlreadyOwned = userExistingHobbies.some((hobby) => hobby._id === hobbyId)
 
     if (isAlreadyOwned) {
-      console.log("Cannot select - user already has this hobby")
+      // console.log("Cannot select - user already has this hobby")
       toast.warning("Та энэ хоббиг аль хэдийн нэмсэн байна")
       return // Хэрэглэгчийн одоо байгаа хобби бол сонгох боломжгүй
     }
@@ -254,7 +254,7 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
   // Loading state
   if (loading) {
     return (
-      <div className="w-[267px] h-[288px] flex flex-col gap-3 rounded-3xl bg-slate-50 box-border items-center justify-center">
+      <div className="w-[268px] h-[288px] flex flex-col gap-3 rounded-3xl bg-amber-50 box-border items-center justify-center">
         <Plus className="text-slate-400" size={64} />
         <p className="text-slate-500 font-medium">Хобби ачааллаж байна...</p>
       </div>
@@ -264,9 +264,9 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
   // Хобби байхгүй бол
   if (allHobbies.length === 0 && !loading) {
     return (
-      <div className="w-[267px] h-[288px] flex flex-col gap-3 rounded-3xl bg-slate-50 box-border items-center justify-center">
-        <Plus className="text-slate-400" size={64} />
-        <p className="text-slate-500 font-medium">Хобби олдсонгүй</p>
+      <div className="w-[268px] h-[288px] flex flex-col gap-3 rounded-3xl bg-amber-50 box-border items-center justify-center">
+        <Plus className="text-amber-900" size={64} />
+        <p className="text-amber-500 font-medium">Хобби олдсонгүй</p>
       </div>
     )
   }
@@ -275,11 +275,11 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <div
-          className="w-[267px] h-[288px] flex flex-col gap-2 rounded-3xl bg-slate-50 box-border items-center justify-center cursor-pointer hover:bg-slate-100 transition-colors"
+          className="w-[268px] h-[288px] flex flex-col gap-2 rounded-3xl bg-amber-50 box-border items-center justify-center cursor-pointer hover:bg-amber-50 transition-colors"
           onClick={() => setIsOpen(true)}
         >
-          <Plus className="text-slate-400" size={64} />
-          <p className="text-slate-500 font-medium">Хобби нэмэх</p>
+          <Plus className="text-amber-900" size={64} />
+          <p className="text-amber-900 font-medium">Хобби нэмэх</p>
         </div>
       </DialogTrigger>
 
@@ -305,10 +305,10 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
                   key={hobby._id}
                   className={`w-[220px] h-[288px] flex flex-col gap-3 border-2 rounded-3xl box-border justify-between transition-all relative ${
                     isAlreadyOwned
-                      ? "border-[#B8D5ED] bg-[#E5EFF8] opacity-60 cursor-not-allowed"
+                      ? "border-amber-200/60 bg-white opacity-60 cursor-not-allowed"
                       : isSelected
-                        ? "border-blue-400 bg-blue-50 cursor-pointer shadow-md"
-                        : "border-gray-200 bg-white cursor-pointer hover:border-blue-300 hover:bg-blue-50 hover:shadow-sm"
+                        ? "border-amber-200 bg-amber-50 cursor-pointer shadow-md"
+                        : "border-amber-200 bg-white cursor-pointer hover:border-[#FFDA95] hover:bg-amber-1-0 hover:shadow-sm"
                   }`}
                   onClick={() => toggleHobby(hobby._id)}
                 >
@@ -326,10 +326,10 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
                   <p
                     className={`text-center leading-7 rounded-b-3xl text-lg py-3 font-medium transition-colors ${
                       isAlreadyOwned
-                        ? "bg-gray-100 text-gray-500"
+                        ? "bg-amber-100/60 text-amber-900/60"
                         : isSelected
-                          ? "bg-blue-100 text-slate-800"
-                          : "bg-slate-50 text-slate-800"
+                          ? "bg-amber-200 text-amber-900"
+                          : "bg-amber-50 text-amber-900"
                     }`}
                   >
                     {hobby.title}
@@ -345,10 +345,10 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
             <button
               className={`w-full px-4 rounded-md py-3 text-sm font-medium leading-5 transition-colors ${
                 isLoading
-                  ? "bg-blue-300 cursor-not-allowed text-white"
+                  ? "bg-amber-200 cursor-not-allowed text-amber-900"
                   : selectedHobbies.length > 0 && userId
-                    ? "bg-blue-400  text-white cursor-pointer"
-                    : "bg-blue-200 text-white cursor-not-allowed"
+                    ? "bg-amber-200  text-amber-900 cursor-pointer"
+                    : "bg-amber-№00 text-amber-900 cursor-not-allowed"
               }`}
               onClick={handleSaveHobbies}
               disabled={isLoading || selectedHobbies.length === 0 || !userId}
