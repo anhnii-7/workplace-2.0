@@ -1,6 +1,5 @@
 "use client"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -10,15 +9,6 @@ import Image from "next/image"
 import axios from "axios"
 import { useParams } from "next/navigation"
 import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import Link from "next/link"
 import SuccessDialog from "./components/SuccessDialog"
 
 
@@ -68,28 +58,24 @@ export default function HobbyInsertPage() {
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [checkUserTitle, setCheckUserTitle] = useState<string>("all");
   const [currentHobby, setCurrentHobby] = useState<HobbyInfo | null>(null);
-  // console.log("USERS", users);
-  // console.log("checkUserTitle", setCheckUserTitle);
-  console.log("filters", filteredUsers);
-  // console.log("selectedCategory", selectedCategory);
   const [loadingUsers, setLoadingUsers] = useState<Record<string, boolean>>({});
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [pendingRequests, setPendingRequests] = useState<Record<string, boolean>>({});
+
   const params = useParams();
-  console.log(pendingRequests, "Pending Requests");
-    useEffect(() => {
+  useEffect(() => {
     const fetchPendingRequests = async () => {
       if (!currentUser?._id) return;
-      
+
       try {
         const response = await axios.get(`/api/request?userId=${currentUser._id}&type=sent&status=pending`);
         const requests = (response.data as any)?.data?.requests || [];
-        
+
         const pendingMap = requests.reduce((acc: Record<string, boolean>, request: any) => {
           acc[request.to._id] = true;
           return acc;
         }, {});
-        
+
         setPendingRequests(pendingMap);
       } catch (error) {
         console.error("Error fetching pending requests:", error);
@@ -102,7 +88,6 @@ export default function HobbyInsertPage() {
   useEffect(() => {
     const getUsers = async () => {
       const response = await axios.get(`/api/user/by-hobby?id=${params.id}`);
-      console.log(response.data.data, "Users Data");
       const currentUserString = localStorage.getItem("currentUser");
       if (!currentUserString) {
         router.push("/login");
@@ -113,7 +98,6 @@ export default function HobbyInsertPage() {
 
       const filteredUsers = (response.data as any).data.filter((user: User) => user._id !== currentUser._id);
       setUsers(filteredUsers);
-      // setFilteredUsers(filteredUsers);
       const hobbyResponse = await axios.get('/api/hobby');
       const matchedHobby = hobbyResponse.data.data.find((h: HobbyInfo) => h._id === params.id);
       setCurrentHobby(matchedHobby);
@@ -137,18 +121,8 @@ export default function HobbyInsertPage() {
   }, []);
 
   useEffect(() => {
-    // console.log("FILTERED USERS", selectedCategory);
-    // console.log("USERS", users);
-    console.log(users.filter(u => u.hobby.includes(params.id as string)), "Hobby Filter Check");
     setFilteredUsers(users);
-
-      // setFilteredUsers(users);
-
-      // console.log(users, "Naraa");
-      // setFilteredUsers(filtered);
   }, [selectedCategory, users]);
-
-  // console.log(users.filter(u => u.hobby.includes(selectedCategory)), "Hobby Filter Check");
 
   const handleHobbyChange = (hobbyId: string) => {
     if (hobbyId === "all") {
@@ -157,7 +131,7 @@ export default function HobbyInsertPage() {
     router.push(`/user/hobby/${hobbyId}`);
   };
 
-const handleSendRequest = async (toUserId: string) => {
+  const handleSendRequest = async (toUserId: string) => {
     setLoadingUsers(prev => ({ ...prev, [toUserId]: true }));
     try {
       await axios.post("/api/request", {
@@ -167,11 +141,11 @@ const handleSendRequest = async (toUserId: string) => {
         status: "pending",
         isActive: true
       });
-      
+
       // Update pending requests state
       setPendingRequests(prev => ({ ...prev, [toUserId]: true }));
       setShowSuccessDialog(true);
-      
+
       setTimeout(() => {
         setShowSuccessDialog(false);
       }, 3000);
@@ -184,98 +158,83 @@ const handleSendRequest = async (toUserId: string) => {
 
 
   return (
-    <div className="min-h-screen w-full p-6">
+    <div className="min-h-screen w-full">
       <div className="w-full">
-        <h1 className="text-3xl font-semibold text-gray-800 text-center mb-8">
-          Сонирхлоороо нэгдэн цагийг хамтдаа өнгөрүүлцгээе
+        <h1 className="text-2xl font-medium text-slate-800 text-center py-4 px-6 mt-[5px]">
+          Цайны цагийн сонирхолтой яриа
         </h1>
 
-        <div className="mb-8">
-         <Select
+        <div className="grid grid-cols-2 gap-5 my-10 text-blue-900 font-medium">
+          <Select
             value={params.id as string}
             onValueChange={handleHobbyChange}
           >
-            <SelectTrigger className="w-48 bg-blue-50 border-blue-200">
-              <SelectValue>
+            <SelectTrigger className="w-full bg-[#E5EFF8] border-blue-200 rounded-md">
+              <SelectValue  className="text-blue-900 text-sm">
                 {currentHobby ? currentHobby.title : ''}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              {/* <SelectItem value="all">Бүх сонирхол</SelectItem> */}
               {hobbies.map(hobby => (
-                <SelectItem value={hobby._id} key={hobby._id}>
+                <SelectItem value={hobby._id} key={hobby._id} className="text-blue-900 text-sm">
                   {hobby.title}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
+          <div className="w-full"></div>
         </div>
 
-        
-          {/* <Link href="/user/hobby/685794d7ba3a1fd08e086659">Naka</Link> */}
-        
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 py-3">
+        <div className="grid grid-cols-4 gap-5">
           {filteredUsers.length > 0 ? (
             filteredUsers.map((user) => (
-              <Card key={user._id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
-                <CardContent className="p-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-26 h-24 mb-3">
-                      <Image src={`${user.image}`} alt="image" width={124} height={120}></Image>
-                      {/* <AvatarImage src={`/avatars/${user._id}.jpg`} alt={user.name} />
+              <Card key={user._id} className="bg-white px-3 py-6 w-[267.5px] h-[332px]">
+                <CardContent className="p-0">
+                  <div className="flex flex-col items-center object-fit">
+
+                   <div className="w-[124px] h-[120px] rounded-xl relative">
+                   <Image src={`${user.image}`} alt="image" className="object-fill absolute border-none rounded-xl" fill />
+                    {/* <AvatarImage src={`/avatars/${user._id}.jpg`} alt={user.name} />
                       <AvatarFallback className="bg-gray-200 text-gray-600 text-xl">
                         {user.lastName.slice(0, 1)}{user.name.slice(0, 1)}
                       </AvatarFallback> */}
+                   </div>
+
+
+                    <div className="flex flex-col gap-1 my-3 text-center w-full">
+                      <p className="font-semibold text-slate-800 text-lg">
+                        {user.lastName.slice(0, 1)}.{user.name}
+                      </p>
+                      <p className="text-sm font-normal text-gray-600">
+                        {user.departmentInfo?.jobTitleInfo?.title || "Алба байхгүй"}
+                      </p>
                     </div>
 
-                    <div className="flex flex-col gap-1 py-[6px] text-center w-full">
-                      <div className="w-full">
-                        <h3 className="font-semibold text-gray-800 text-lg">
-                          {user.lastName.slice(0, 1)}.{user.name}
-                        </h3>
-                      </div>
-
-                      <div className="w-full">
-                        <span className="text-sm font-normal text-gray-600">
-                          {user.departmentInfo?.jobTitleInfo?.title || "Алба байхгүй"}
-                        </span>
-                      </div>
-
-                      <div className="w-full">
-                        <span className="text-sm font-normal text-gray-500">
-                          {user.departmentInfo?.title || "Хэлтэс байхгүй"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-2 w-full my-3">
-                      <Badge
-                        variant="secondary"
-                        className="flex w-full rounded-full py-1 px-3 text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer transition-colors"
-                      >{Array.isArray(user.hobbyInfo)
-                        ? (user.hobbyInfo as HobbyInfo[]).slice(0, 2).map((hobby: HobbyInfo) => (<div key={hobby._id}>{hobby.title}</div>))
+                    <div className="grid grid-cols-2 gap-3 w-full my-3">
+                      {Array.isArray(user.hobbyInfo)
+                        ? (user.hobbyInfo as HobbyInfo[]).slice(0, 2).map((hobby: HobbyInfo) => (<Badge
+                          variant="secondary"
+                          key={hobby._id}
+                          className="flex w-full rounded-full py-1 px-3 text-xs bg-[#f1ffee] font-medium text-slate-800 hover:bg-blue-100 cursor-pointer transition-colors"
+                        >{hobby.title} </Badge>))
                         : <div>{(user.hobbyInfo as HobbyInfo)?.title || "Сонирхол байхгүй"}</div>
                       }
-                        {/* {user.hobbyInfo?.title || "Сонирхол байхгүй"} */}
-                      </Badge>
+                      {/* {user.hobbyInfo?.title || "Сонирхол байхгүй"} */}
                     </div>
 
                     {!pendingRequests[user._id] ? (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full bg-blue-50 text-sm text-blue-600 border-blue-200 py-2 rounded-md hover:bg-blue-100 transition-colors"
-                    onClick={() => handleSendRequest(user._id)}
-                    disabled={loadingUsers[user._id]}
-                  >
-                    {loadingUsers[user._id] ? "Илгээж байна..." : "Хүсэлт илгээх"}
-                  </Button>
-                ) : (
-                  <div className="text-center text-sm text-gray-500 py-2">
-                    Хүсэлт илгээгдсэн
-                  </div>
-                )}
+                      <Button
+                        className="w-full bg-[#E5EFF8] text-sm font-medium text-blue-900 border-blue-200 py-[10px] rounded-md hover:bg-blue-100 transition-colors"
+                        onClick={() => handleSendRequest(user._id)}
+                        disabled={loadingUsers[user._id]}
+                      >
+                        {loadingUsers[user._id] ? "Илгээж байна..." : "Хүсэлт илгээх"}
+                      </Button>
+                    ) : (
+                      <Button className="w-full opacity-50 bg-[#E5EFF8] text-sm font-medium text-blue-900 border-blue-200 py-[10px] rounded-md hover:bg-blue-100 transition-colors">
+                        Хүсэлт илгээгдсэн
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
