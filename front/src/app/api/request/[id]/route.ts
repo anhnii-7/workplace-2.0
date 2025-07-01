@@ -16,9 +16,6 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       to: request.to,
       isActive: true,
     });
-    if (activeMentees >= 3) {
-      return NextResponse.json({ message: 'Mentor has reached maximum number of active mentees' }, { status: 400 });
-    }
     request.status = 'accepted';
     request.isActive = true;
     request.mentorNotes = mentorNotes;

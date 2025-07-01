@@ -63,7 +63,6 @@ export default function test() {
   const [editEvent, setEditEvent] = useState<Event | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
-  const [response, setResponse] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showParticipants, setShowParticipants] = useState(false);
 
@@ -240,7 +239,7 @@ export default function test() {
   return (
     <div className="min-h-screen w-full">
       {showSuccessBanner && (
-        <div className="fixed w-[375px] h-[100px] top-8 right-8 z-50 bg-white border bg-amber-100 rounded-xl shadow-lg px-8 py-4 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
+        <div className="fixed w-[375px] h-[100px] top-8 right-8 z-50  border bg-amber-100 rounded-xl shadow-lg px-8 py-4 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-yellow-400 w-[23px] h-[28px]">✨</span>
             <span className="font-medium text-lg text-slate-800">Таны эвент амжилттай үүсгэгдлээ</span>
@@ -416,7 +415,7 @@ export default function test() {
                       const formattedDate = tomorrow.toISOString().split('T')[0];
 
                       setNewEvent({
-                        name: "Сагсан бөмбөгийн тэмцээн",
+                        name: "Сагсны тэмцээн",
                         eventType: hobbies[0]?._id || "",
                         eventDate: formattedDate,
                         eventTime: "14:00",

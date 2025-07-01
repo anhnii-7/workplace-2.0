@@ -73,7 +73,7 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                                 </span>
                             </div>
                         </div> 
-                        </>):(<>
+                        </>):notif?.request[0]?.status === "declined" && direction === "sent" ?(<>
                             <div className={`w-[334px] bg-red-50 border-red-800 flex py-2.5 px-4 rounded-md gap-2 flex-col`}>
                             <div className='flex gap-3 items-center'>
                                 <Frown className='h-4 w-4'
@@ -84,7 +84,7 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                                 </span>
                             </div>
                         </div>
-                        </>)
+                        </>) : (<></>)
                     }
                 <div className='flex gap-5'>
                     

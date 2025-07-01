@@ -216,7 +216,7 @@ export function AddEventDialog({ hobbyId, onEventCreated, currentUser }: AddEven
                     const formattedDate = tomorrow.toISOString().split('T')[0];
                     
                     form.reset({
-                      name: "Сагсан бөмбөгийн тэмцээн",
+                      name: "Сагсны тэмцээн",
                       eventType: hobbyId,
                       eventDate: formattedDate,
                       eventTime: "14:00",
