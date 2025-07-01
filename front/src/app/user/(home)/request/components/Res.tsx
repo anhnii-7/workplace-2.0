@@ -5,7 +5,7 @@ import Card from "./Card";
 export const ResBody = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [currentUser, setCurrentUser] = useState<any>(null);
-
+  const [filteredNotif, setFilteredNotif] = useState<any[]>([]);
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
     setCurrentUser(user);
@@ -29,6 +29,20 @@ export const ResBody = () => {
         });
     }
   }, []);
+
+  useEffect(() => {
+    setFilteredNotif(
+      notifications.filter((n: any) => {
+        if (n.type === 'Request') {
+          // Only include if the first request's status is 'pending'
+          return n.request && Array.isArray(n.request) && n.request[0]?.status === 'pending';
+        }
+        // For other types, include as before
+        return true;
+      })
+    );
+  }, [notifications]);
+
   console.log(notifications , "res")
   if (!currentUser) return null;
   // console.log(currentUser._id)
@@ -38,10 +52,10 @@ export const ResBody = () => {
       {notifications.length === 0 && (
         <div className="col-span-2 text-center text-gray-400">Ирсэн хүсэлт алга байна</div>
       )}
-      {notifications.map((notif) => {
+      {filteredNotif.map((notif) => {
         // Handle notif.to as array or single value
         if (Array.isArray(notif.to) ? notif.to.includes(currentUser._id) : currentUser._id === notif.to) {
-          return <Card notif={notif} direction="recieved" key={notif._id}/>;
+          return <Card notif={notif} direction="recieved" key={notif._id} onRemove={() => setFilteredNotif((prev) => prev.filter((n) => n._id !== notif._id))} />;
         }
         return null;
       })}

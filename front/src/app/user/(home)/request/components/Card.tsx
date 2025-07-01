@@ -2,12 +2,12 @@ import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button'
 import axios from 'axios';
 import {
-    BookOpenCheck,
     Calendar,
     CalendarDays,
     CheckCheck,
     Clock3,
     Clock4,
+    Frown,
     MapPin,
     User,
     Users
@@ -18,8 +18,9 @@ import React from 'react'
 interface CardProps {
     notif: any;
     direction: 'sent' | 'recieved'; // Note the correct spelling
+    onRemove?: () => void;
 }
-const Card = ({notif, direction} : CardProps) => {
+const Card = ({notif, direction, onRemove} : CardProps) => {
     // Choose the correct user aggregate based on direction
     const main = direction === 'recieved'
     ? notif.fromUser
@@ -34,16 +35,17 @@ const Card = ({notif, direction} : CardProps) => {
         const response = await axios.put(`/api/request/${requestId}`, {
             status: "accepted"
         })
+        if (onRemove) onRemove();
     }
     const handleDeclineRequest = async (requestId: string) => {
         console.log(requestId)
         const response = await axios.put(`/api/request/${requestId}`, {
             status: "declined"
         })
+        if (onRemove) onRemove();
     }
     return (<> {
-        notif.type === "Request"
-            ? (<div
+        notif.type === "Request" ? (<div
                 // className={`w-[535px] bg-[#E5EFF8] rounded-lg p-6 flex flex-col gap-10
                  className={`w-full bg-[#E5EFF8] rounded-lg p-6 flex flex-col gap-10
                     ${direction === "sent" ? "h-[348px]":"h-[324px]"}
@@ -63,28 +65,26 @@ const Card = ({notif, direction} : CardProps) => {
                         </div>  
                         </>): notif?.request[0]?.status === "accepted" && direction === "sent" ?(<>
                             <div className={`w-[334px] bg-green-50 border-green-800 flex py-2.5 px-4 rounded-md gap-2 flex-col`}>
-                            <div className='flex gap-3'>
+                            <div className='flex gap-3 items-center'>
                                 <CheckCheck className='h-4 w-4'
                                     color='#14532D'
                                 />
                                 <span className='text-sm font-medium text-emerald-800'>
-                                    Болзоот өдрөө хүлээж байна
-                                </span>
-                            </div>
-                            <div className='flex gap-3'>
-                                <CalendarDays className='h-4 w-4'
-                                    color='#14532D'
-                                />
-                                <span className='text-sm font-medium text-emerald-800'>
-                                {
-                                    notif
-                                        ?.request[0]
-                                            ?.selectedSchedule
-                                }
+                                    Хүсэлт зөвшөөрөгдсөн байна. Амжилт хүсье!
                                 </span>
                             </div>
                         </div> 
                         </>):(<>
+                            <div className={`w-[334px] bg-red-50 border-red-800 flex py-2.5 px-4 rounded-md gap-2 flex-col`}>
+                            <div className='flex gap-3 items-center'>
+                                <Frown className='h-4 w-4'
+                                    color='#991B1B'
+                                />
+                                <span className='text-sm font-medium text-red-800'>
+                                    Уучлаарай завгүй байна.
+                                </span>
+                            </div>
+                        </div>
                         </>)
                     }
                 <div className='flex gap-5'>
