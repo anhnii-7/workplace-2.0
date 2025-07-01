@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import axios from "axios"
 import { toast } from "sonner"
+import { EventCard } from "../../hobby/[id]/components/EventCard"
 
 interface Event {
   _id: string;
@@ -163,7 +164,7 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
     try {
       const response = await axios.patch(`/api/event/${eventId}`, {
         action,
-        userName: currentUser.name
+        userName: currentUser._id
       });
 
       const responseData = response.data as { success: boolean; data: Event; message: string };
@@ -432,6 +433,7 @@ export default function EventPage({ params }: { params: Promise<{ id: string }> 
                           >
                             {isJoined ? "Орсон" : isFull ? "Дүүрсэн" : "Эвентэд нэгдэх"}
                           </Button>
+                          <EventCard event={event} />  
                         </div>
                       </div>
                     </CardContent>
