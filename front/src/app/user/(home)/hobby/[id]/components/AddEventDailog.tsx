@@ -78,7 +78,7 @@ export function AddEventDialog({ hobbyId, onEventCreated, currentUser }: AddEven
         ...data,
         maxParticipants: parseInt(data.maxParticipants),
         eventDate: new Date(data.eventDate).toISOString(),
-        organizer: user.name,
+        organizer: user._id,
       };
 
       const response = await axios.post('/api/event', eventData);

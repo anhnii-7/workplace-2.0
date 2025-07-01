@@ -11,6 +11,13 @@ import {
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface Event {
   _id: string;
@@ -39,6 +46,8 @@ export const EventCard = ({ event, onEdit, onEventUpdated }: EventCardProps) => 
   const [isJoined, setIsJoined] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [showParticipants, setShowParticipants] = useState(false);
+  const [participantUsers, setParticipantUsers] = useState<any[]>([]);
 
   useEffect(() => {
     // Get current user from localStorage
@@ -49,6 +58,15 @@ export const EventCard = ({ event, onEdit, onEventUpdated }: EventCardProps) => 
       setIsJoined(event.participants.includes(user.name));
     }
   }, [event.participants]);
+
+  useEffect(() => {
+    if (showParticipants && event.participants.length > 0) {
+      // Fetch user info for all participants
+      axios.post('/api/user/by-ids', { ids: event.participants })
+        .then(res => setParticipantUsers(res.data.data))
+        .catch(() => setParticipantUsers([]));
+    }
+  }, [showParticipants, event.participants]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -81,7 +99,7 @@ export const EventCard = ({ event, onEdit, onEventUpdated }: EventCardProps) => 
     try {
       const response = await axios.patch(`/api/event/${event._id}`, {
         action,
-        userName: currentUser.name
+        userName: currentUser._id
       });
 
       const responseData = response.data as { success: boolean; data: Event; message: string };
@@ -141,23 +159,47 @@ export const EventCard = ({ event, onEdit, onEventUpdated }: EventCardProps) => 
           <div className="flex gap-2 items-center  px-4 py-2">
             <User />{" "}
             <p className="text-slate-700 font-normal leading-5 text-sm ">
-              {event.organizer}
-            </p>
-          </div>
-
-          <div className="flex gap-2 items-center  px-4 py-2">
-            <MapPin />
-            <p className="text-slate-700 font-normal leading-5 text-sm ">
               {event.eventLocation}
             </p>
           </div>
-        </div>
 
-        <div className="flex gap-2 items-center  px-4 py-2">
-          <Users />
-          <p className="text-slate-700 font-normal leading-5 text-sm ">
-            {currentParticipants}/{event.maxParticipants} хүн бүртгүүлсэн байна
-          </p>
+          {/* Show the button only if the event is full */}
+          {currentParticipants === event.maxParticipants && (
+            <Dialog open={showParticipants} onOpenChange={setShowParticipants}>
+              <DialogTrigger asChild>
+                <Button
+                  className="w-full mt-2 bg-[#FFE9A0] text-[#B08500] border border-[#FFD36A] hover:bg-[#FFD36A] font-semibold rounded-lg"
+                  variant="outline"
+                  onClick={() => setShowParticipants(true)}
+                >
+                  Бүртгүүлсэн ажилчдыг харах
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl w-full bg-[#FFF9E6]">
+                <DialogTitle className="sr-only">Бүртгүүлсэн ажилчид</DialogTitle>
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="bg-[#FFF6D1] p-4 rounded-xl">
+                    <BookOpenCheck className="text-yellow-700 w-8 h-8" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-slate-800">{event.name}</h2>
+                    <p className="text-lg text-slate-600">Эвентэд нэгдсэн хүмүүс</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  {participantUsers.map(user => (
+                    <div key={user._id} className="flex items-center border border-yellow-200 rounded-lg p-3 bg-white gap-4">
+                      <img src={user.image || '/default-avatar.png'} alt={user.name} className="w-16 h-16 rounded-lg object-cover" />
+                      <div>
+                        <div className="font-bold text-slate-800">{user.lastName} {user.name}</div>
+                        <div className="text-slate-500">{user.departmentInfo?.jobTitleInfo?.title || ''}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </div>
       <Button 
@@ -176,8 +218,9 @@ export const EventCard = ({ event, onEdit, onEventUpdated }: EventCardProps) => 
       {onEdit && (
         <Button 
           variant="outline"
-          className="w-full mt-2 border-blue-400 text-blue-700 hover:bg-blue-50"
-          onClick={() => onEdit(event)}
+          className="w-full mt-2 border-blue-400 text-blue-700 hover:bg-blue-50 opacity-50 cursor-not-allowed"
+          onClick={() => {}}
+          disabled
         >
           Засах
         </Button>

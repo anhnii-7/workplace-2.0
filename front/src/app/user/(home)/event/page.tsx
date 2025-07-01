@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { EventCard } from "../hobby/[id]/components/EventCard";
 
 interface Event {
   _id: string;
@@ -60,6 +61,7 @@ export default function EventPage() {
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   const [response, setResponse] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showParticipants, setShowParticipants] = useState(false);
 
   useEffect(() => {
     // Get current user from localStorage
@@ -124,7 +126,7 @@ export default function EventPage() {
         ...newEvent,
         maxParticipants: parseInt(newEvent.maxParticipants),
         eventDate: new Date(newEvent.eventDate).toISOString(),
-        organizer: currentUser.name,
+        organizer: currentUser._id,
       };
       const response = await axios.post("/api/event", eventData);
       const responseData = response.data as { success: boolean; data: Event; message: string };
@@ -173,7 +175,7 @@ export default function EventPage() {
     try {
       const response = await axios.patch(`/api/event/${eventId}`, {
         action,
-        userName: currentUser.name,
+        userName: currentUser._id,
       });
       const responseData = response.data as { success: boolean; data: Event; message: string };
       if (responseData.success) {
@@ -445,82 +447,9 @@ export default function EventPage() {
                 const isFull = event.participants.length >= event.maxParticipants;
                 const remainingSpots = event.maxParticipants - event.participants.length;
                 const canEdit = currentUser && event.organizer === currentUser.name;
+                const currentParticipants = event.participants.length;
                 return (
-                  <Card key={event._id} className="bg-[#E5EFF8] border-none rounded-xl p-0">
-                    <CardContent className="p-6">
-                      <div className="space-y-5 ">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="p-5 bg-blue-100 rounded-lg flex items-center justify-center">
-                              <Calendar color="#1E3A8A" className="w-6 h-6" />
-                            </div>
-                            <div className="flex flex-col gap-1">
-                              <h3 className="font-semibold text-slate-700 text-2xl">{event.name}</h3>
-                              <p className="text-base text-gray-600">{event.eventType.title}</p>
-                            </div>
-                          </div>
-                          <Badge
-                            className={
-                              isFull
-                                ? "bg-red-50 text-red-900 py-1 px-3 rounded-full"
-                                : "bg-blue-50 text-blue-900 py-1 px-3 rounded-full"
-                            }
-                          >
-                            {isFull ? "Дүүрсэн" : `${remainingSpots} хүн дутуу`}
-                          </Badge>
-                        </div>
-                        <p className="text-base text-slate-600">{event.description}</p>
-                        <div>
-                          <div className="grid grid-cols-2 gap-5 mb-3">
-                            <div className="flex items-center text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
-                              <Calendar className="w-4 h-4" />
-                              <p>{formatDate(event.eventDate)}</p>
-                            </div>
-                            <div className="flex items-center text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
-                              <Clock className="w-4 h-4" />
-                              <p>{event.eventTime}</p>
-                            </div>
-                          </div>
-                          <div className="grid grid-cols-2 gap-5">
-                            <div className="flex items-center text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
-                              <MapIcon className="w-4 h-4" />
-                              <p>{event.eventLocation}</p>
-                            </div>
-                            <div className="flex items-center text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
-                              <Users className="w-4 h-4" />
-                              <p>
-                                {event.participants.length}/{event.maxParticipants} хүн бүртгүүлсэн байна
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          {event.organizer === currentUser.name && <Button variant="outline" className="flex-1 py-[10px] text-sm text-blue-400 hover:bg-white hover:text-blue-400 rounded-md border-blue-400 font-medium" disabled={!canEdit}
-                            onClick={() => {
-                              if (canEdit) {
-                                setEditEvent(event);
-                                setIsEditOpen(true);
-                              }
-                            }}>
-                            Засах
-                          </Button>
-                          }
-                          <Button
-                            className={`flex-1 transition-colors ${isJoined
-                              ? "bg-green-500 text-white py-[10px] text-sm hover:bg-none hover:bg-green-500  font-medium"
-                              : isFull
-                                ? "bg-gray-400 cursor-not-allowed py-[10px] text-sm hover:bg-gray-400 font-medium"
-                                : "bg-blue-200 text-blue-900 py-[10px] text-sm hover:bg-blue-200 font-medium"
-                              }`}
-                            onClick={() => !isFull && handleJoinEvent(event._id)}
-                            disabled={isFull && !isJoined}
-                          >
-                            {isJoined ? "Орсон" : isFull ? "Дүүрсэн" : "Эвентэд нэгдэх"}
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <EventCard key={event._id} event={event} />
                 );
               })}
             </div>
@@ -601,6 +530,5 @@ export default function EventPage() {
         </DialogContent>
       </Dialog>
     </div >
-    // Fill with mock data2
   );
 }

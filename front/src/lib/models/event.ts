@@ -36,7 +36,9 @@ const eventSchema = new mongoose.Schema({
         required: true
     },
     organizer: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
     status: {
         type: String,
