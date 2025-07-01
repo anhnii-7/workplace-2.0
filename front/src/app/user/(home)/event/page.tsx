@@ -495,14 +495,14 @@ export default function test() {
                             </div>
                             {
                               event.participants.length == event.maxParticipants && event.organizer == currentUser._id ? (
-                                <div className="flex items-center text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
+                                <div className="flex items-center relative text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
                                   <Users className="w-4 h-4" />
                                   <p>
                                     {
                                       <Dialog open={showParticipants} onOpenChange={setShowParticipants}>
                                       <DialogTrigger asChild>
                                         <Button
-                                          className="w-full mt-2 bg-[#FFE9A0] text-[#B08500] border border-[#FFD36A] hover:bg-[#FFD36A] font-semibold rounded-lg"
+                                          className="absolute inset-0 z-50 bg-amber-200 text-amber-900 border border-[#FFD36A] hover:bg-amber-200 hover:text-amber-900 font-semibold rounded-lg"
                                           variant="outline"
                                           onClick={() => setShowParticipants(true)}
                                         >
@@ -563,12 +563,12 @@ export default function test() {
                               ? "bg-green-500 text-white py-[10px] text-sm hover:bg-none hover:bg-green-500  font-medium"
                               : isFull
                                 ? "bg-background text-brand-300 py-[10px] text-sm hover:bg-gray-400 font-medium"
-                                : "bg-amber-200 text-amber-900 py-[10px] text-sm hover:bg-blue-200 font-medium"
+                                : "bg-amber-200 text-amber-900 py-[10px] text-sm hover:bg-amber-200 font-medium"
                               }`}
                             onClick={() => !isFull && handleJoinEvent(event._id)}
                             disabled={isFull && !isJoined}
                           >
-                            {isJoined ? "Орсон" : isFull ? "Дүүрсэн" : "Эвентэд нэгдэх"}
+                            {isJoined ? "Орсон" : isFull ? "Дүүрсэн" : "Эвэнтэд нэгдэх"}
                           </Button>
                         </div>
                       </div>
