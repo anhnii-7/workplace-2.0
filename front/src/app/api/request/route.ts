@@ -38,14 +38,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }
 
-    const existingRequest = await RequestModel.findOne({
-      from,
-      to,
-      status: 'pending',
-    });
-    if (existingRequest) {
-      return NextResponse.json({ message: 'Request already sent and pending' }, { status: 400 });
-    }
+    // const existingRequest = await RequestModel.findOne({
+    //   from,
+    //   to,
+    //   status: 'pending',
+    // });
+    // if (existingRequest) {
+    //   return NextResponse.json({ message: 'Request already sent and pending' }, { status: 400 });
+    // }
     const request = await RequestModel.create({
       from,
       to,
