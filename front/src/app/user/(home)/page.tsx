@@ -19,7 +19,7 @@
             ">
               Өдөр болгон шинэ боломж
             </motion.h1>
-            <motion.p initial={{opacity:0 , x:-100}}  animate={{ opacity: 1, x: 0 }}  transition={{ duration: 0.5  ,delay:0.4}} className="font-normal text-[20px] leading-10 w-[481px]">
+            <motion.p initial={{opacity:0 , x:-100}}  animate={{ opacity: 1, x: 0 }}  transition={{ duration: 0.5  ,delay:0.4}} className="font-normal text-[20px] leading-[140%] w-[491px]">
             Та зөвхөн ажил биш, сонирхлоороо холбогдож кино үзэх, ном унших, спорт эсвэл зүгээр л кофе уух гээд хоббигоороо дамжуулан хамт олонтойгоо ойртон дотносох боломжийг бид танд бүрдүүлж өгье.
             </motion.p>
            <motion.button
