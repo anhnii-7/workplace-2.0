@@ -18,8 +18,8 @@ export async function GET(req: NextRequest) {
   }
   try {
     const requests = await RequestModel.find(query)
-      .populate('from', 'name lastName email role')
-      .populate('to', 'name lastName email role');
+      .populate('from', 'name lastName email role image')
+      .populate('to', 'name lastName email role image');
     return NextResponse.json({ success: true, requests }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ message: error.message }, { status: 500 });
