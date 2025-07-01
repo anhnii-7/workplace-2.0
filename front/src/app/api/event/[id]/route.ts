@@ -19,8 +19,23 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       )
     }
 
-    const event = await Event.findById(id).populate('eventType', 'title image')
-
+    const eventAggregation = await Event.aggregate([
+      { $match: { _id: new (require('mongoose')).Types.ObjectId(id) } },
+      { $lookup: {
+          from: 'hobbies',
+          localField: 'eventType',
+          foreignField: '_id',
+          as: 'eventTypeInfo'
+      }},
+      { $unwind: { path: '$eventTypeInfo', preserveNullAndEmptyArrays: true } },
+      { $lookup: {
+          from: 'users',
+          localField: 'participants',
+          foreignField: '_id',
+          as: 'participantUsers'
+      }},
+    ]);
+    const event = eventAggregation[0];
     if (!event) {
       return NextResponse.json(
         {
@@ -30,7 +45,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         { status: 404 },
       )
     }
-
     return NextResponse.json(
       {
         success: true,

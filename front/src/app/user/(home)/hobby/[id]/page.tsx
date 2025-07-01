@@ -61,7 +61,7 @@ export default function HobbyInsertPage() {
   const [loadingUsers, setLoadingUsers] = useState<Record<string, boolean>>({});
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [pendingRequests, setPendingRequests] = useState<Record<string, boolean>>({});
-
+  const [response, setResponse] = useState<any>([]);
   const params = useParams();
   useEffect(() => {
     const fetchPendingRequests = async () => {
@@ -134,18 +134,23 @@ export default function HobbyInsertPage() {
   const handleSendRequest = async (toUserId: string) => {
     setLoadingUsers(prev => ({ ...prev, [toUserId]: true }));
     try {
-      await axios.post("/api/request", {
+      const response = await axios.post("/api/request", {
         from: currentUser._id,
         to: toUserId,
         message: "Сонирхлоороо холбогдох хүсэлт илгээж байна",
         status: "pending",
         isActive: true
       });
-
       // Update pending requests state
       setPendingRequests(prev => ({ ...prev, [toUserId]: true }));
       setShowSuccessDialog(true);
-
+      // setResponse(response.data);
+      const notification = await axios.post("/api/notification", {
+        from: currentUser._id,
+        to: toUserId,
+        type: "Request",
+        typeId: response.data.request._id
+      });
       setTimeout(() => {
         setShowSuccessDialog(false);
       }, 3000);
@@ -156,7 +161,7 @@ export default function HobbyInsertPage() {
     }
   };
 
-
+  console.log(response);
   return (
     <div className="min-h-screen w-full">
       <div className="w-full">

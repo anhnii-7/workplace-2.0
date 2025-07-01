@@ -7,9 +7,22 @@ import { isValidObjectId } from "mongoose"
 export async function GET() {
   try {
     await dbConnect()
-    const events = await Event.find()
-      .populate('eventType', 'title image')
-      .sort({ eventDate: 1 })
+    const events = await Event.aggregate([
+      { $lookup: {
+          from: 'hobbies',
+          localField: 'eventType',
+          foreignField: '_id',
+          as: 'eventTypeInfo'
+      }},
+      { $unwind: { path: '$eventTypeInfo', preserveNullAndEmptyArrays: true } },
+      { $lookup: {
+          from: 'users',
+          localField: 'participants',
+          foreignField: '_id',
+          as: 'participantUsers'
+      }},
+      { $sort: { eventDate: 1 } }
+    ]);
     
     return NextResponse.json(
       {
@@ -36,87 +49,6 @@ export async function POST(req: NextRequest) {
   try {
     await dbConnect()
     const body = await req.json()
-
-    // Validate required fields
-    if (!body.name || typeof body.name !== "string") {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Event name is required and must be a string",
-        },
-        { status: 400 },
-      )
-    }
-
-    if (!body.eventType || !isValidObjectId(body.eventType)) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Valid event type (hobby ID) is required",
-        },
-        { status: 400 },
-      )
-    }
-
-    if (!body.eventDate) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Event date is required",
-        },
-        { status: 400 },
-      )
-    }
-
-    if (!body.eventTime || typeof body.eventTime !== "string") {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Event time is required and must be a string",
-        },
-        { status: 400 },
-      )
-    }
-
-    if (!body.eventLocation || typeof body.eventLocation !== "string") {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Event location is required and must be a string",
-        },
-        { status: 400 },
-      )
-    }
-
-    if (!body.maxParticipants || typeof body.maxParticipants !== "number" || body.maxParticipants < 1) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Max participants is required and must be a positive number",
-        },
-        { status: 400 },
-      )
-    }
-
-    if (!body.description || typeof body.description !== "string") {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Description is required and must be a string",
-        },
-        { status: 400 },
-      )
-    }
-
-    if (!body.organizer || typeof body.organizer !== "string") {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Organizer is required and must be a string",
-        },
-        { status: 400 },
-      )
-    }
 
     const eventData = {
       ...body,
