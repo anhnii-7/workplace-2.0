@@ -90,25 +90,30 @@ export function ReqDailogpage({
     handleScheduleSelect(schedule);
     setIsDialogOpen(true);
   };
-
+const formatMonthDay = (dateString: string) => {
+  const date = new Date(dateString);
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${month}-${day}`;
+};
   return (
     <div className="">
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogTrigger asChild>
-          <div className="flex  gap-2">
-            {user.availableSchedules?.map((schedule) => (
-              <button
-                key={schedule}
-                className={` border-1 bg-blue-400 rounded-md py-2 px-4 text-white w-full hover:bg-blue-500 cursor-pointer ${formData.selectedDate === schedule ? 'bg-blue-100 border-blue-600' : ''
-                  }`}
-                onClick={() => handleScheduleButtonClick(schedule)}
-              >
-                {formatDate(schedule)}
-
-              </button>
-            ))}
-          </div>
-        </DialogTrigger>
+<DialogTrigger asChild>
+  <div className="flex gap-2">
+    {user.availableSchedules?.map((schedule) => (
+      <button
+        key={schedule}
+        className={`border-1 bg-blue-400 rounded-md py-2 px-4 text-white w-full hover:bg-blue-500 cursor-pointer ${
+          formData.selectedDate === schedule ? 'bg-blue-100 border-blue-600' : ''
+        }`}
+        onClick={() => handleScheduleButtonClick(schedule)}
+      >
+       {formatMonthDay(schedule)}
+      </button>
+    ))}
+  </div>
+</DialogTrigger>
         <DialogContent className="max-w-4xl bg-blue-50 ">
           <div className="h-[172px]">
             <DialogTitle className="text-2xl text-slate-800 font-semibold">

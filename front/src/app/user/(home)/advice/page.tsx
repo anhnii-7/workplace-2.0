@@ -264,15 +264,19 @@ export default function WishPage() {
       toast.error(error.response?.data?.message || "Failed to cancel request");
     }
   };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
+const formatDate = (dateString: string, monthDayOnly = false) => {
+  const date = new Date(dateString);
+  if (monthDayOnly) {
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${month}-${day}`;
+  }
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
 
   const handleScheduleSelect = (schedule: string) => {
     setFormData({
@@ -387,7 +391,7 @@ export default function WishPage() {
                       <div className="flex items-center gap-3">
                         <MessageSquare className="w-[18px] h-[18px]"></MessageSquare>
                         <p className="text-sm font-normal text-stone-700">
-                          {user.menteesCount}
+                          {user.menteesCount} уулзалт
                         </p>
                       </div>
                     </div>
