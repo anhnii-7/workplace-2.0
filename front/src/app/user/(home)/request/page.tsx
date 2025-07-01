@@ -12,17 +12,17 @@ export default function RequestPage() {
         </h1>
       </div>
       <div className="flex items-center ">
-        <Tabs defaultValue="res" className="w-full h-15 p-2">
-          <TabsList className="w-full bg-slate-50 py-3 mb-8">
+        <Tabs defaultValue="res" className="w-full">
+          <TabsList className="w-full bg-white border border-amber-200 mb-8 h-15 p-2 rounded-xl gap-5">
             <TabsTrigger
               value="res"
-              className="data-[state=active]:bg-[#E5EFF8] data-[state=active]:text-slate-800 data-[state=active]:font-medium data-[state=active]:py-3 data-[state=active]:rounded-[8px_0px_0px_8px] rounded-[8px_0px_0px_8px] text-slate-400 text-sm py-3 font-medium "
+              className="data-[state=active]:bg-amber-100 data-[state=active]:text-amber-900 data-[state=active]:font-medium data-[state=active]:py-3 data-[state=active]:rounded-lg rounded-lg text-gray-400 text-sm py-3 font-medium "
             >
               Ирсэн хүсэлтүүд
             </TabsTrigger>
             <TabsTrigger
               value="req"
-              className="data-[state=active]:bg-[#E5EFF8] data-[state=active]:text-slate-800 data-[state=active]:font-medium data-[state=active]:py-3 data-[state=active]:rounded-[0px_8px_8px_0px] rounded-[0px_8px_8px_0px] text-slate-400 text-sm py-3 font-medium"
+              className="data-[state=active]:bg-amber-100 data-[state=active]:text-amber-900 data-[state=active]:font-medium data-[state=active]:py-3 data-[state=active]:rounded-lg rounded-lg text-gray-400 text-sm py-3 font-medium"
             >
               Илгээсэн хүсэлтүүд
             </TabsTrigger>
