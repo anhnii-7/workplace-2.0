@@ -3,7 +3,6 @@ import SideBar from '@/components/SideBar'
 import React from 'react'
 import { Calendar } from "@/components/ui/calendar"
 import EmployeeProfile from '../user/(home)/components/EmployeeProfile'
-import LeaderboardEmployee from '../user/(home)/components/LeaderboardEmployee'
 const page = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date())
   return (
@@ -15,8 +14,6 @@ const page = () => {
             <h1 className='text-center pt-[12px] text-gray-500'>Уулзалтын тоогоор тэргүүлэгчдийн жагсаалт</h1>
             <EmployeeProfile />
             <div className='flex flex-col gap-2 pb-[20px]'>
-              <LeaderboardEmployee />
-              <LeaderboardEmployee />
             </div>
           </div>
           <div className='w-full h-[402px] bg-white rounded-xl flex flex-col items-center gap-4'>
