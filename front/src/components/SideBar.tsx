@@ -46,9 +46,9 @@ const SideBar = () => {
     console.log(currentUser)
     return (
         <div
-            className='w-[302px] bg-amber-50 rounded-[0px_24px_24px_0px] px-5 py-10 flex flex-col gap-10 fixed h-screen'
+            className={`w-[302px] bg-amber-50 rounded-[0px_24px_24px_0px] px-5 py-10 flex flex-col gap-10 fixed h-screen ${pathname === "/user/advice" || pathname === "/user/hobby" ? "bg-amber-50": "bg-white border border-amber-200" }`}
         > 
-            <div className='w-[262px] flex items-center gap-3 p-2 rounded-md shadow-[0px_0px_4px_2px_rgba(255,188,74,0.12)]'>
+            <div className='w-[262px] flex items-center gap-3 p-2 rounded-md shadow-[0px_0px_4px_2px_rgba(255,188,74,0.12)] bg-amber-50'>
                 <Image
                     src={profile}
                     alt="Logo"
