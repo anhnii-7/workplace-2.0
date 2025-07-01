@@ -64,7 +64,13 @@ export async function GET(req: NextRequest) {
           localField: 'typeId',
           foreignField: '_id',
           as: 'request'
-      }}
+      }},
+      // Deduplicate notifications by _id
+      { $group: {
+          _id: '$_id',
+          doc: { $first: '$$ROOT' }
+      }},
+      { $replaceRoot: { newRoot: '$doc' } }
     ]);
     return NextResponse.json({ success: true, data: notifications });
 }
