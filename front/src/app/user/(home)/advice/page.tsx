@@ -181,8 +181,8 @@ export default function WishPage() {
       const response = await axios.get("/api/request", {
         params: { userId, type: "all" }
       });
-      console.log(response , "RESPONSE ")
-      
+      console.log(response, "RESPONSE ")
+
       const processedRequests = {
         sent: response.data.requests.filter(
           (req: Request) => typeof req.from !== 'string' && req.from._id === userId
@@ -221,8 +221,8 @@ export default function WishPage() {
         type: "Request",
         typeId: response.data.request._id
       });
-      const notification = notificationResponse.data as {success: boolean; data: Request; message: string}
-      return { data , notification }
+      const notification = notificationResponse.data as { success: boolean; data: Request; message: string }
+      return { data, notification }
     } catch (error: any) {
       console.error("Error creating request:", error);
       toast.error(error.response?.data?.message || "Failed to send request");
@@ -264,19 +264,19 @@ export default function WishPage() {
       toast.error(error.response?.data?.message || "Failed to cancel request");
     }
   };
-const formatDate = (dateString: string, monthDayOnly = false) => {
-  const date = new Date(dateString);
-  if (monthDayOnly) {
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${month}-${day}`;
-  }
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
+  const formatDate = (dateString: string, monthDayOnly = false) => {
+    const date = new Date(dateString);
+    if (monthDayOnly) {
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      return `${month}-${day}`;
+    }
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   const handleScheduleSelect = (schedule: string) => {
     setFormData({
@@ -324,7 +324,7 @@ const formatDate = (dateString: string, monthDayOnly = false) => {
 
         <div className="grid gap-6 ">
           <div className="flex gap-3">
-            <div className="bg-white flex gap-4 px-4 items-center rounded-md w-[379px] h-[38px]">
+            <div className="bg-amber-50 flex gap-4 px-4 items-center rounded-md w-[379px] h-[38px]">
               <Search />
               <Input
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -334,7 +334,7 @@ const formatDate = (dateString: string, monthDayOnly = false) => {
                     ? "Шинэ ажилчдын нэр болон хэлтсээр хайх..."
                     : "Mentor-уудын нэр болон хэлтсээр хайх..."
                 }
-                className="w-[300px] focus:outline-none focus-visible:ring-0 focus:ring-0 focus:border-0 border-0"
+                className="w-[300px] focus:outline-none focus-visible:ring-0 focus:ring-0 focus:border-0 border-0 bg-none"
               />
             </div>
           </div>
@@ -356,7 +356,7 @@ const formatDate = (dateString: string, monthDayOnly = false) => {
               {filteredUsers.map((user) => (
                 <Card
                   key={user._id}
-                  className="p-4 hover:shadow-lg transition-shadow w-[359px] flex flex-col gap-3"
+                  className="p-4 hover:shadow-lg transition-shadow w-[359px] flex flex-col gap-3 border-2 border-amber-200"
                 >
                   <div className="flex justify-around gap-4  items-center">
                     <div className="flex flex-col items-center gap-4">
@@ -365,7 +365,7 @@ const formatDate = (dateString: string, monthDayOnly = false) => {
                           src={`${user.image}`}
                           alt={`${user.name} ${user.lastName}`}
                         />
-                        <AvatarFallback className="text-[28px]">
+                        <AvatarFallback className="text-[20px]">
                           {user.name.charAt(0)}
                           {user.lastName.charAt(0)}
                         </AvatarFallback>
@@ -418,43 +418,43 @@ const formatDate = (dateString: string, monthDayOnly = false) => {
         </div>
       </div>
 
-     
+
       <div className="w-96 space-y-6">
-      
-<Card className="p-6">
-  <CardHeader>
-    <CardTitle className="text-center text-gray-500">
-      Уулзалтын тоогоор тэргүүлэгчдийн жагсаалт
-    </CardTitle>
-  </CardHeader>
-  <CardContent>
-    
-    <EmployeeProfile 
-      topLeader={
-        users
-          .filter(user => user.role === 'mentor')
-          .sort((a, b) => (b.menteesCount || 0) - (a.menteesCount || 0))
-          .map(user => ({ ...user, menteesCount: user.menteesCount ?? 0 }))[0]
-      } 
-    />
-    <div className="space-y-3 mt-4">
-      {users
-        .filter(user => user.role === 'mentor') 
-        .sort((a, b) => (b.menteesCount || 0) - (a.menteesCount || 0)) 
-        .slice(1, 3)
-        .map((user, index) => (
-          <LeaderboardEmployee 
-            key={user._id} 
-            user={{
-              ...user,
-              menteesCount: user.menteesCount ?? 0, 
-              rank: index + 2 
-            }} 
-          />
-        ))}
-    </div>
-  </CardContent>
-</Card>
+
+        <Card className="p-6 border-2 border-amber-200">
+          <CardHeader>
+            <CardTitle className="text-center text-gray-500">
+              Уулзалтын тоогоор тэргүүлэгчдийн жагсаалт
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+
+            <EmployeeProfile
+              topLeader={
+                users
+                  .filter(user => user.role === 'mentor')
+                  .sort((a, b) => (b.menteesCount || 0) - (a.menteesCount || 0))
+                  .map(user => ({ ...user, menteesCount: user.menteesCount ?? 0 }))[0]
+              }
+            />
+            <div className="space-y-3 mt-4 ">
+              {users
+                .filter(user => user.role === 'mentor')
+                .sort((a, b) => (b.menteesCount || 0) - (a.menteesCount || 0))
+                .slice(1, 3)
+                .map((user, index) => (
+                  <LeaderboardEmployee
+                    key={user._id}
+                    user={{
+                      ...user,
+                      menteesCount: user.menteesCount ?? 0,
+                      rank: index + 2
+                    }}
+                  />
+                ))}
+            </div>
+          </CardContent>
+        </Card>
         {/* Calendar */}
         {/* <Card className="p-6">
           <CardHeader>
@@ -474,7 +474,7 @@ const formatDate = (dateString: string, monthDayOnly = false) => {
         </Card> */}
 
         {/* Requests */}
-        <Card className="p-6 ">
+        <Card className="p-6  border-2 border-amber-200">
           <CardHeader className="flex justify-center">
             <CardTitle className="text-center border-b border-black w-[80px] pb-[6px]">
               Хүсэлтүүд
@@ -490,8 +490,8 @@ const formatDate = (dateString: string, monthDayOnly = false) => {
             >
               <TabsList className="grid w-full grid-cols-2">
 
-                <TabsTrigger value="received">Хүлээн авсан</TabsTrigger>
-                <TabsTrigger value="send">Илгээсэн</TabsTrigger>
+                <TabsTrigger className="bg-amber-50" value="received">Хүлээн авсан</TabsTrigger>
+                <TabsTrigger className="bg-amber-50" value="send">Илгээсэн</TabsTrigger>
               </TabsList>
 
               <TabsContent value="send" className="mt-4">
@@ -500,10 +500,10 @@ const formatDate = (dateString: string, monthDayOnly = false) => {
                 ) : (
                   <div className="space-y-3">
                     {requests.sent.map((request) => (
-                      <Card key={request._id} className="p-4">
+                      <Card key={request._id} className="p-4  border-2 border-amber-200">
                         <div className="flex flex-col w-full gap-2">
                           <div className="flex justify-center">
-                            <Badge className="bg-blue-100 text-blue-800 w-[240px]" variant={request.status === 'accepted' ? 'default' :
+                            <Badge className="bg-pink-100 text-amber-900 w-[240px]" variant={request.status === 'accepted' ? 'default' :
                               request.status === 'declined' ? 'destructive' : 'outline'}>
                               {request.status === 'pending' ? 'Таны хүсэлт хүлээгдэж байна.' :
                                 request.status === 'accepted' ? 'Зөвшөөрсөн' : 'Татгалзсан'}
@@ -571,8 +571,8 @@ const formatDate = (dateString: string, monthDayOnly = false) => {
                       <Card key={request._id} className="p-4">
                         <div className="flex flex-col gap-2 items-center">
                           <div className="flex gap-3 justify-around">
-                            <div className="w-[60px] h-[60px] rounded-md bg-blue-200 flex items-center justify-center">
-                                <Image
+                            <div className="w-[60px] h-[60px] rounded-md bg-amber-200 flex items-center justify-center">
+                              <Image
                                 src={
                                   typeof request.from !== 'string' && request.from.image
                                     ? request.from.image
@@ -608,37 +608,37 @@ const formatDate = (dateString: string, monthDayOnly = false) => {
 
                           </div>
                           <div>
-      {request.status === 'pending' ? (
-                  <div className="flex gap-2">
-                    <Button
-                      className="border border-blue-400 text-blue-400 hover:bg-blue-50 bg-white"
-                      size="sm"
-                      onClick={() => updateRequest(request._id, 'accepted')}
-                    >
-                      Зөвшөөрөх
-                    </Button>
-                    <Button
-                      className="border border-red-400 text-red-400 hover:text-red-400 bg-white"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        const notes = prompt('Татгалзах шалтгаанаа бичнэ үү:');
-                        if (notes !== null) {
-                          updateRequest(request._id, 'declined', notes);
-                        }
-                      }}
-                    >
-                      Татгалзах
-                    </Button>
-                  </div>
-                ) : (
-                  <Badge 
-                    variant={request.status === 'accepted' ? 'default' : 'destructive'}
-                    className="opacity-70 bg-blue-400"
-                  >
-                    {request.status === 'accepted' ? 'Зөвшөөрсөн' : 'Татгалзсан'}
-                  </Badge>
-                )}
+                            {request.status === 'pending' ? (
+                              <div className="flex gap-2">
+                                <Button
+                                  className="border border-blue-400 text-blue-400 hover:bg-blue-50 bg-white"
+                                  size="sm"
+                                  onClick={() => updateRequest(request._id, 'accepted')}
+                                >
+                                  Зөвшөөрөх
+                                </Button>
+                                <Button
+                                  className="border border-red-400 text-red-400 hover:text-red-400 bg-white"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    const notes = prompt('Татгалзах шалтгаанаа бичнэ үү:');
+                                    if (notes !== null) {
+                                      updateRequest(request._id, 'declined', notes);
+                                    }
+                                  }}
+                                >
+                                  Татгалзах
+                                </Button>
+                              </div>
+                            ) : (
+                              <Badge
+                                variant={request.status === 'accepted' ? 'default' : 'destructive'}
+                                className="opacity-70 bg-blue-400"
+                              >
+                                {request.status === 'accepted' ? 'Зөвшөөрсөн' : 'Татгалзсан'}
+                              </Badge>
+                            )}
                           </div>
                         </div>
 

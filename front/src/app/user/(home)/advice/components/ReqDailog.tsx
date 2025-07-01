@@ -90,37 +90,36 @@ export function ReqDailogpage({
     handleScheduleSelect(schedule);
     setIsDialogOpen(true);
   };
-const formatMonthDay = (dateString: string) => {
-  const date = new Date(dateString);
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
-  return `${month}-${day}`;
-};
+  const formatMonthDay = (dateString: string) => {
+    const date = new Date(dateString);
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${month}-${day}`;
+  };
   return (
     <div className="">
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-<DialogTrigger asChild>
-  <div className="flex gap-2">
-    {user.availableSchedules?.map((schedule) => (
-      <button
-        key={schedule}
-        className={`border-1 bg-blue-400 rounded-md py-2 px-4 text-white w-full hover:bg-blue-500 cursor-pointer ${
-          formData.selectedDate === schedule ? 'bg-blue-100 border-blue-600' : ''
-        }`}
-        onClick={() => handleScheduleButtonClick(schedule)}
-      >
-       {formatMonthDay(schedule)}
-      </button>
-    ))}
-  </div>
-</DialogTrigger>
+        <DialogTrigger asChild>
+          <div className="flex gap-2">
+            {user.availableSchedules?.map((schedule) => (
+              <button
+                key={schedule}
+                className={`border-1 bg-amber-200 text-amber-900 rounded-md py-2 px-4  w-full hover:bg-amber-300 cursor-pointer ${formData.selectedDate === schedule ? 'bg-blue-100 border-blue-600' : ''
+                  }`}
+                onClick={() => handleScheduleButtonClick(schedule)}
+              >
+                {formatMonthDay(schedule)}
+              </button>
+            ))}
+          </div>
+        </DialogTrigger>
         <DialogContent className="max-w-4xl bg-blue-50 ">
           <div className="h-[172px]">
             <DialogTitle className="text-2xl text-slate-800 font-semibold">
               Хүлээн авагчийн мэдээлэл
             </DialogTitle>
             <div className="grid grid-cols-3 gap-4 mt-10">
-              <Card className=" relative p-4 ">
+              <Card className=" relative p-4 border-2 border-amber-200 ">
                 <div className="flex flex-row gap-4 items-center">
                   <Avatar className="w-16 h-16">
                     <AvatarImage src={`/avatars/${selectedMentor?._id}.jpg`} />
@@ -142,7 +141,7 @@ const formatMonthDay = (dateString: string) => {
                     : "N/A"}
                 </div>
               </Card>
-              <Card className="p-4">
+              <Card className="p-4 border-2 border-amber-200">
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <User2Icon className="w-4 h-4" />
@@ -151,7 +150,7 @@ const formatMonthDay = (dateString: string) => {
                         "N/A"}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 border-2 border-amber-200">
                     <MapPinIcon className="w-4 h-4" />
                     <span>
                       {selectedMentor?.departmentInfo?.title || "N/A"}
@@ -159,7 +158,7 @@ const formatMonthDay = (dateString: string) => {
                   </div>
                 </div>
               </Card>
-              <Card className="p-4">
+              <Card className="p-4 border-2 border-amber-200">
                 <div className="space-y-3">
                   <h4 className="font-medium">Уулзах өдөр :</h4>
                   <div className="flex items-center gap-2">
@@ -183,18 +182,19 @@ const formatMonthDay = (dateString: string) => {
                   formData.selectedDate
                 );
               } catch (error) {
-                // Error handled in createRequest
+
               }
             }}
           >
             <div className="space-y-4">
               <div>
-                <Label className="text-2xl font-semibold leadinf-8 text-slate-800">
+                <Label className="text-2xl font-semibold leadinf-8 text-slate-800 pb-4">
                   Ямар шалтгааны улмаас уулзах хүсэлт илгээж байгаа вэ ?
                 </Label>
                 <div className="flex gap-2 mt-2">
                   {selectedMentor?.availableSchedules?.map((schedule) => (
                     <Button
+                      className="bg-amber-200 hover:bg-amber-300 text-amber-900"
                       key={schedule}
                       type="button"
                       variant={
@@ -258,7 +258,7 @@ const formatMonthDay = (dateString: string) => {
             <DialogFooter className="mt-6">
               <Button
                 type="submit"
-                className="bg-blue-500 hover:bg-blue-600"
+                className="bg-amber-200 hover:bg-amber-300 text-amber-900"
                 disabled={!formData.selectedDate || !formData.message.trim()}
               >
                 Хүсэлт илгээх
