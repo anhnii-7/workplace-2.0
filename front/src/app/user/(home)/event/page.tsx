@@ -311,16 +311,16 @@ export default function EventPage() {
                     <Plus className="w-15 h-15 text-slate-400" />
                   </Card>
                 </DialogTrigger>
-                <DialogContent className="w-[744px] bg-[#E5EFF8] box-border h-fit">
+                <DialogContent className="w-[744px] bg-[#E5EFF8] box-border h-fit px-10 py-15 top-[50%]">
                   <DialogHeader className="gap-1">
                     <DialogTitle className="text-2xl text-slate-700 font-medium">Шинэ эвент үүсгэх</DialogTitle>
-                    <p className="text-lg text-slate-700 font-normal--">
+                    <p className="text-lg text-slate-700 font-normal">
                       Хамт олонтойгоо цагийг илүү зугаатай өнгөрөөх боломжийг бүтээцгээе
                     </p>
                   </DialogHeader>
-                  <div className="space-y-4 py-4">
+                  <div className="flex flex-col gap-5">
                     <div>
-                      <Label htmlFor="eventName" className="text-lg font-medium text-slate-700 mb-3">Эвентийн нэр</Label>
+                      <Label htmlFor="eventName" className="text-lg font-medium text-slate-700 mb-3">Эвэнтийн нэр</Label>
                       <Input
                         id="eventName"
                         placeholder="Энд бичиж оруулна уу ..."
@@ -390,8 +390,9 @@ export default function EventPage() {
                     </div>
                     <div>
                       <Label htmlFor="eventDescription" className="text-lg font-medium text-slate-700 mb-3">Тайлбар</Label>
-                      <Textarea
+                      <Input
                         id="eventDescription"
+                        type="text"
                         className="text-slate-700 text-sm font-normal bg-white"
                         placeholder="Асуух зүйл байвал > 99123489"
                         value={newEvent.description}
@@ -402,7 +403,7 @@ export default function EventPage() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full mb-4"
+                    className="w-full"
                     onClick={() => {
                       const tomorrow = new Date();
                       tomorrow.setDate(tomorrow.getDate() + 1);
