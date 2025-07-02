@@ -230,13 +230,14 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
         console.log("Hobbies added successfully")
         const addedCount = selectedHobbies.length
         toast(
-          <div className="w-[330px] h-[76px] p-0 m-0 rounded-lg bg-whgite " >
-            <p className="place-self-center text-lg text-slate-800 font-medium p-6 whitespace-nowrap leading-7">Таны хобби амжилттай нэмэгдлээ</p>
-            <div className="absolute inset-x-0 top-1 flex justify-between w-full px-1">
-              <img src="/star.svg" className="w-[23px] h-[28px]" />
-              <img src="/star.svg" className="w-[23px] h-[28px]" />
-            </div>
-          </div>)
+             
+         <div className="flex relative items-center justify-center gap-2">
+             <span className="text-yellow-400 w-[23px] h-[28px] absolute -top-4 -left-2 text-center">✨</span>
+            <span className="font-medium text-[18px] text-slate-800 whitespace-nowrap pl-3">Таны хобби амжилттай нэмэгдлээ</span>   
+             <span className="text-yellow-400 w-[23px] h-[28px] absolute -top-4 -right-5">✨</span>        
+          </div>
+        
+        )
       }
 
       // Callback дуудах
