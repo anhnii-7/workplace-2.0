@@ -22,7 +22,7 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([])
   const [userExistingHobbies, setUserExistingHobbies] = useState<Hobby[]>([])
   const [loading, setLoading] = useState(false)
-  
+
 
   // API-аас бүх хоббиудыг авах функц
   const getAllHobbies = async () => {
@@ -55,56 +55,56 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
     }
   }
 
- // Хэрэглэгчийн одоо байгаа хоббиудыг авах
- const getUserHobbies = async (userId: string) => {
-  try {
-    console.log("Fetching user hobbies for userId:", userId)
+  // Хэрэглэгчийн одоо байгаа хоббиудыг авах
+  const getUserHobbies = async (userId: string) => {
+    try {
+      console.log("Fetching user hobbies for userId:", userId)
 
-    // localStorage-с эхлээд авах
-    const currentUserStr = localStorage.getItem("currentUser")
-    if (currentUserStr) {
-      const currentUser = JSON.parse(currentUserStr)
-      if (currentUser.hobbies && Array.isArray(currentUser.hobbies)) {
-        setUserExistingHobbies(currentUser.hobbies)
-        console.log("User hobbies from localStorage:", currentUser.hobbies)
-        return
+      // localStorage-с эхлээд авах
+      const currentUserStr = localStorage.getItem("currentUser")
+      if (currentUserStr) {
+        const currentUser = JSON.parse(currentUserStr)
+        if (currentUser.hobbies && Array.isArray(currentUser.hobbies)) {
+          setUserExistingHobbies(currentUser.hobbies)
+          console.log("User hobbies from localStorage:", currentUser.hobbies)
+          return
+        }
       }
-    }
 
-    // API-аас авах
-    const response = await axios.get(`/api/user/by-hobby/${userId}`)
-    const userHobbyData = response.data
-    console.log("User hobby API response:", userHobbyData)
+      // API-аас авах
+      const response = await axios.get(`/api/user/by-hobby/${userId}`)
+      const userHobbyData = response.data
+      console.log("User hobby API response:", userHobbyData)
 
-    let extractedHobbies: Hobby[] = []
+      let extractedHobbies: Hobby[] = []
 
-    // API response format шалгах
-    if (Array.isArray(userHobbyData) && userHobbyData.length > 0) {
-      const userObj = userHobbyData[0]
-      if (Array.isArray(userObj.hobbies)) {
-        extractedHobbies = userObj.hobbies
+      // API response format шалгах
+      if (Array.isArray(userHobbyData) && userHobbyData.length > 0) {
+        const userObj = userHobbyData[0]
+        if (Array.isArray(userObj.hobbies)) {
+          extractedHobbies = userObj.hobbies
+        }
+      } else if (userHobbyData?.data && Array.isArray(userHobbyData.data)) {
+        extractedHobbies = userHobbyData.data
+      } else if (userHobbyData?.hobbies && Array.isArray(userHobbyData.hobbies)) {
+        extractedHobbies = userHobbyData.hobbies
       }
-    } else if (userHobbyData?.data && Array.isArray(userHobbyData.data)) {
-      extractedHobbies = userHobbyData.data
-    } else if (userHobbyData?.hobbies && Array.isArray(userHobbyData.hobbies)) {
-      extractedHobbies = userHobbyData.hobbies
-    }
 
-    console.log("Extracted user hobbies:", extractedHobbies)
-    setUserExistingHobbies(extractedHobbies)
+      console.log("Extracted user hobbies:", extractedHobbies)
+      setUserExistingHobbies(extractedHobbies)
 
-    // localStorage шинэчлэх
-    if (currentUserStr) {
-      const currentUser = JSON.parse(currentUserStr)
-      currentUser.hobbies = extractedHobbies
-      localStorage.setItem("currentUser", JSON.stringify(currentUser))
+      // localStorage шинэчлэх
+      if (currentUserStr) {
+        const currentUser = JSON.parse(currentUserStr)
+        currentUser.hobbies = extractedHobbies
+        localStorage.setItem("currentUser", JSON.stringify(currentUser))
+      }
+    } catch (error) {
+      console.error("Error fetching user hobbies:", error)
+      setUserExistingHobbies([])
+      toast.error("Хэрэглэгчийн хобби ачааллахад алдаа гарлаа")
     }
-  } catch (error) {
-    console.error("Error fetching user hobbies:", error)
-    setUserExistingHobbies([])
-    toast.error("Хэрэглэгчийн хобби ачааллахад алдаа гарлаа")
   }
-}
 
   // UserId тохируулах
   useEffect(() => {
@@ -229,7 +229,14 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
         // Амжилттай нэмэгдсэн
         console.log("Hobbies added successfully")
         const addedCount = selectedHobbies.length
-        toast.success('Таны хобби амжилттай нэмэгдлээ')
+        toast(
+          <div className="w-[330px] h-[76px] p-0 m-0 rounded-lg bg-whgite " >
+            <p className="place-self-center text-lg text-slate-800 font-medium p-6 whitespace-nowrap leading-7">Таны хобби амжилттай нэмэгдлээ</p>
+            <div className="absolute inset-x-0 top-1 flex justify-between w-full px-1">
+              <img src="/star.svg" className="w-[23px] h-[28px]" />
+              <img src="/star.svg" className="w-[23px] h-[28px]" />
+            </div>
+          </div>)
       }
 
       // Callback дуудах
@@ -284,7 +291,7 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
       </DialogTrigger>
 
       <DialogContent className="w-[988px] max-w-[90vw] box-border flex flex-col justify-between max-h-[90vh]">
-      <DialogHeader className="pb-2">
+        <DialogHeader className="pb-2">
           <DialogTitle className="flex justify-center text-slate-700 text-2xl font-semibold leading-8 py-1">
             Өөрийн дуртай хэдэн ч төрлийн сонирхлыг сонгох боломжтой
           </DialogTitle>
@@ -303,13 +310,12 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
               return (
                 <div
                   key={hobby._id}
-                  className={`w-[220px] h-[288px] flex flex-col gap-3 border-2 rounded-3xl box-border justify-between transition-all relative ${
-                    isAlreadyOwned
-                      ? "border-amber-200/60 bg-white opacity-60 cursor-not-allowed"
-                      : isSelected
-                        ? "border-amber-200 bg-amber-50 cursor-pointer shadow-md"
-                        : "border-amber-200 bg-white cursor-pointer hover:border-[#FFDA95] hover:bg-amber-1-0 hover:shadow-sm"
-                  }`}
+                  className={`w-[220px] h-[288px] flex flex-col gap-3 border-2 rounded-3xl box-border justify-between transition-all relative ${isAlreadyOwned
+                    ? "border-amber-200/60 bg-white opacity-60 cursor-not-allowed"
+                    : isSelected
+                      ? "border-amber-200 bg-amber-50 cursor-pointer shadow-md"
+                      : "border-amber-200 bg-white cursor-pointer hover:border-[#FFDA95] hover:bg-amber-1-0 hover:shadow-sm"
+                    }`}
                   onClick={() => toggleHobby(hobby._id)}
                 >
                   <div className="w-[140px] h-[224px] flex items-center place-self-center">
@@ -324,13 +330,12 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
                   </div>
 
                   <p
-                    className={`text-center leading-7 rounded-b-3xl text-lg py-3 font-medium transition-colors ${
-                      isAlreadyOwned
-                        ? "bg-amber-100/60 text-amber-900/60"
-                        : isSelected
-                          ? "bg-amber-200 text-amber-900"
-                          : "bg-amber-50 text-amber-900"
-                    }`}
+                    className={`text-center leading-7 rounded-b-3xl text-lg py-3 font-medium transition-colors ${isAlreadyOwned
+                      ? "bg-amber-100/60 text-amber-900/60"
+                      : isSelected
+                        ? "bg-amber-200 text-amber-900"
+                        : "bg-amber-50 text-amber-900"
+                      }`}
                   >
                     {hobby.title}
                   </p>
@@ -343,13 +348,12 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
         <DialogFooter className="w-full">
           <div className="w-full space-y-3">
             <button
-              className={`w-full px-4 rounded-md py-3 text-sm font-medium leading-5 transition-colors ${
-                isLoading
-                  ? "bg-amber-200 cursor-not-allowed text-amber-900"
-                  : selectedHobbies.length > 0 && userId
-                    ? "bg-amber-200  text-amber-900 cursor-pointer"
-                    : "bg-amber-№00 text-amber-900 cursor-not-allowed"
-              }`}
+              className={`w-full px-4 rounded-md py-3 text-sm font-medium leading-5 transition-colors ${isLoading
+                ? "bg-amber-200 cursor-not-allowed text-amber-900"
+                : selectedHobbies.length > 0 && userId
+                  ? "bg-amber-200  text-amber-900 cursor-pointer"
+                  : "bg-amber-50 text-slate-200 cursor-not-allowed"
+                }`}
               onClick={handleSaveHobbies}
               disabled={isLoading || selectedHobbies.length === 0 || !userId}
             >
