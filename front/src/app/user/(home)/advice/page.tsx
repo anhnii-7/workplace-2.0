@@ -393,14 +393,13 @@ export default function WishPage() {
                   <div className="flex justify-around gap-4  items-center">
                     <div className="flex flex-col items-center gap-4">
                       <Avatar className="w-24 h-24 rounded-lg">
-                        <AvatarImage
+                        <Image
                           src={`${user.image}`}
                           alt={`${user.name} ${user.lastName}`}
+                          width={96}
+                          height={96}
+                          className="object-cover"
                         />
-                        <AvatarFallback className="text-[20px]">
-                          {user.name.charAt(0)}
-                          {user.lastName.charAt(0)}
-                        </AvatarFallback>
                       </Avatar>
                     </div>
                     <div className="flex flex-col gap-3  w-full ">

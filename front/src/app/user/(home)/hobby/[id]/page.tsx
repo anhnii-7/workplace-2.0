@@ -282,7 +282,7 @@ export default function HobbyInsertPage() {
                         <Image
                           src={`${user.image}`}
                           alt="image"
-                          className="object-fill absolute border-none rounded-xl"
+                          className="object-cover absolute border-none rounded-xl"
                           fill
                         />
                       </div>
