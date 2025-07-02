@@ -9,8 +9,10 @@ import {
     Clock4,
     Frown,
     MapPin,
+    SquareCheckBig,
     User,
-    Users
+    Users,
+    UserX
 } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
@@ -53,7 +55,7 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                     {
                         notif?.request[0]?.status==="pending" && direction === "sent"? (<>
                         <div className='w-[487px] py-3 flex items-center'>
-                            <div className={`w-[334px] bg-orange-100 border-amber-100 flex items-center py-2.5 px-4 rounded-md gap-2`}>
+                            <div className={`w-[334px] bg-orange-100 border border-amber-900 flex items-center py-2.5 px-4 rounded-md gap-2`}>
                                 <Clock4 className='h-4 w-4'
                                     color='#78350F'
                                 />
@@ -63,24 +65,22 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                             </div>    
                         </div>  
                         </>): notif?.request[0]?.status === "accepted" && direction === "sent" ?(<>
-                            <div className={`w-[334px] bg-green-50 border-green-800 flex py-2.5 px-4 rounded-md gap-2 flex-col`}>
+                            <div className={`w-[334px] bg-green-50 border-green-900 flex py-2.5 px-4 rounded-md gap-2 flex-col border`}>
                             <div className='flex gap-3 items-center'>
-                                <CheckCheck className='h-4 w-4'
-                                    color='#14532D'
-                                />
+                            <SquareCheckBig className='h-4 w-4'
+                                    color='#14532D'/>
                                 <span className='text-sm font-medium text-emerald-800'>
-                                    Хүсэлт зөвшөөрөгдсөн байна. Амжилт хүсье!
+                                    Хүсэлтийг авлаа. Амжилт!
                                 </span>
                             </div>
                         </div> 
                         </>):notif?.request[0]?.status === "declined" && direction === "sent" ?(<>
-                            <div className={`w-[334px] bg-red-50 border-red-800 flex py-2.5 px-4 rounded-md gap-2 flex-col`}>
+                            <div className={`w-[334px] bg-red-50 border border-red-900 flex py-2.5 px-4 rounded-md gap-2 flex-col`}>
                             <div className='flex gap-3 items-center'>
-                                <Frown className='h-4 w-4'
-                                    color='#991B1B'
-                                />
+                            <UserX className='h-4 w-4'
+                                    color='#991B1B' />
                                 <span className='text-sm font-medium text-red-800'>
-                                    Уучлаарай завгүй байна.
+                                    Уучлаарай, завгүй байна.
                                 </span>
                             </div>
                         </div>
@@ -177,8 +177,8 @@ const Card = ({notif, direction, onRemove} : CardProps) => {
                         </div>
                     </div>
                     <Badge
-                        className='bg-amber-900 text-sx font-medium w-fit h-fit flex items-center rounded-full px-3 py-1'>
-                        <span className='text-white'>
+                        className='border border-amber-900 bg-transparent text-sx font-medium w-fit h-fit flex items-center rounded-full px-3 py-1'>
+                        <span className='text-amber-900'>
                             2 хүн дутуу
                         </span>
                     </Badge>
