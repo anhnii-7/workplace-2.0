@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { user } from '../../../lib/data/user'
 import axios from 'axios'
+import Image from 'next/image'
 
 const LoginPage = () => {
   const router = useRouter()
@@ -93,9 +94,9 @@ const handleSubmit = async (e: React.FormEvent) => {
       <div className="w-full max-w-md">
         <Card className="shadow-xl border-0">
           <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+            <CardTitle className="place-self-center"><Image src="https://res.cloudinary.com/dotlqymtm/image/upload/v1751425654/Vibemesh_1_zl7kwm.svg" alt='vibemesh' width={100} height={100}></Image></CardTitle>
             <CardDescription>
-              Enter your credentials to access your account
+            Теxнологийг ашиглан амьд харилцааг сэргээцгээе
             </CardDescription>
           </CardHeader>
           <CardContent>
