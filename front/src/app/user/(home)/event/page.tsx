@@ -271,22 +271,16 @@ export default function test() {
             alt="containerIMG"
             priority 
           />
-        <div className="fixed w-[350px] h-[80px] top-8 right-8 z-50  border bg-white shadow-[0px_2px_6px_0px_rgba(255,188,74,0.12)] rounded-xl  px-3 py-6 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
+      
+      {showSuccessBanner && (
+          <div className="fixed w-[350px] h-[80px] top-8 right-8 z-50  border bg-white shadow-[0px_2px_6px_0px_rgba(255,188,74,0.12)] rounded-xl  px-3 py-6 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
          <div className="flex relative items-center justify-center gap-2">
              <span className="text-yellow-400 w-[23px] h-[28px] absolute -top-4 -left-2 text-center">✨</span>
             <span className="font-medium text-[18px] text-slate-800 whitespace-nowrap pl-3">Таны эвент амжилттай үүсгэгдлээ</span>   
              <span className="text-yellow-400 w-[23px] h-[28px] absolute -top-4 -right-5">✨</span>        
           </div>
         </div>
-      {/* {showSuccessBanner && (
-        <div className="fixed w-[375px] h-[80px] top-8 right-8 z-50  border bg-white shadow-[0px_2px_6px_0px_rgba(255,188,74,0.12)] rounded-xl  px-3 py-6 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
-         <div className="flex relative items-center justify-center gap-2">
-             <span className="text-yellow-400 w-[23px] h-[28px] absolute -top-4 -left-2 text-center">✨</span>
-            <span className="font-medium text-[18px] text-slate-800 whitespace-nowrap pl-3">Таны эвент амжилттай үүсгэгдлээ</span>   
-             <span className="text-yellow-400 w-[23px] h-[28px] absolute -top-4 -right-5">✨</span>        
-          </div>
-        </div>
-      )} */}
+      )}
       <p className="text-slate-800 text-2xl font-medium text-center py-4 px-6">
         Олуулаа илүү хөгжилтэй
       </p>
