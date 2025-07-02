@@ -65,6 +65,7 @@ export default function test() {
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showParticipants, setShowParticipants] = useState(false);
+  const [editEventTypeId, setEditEventTypeId] = useState<string>("");
 
   useEffect(() => {
     // Get current user from localStorage
@@ -211,22 +212,28 @@ export default function test() {
   // Filter events by selected hobby
   const filteredEvents = selectedHobby === "all"
     ? events
-    : events.filter(e => e.eventType && e.eventType._id === selectedHobby);
+    : events.filter(e => (typeof e.eventType === 'object' ? e.eventType._id : e.eventType) === selectedHobby);
 
   const handleEditEvent = async () => {
     if (!editEvent) return;
     try {
-      const response = await axios.put(`/api/event/${editEvent._id}`, {
-        ...editEvent,
-        eventType: typeof editEvent.eventType === 'object' ? editEvent.eventType._id : editEvent.eventType,
-        maxParticipants: Number(editEvent.maxParticipants),
+      // Only send fields that are editable, do not send organizer
+      const payload = {
+        name: editEvent.name,
+        eventType: editEventTypeId,
         eventDate: new Date(editEvent.eventDate).toISOString(),
-      });
+        eventTime: editEvent.eventTime,
+        eventLocation: editEvent.eventLocation,
+        maxParticipants: Number(editEvent.maxParticipants),
+        description: editEvent.description,
+      };
+      const response = await axios.put(`/api/event/${editEvent._id}`, payload);
       const responseData = response.data as { success: boolean; data: Event; message: string };
       if (responseData.success) {
         toast.success("Эвент амжилттай засагдлаа!");
         setIsEditOpen(false);
         setEditEvent(null);
+        setEditEventTypeId("");
         fetchEvents();
       } else {
         toast.error(responseData.message || "Алдаа гарлаа");
@@ -236,6 +243,14 @@ export default function test() {
       toast.error(error.response?.data?.message || "Эвент засахад алдаа гарлаа");
     }
   };
+
+  // Helper function for organizer comparison
+  function isOrganizer(eventOrganizer: any, userId: string) {
+    if (typeof eventOrganizer === 'string') return eventOrganizer === userId;
+    if (eventOrganizer && typeof eventOrganizer === 'object' && '_id' in eventOrganizer) return eventOrganizer._id === userId;
+    return false;
+  }
+
   console.log(events)
   return (
     <div className="min-h-screen w-full relative">
@@ -482,7 +497,7 @@ export default function test() {
                 const isJoined = joinedEvents.includes(event._id);
                 const isFull = event.participants.length >= event.maxParticipants;
                 const remainingSpots = event.maxParticipants - event.participants.length;
-                const canEdit = currentUser && event.organizer === currentUser.name;
+                const canEdit = currentUser && isOrganizer(event.organizer, currentUser._id);
                 const currentParticipants = event.participants.length;
                 return (
                   <Card key={event._id} className="bg-amber-50 border-none rounded-xl p-0 z-50">
@@ -529,7 +544,7 @@ export default function test() {
                               <p>{event.eventLocation}</p>
                             </div>
                             {
-                              event.participants.length == event.maxParticipants && event.organizer == currentUser._id ? (
+                              event.participants.length == event.maxParticipants && isOrganizer(event.organizer, currentUser._id) ? (
                                 <div className="flex items-center relative text-sm text-slate-900 border-none rounded-lg bg-white px-4 py-2 w-full gap-2">
                                   <Users className="w-4 h-4" />
                                   <p>
@@ -583,10 +598,28 @@ export default function test() {
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          {event.organizer === currentUser.name && <Button variant="outline" className="flex-1 py-[10px] text-sm text-blue-500 hover:bg-white hover:text-blue-400 rounded-md border-blue-400 font-medium" disabled={!canEdit}
+                          {isOrganizer(event.organizer, currentUser._id) && <Button variant="outline" className="flex-1 py-[10px] text-sm text-slate-800 hover:bg-amber-100 hover:text-slate-800 rounded-md border-amber-200 font-medium" disabled={!canEdit}
                             onClick={() => {
                               if (canEdit) {
-                                setEditEvent(event);
+                                const eventTypeObj =
+                                  typeof event.eventType === 'object'
+                                    && event.eventType && typeof event.eventType === 'object'
+                                      ? event.eventType
+                                      : (() => {
+                                          const found = hobbies.find(
+                                            hobby =>
+                                              typeof event.eventType === 'string' &&
+                                              hobby._id === event.eventType
+                                          );
+                                          return found
+                                            ? { _id: found._id, title: found.title, image: found.image || '' }
+                                            : { _id: typeof event.eventType === 'string' ? event.eventType : '', title: '', image: '' };
+                                        })()
+                                setEditEvent({
+                                  ...event,
+                                  eventType: eventTypeObj,
+                                });
+                                setEditEventTypeId(eventTypeObj._id);
                                 setIsEditOpen(true);
                               }
                             }}>
@@ -617,7 +650,7 @@ export default function test() {
       </div>
       {/* Edit Event Dialog */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent className="sm:max-w-[500px] ">
+        <DialogContent className="sm:max-w-[500px] bg-background">
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold">Эвент засах</DialogTitle>
           </DialogHeader>
@@ -627,9 +660,35 @@ export default function test() {
                 <Label htmlFor="editEventName">Эвентийн нэр</Label>
                 <Input
                   id="editEventName"
+                  className="text-slate-700 border-amber-200 text-sm font-normal bg-white"
                   value={editEvent.name}
                   onChange={e => setEditEvent({ ...editEvent, name: e.target.value })}
                 />
+              </div>
+              <div>
+                <Label htmlFor="editEventType">Төрөл</Label>
+                <Select
+                  value={editEventTypeId}
+                  onValueChange={val => {
+                    setEditEventTypeId(val);
+                    const selectedHobby = hobbies.find(hobby => hobby._id === val);
+                    if (editEvent && selectedHobby) {
+                      setEditEvent({
+                        ...editEvent,
+                        eventType: { _id: selectedHobby._id, title: selectedHobby.title, image: selectedHobby.image || '' },
+                      });
+                    }
+                  }}
+                >
+                  <SelectTrigger id="editEventType" className="w-full bg-white border-amber-200">
+                    <SelectValue placeholder="Эвэнт үүсгэх төрлөө сонгоно уу..." className="text-slate-700 text-sm font-normal" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {hobbies.map(hobby => (
+                      <SelectItem value={hobby._id} key={hobby._id}>{hobby.title}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -637,6 +696,7 @@ export default function test() {
                   <Input
                     id="editEventDate"
                     type="date"
+                    className="text-slate-700 border-amber-200 text-sm font-normal bg-white"
                     value={editEvent.eventDate.slice(0, 10)}
                     onChange={e => setEditEvent({ ...editEvent, eventDate: e.target.value })}
                   />
@@ -646,6 +706,7 @@ export default function test() {
                   <Input
                     id="editEventTime"
                     type="time"
+                    className="text-slate-700 border-amber-200 text-sm font-normal bg-white"
                     value={editEvent.eventTime}
                     onChange={e => setEditEvent({ ...editEvent, eventTime: e.target.value })}
                   />
@@ -655,6 +716,7 @@ export default function test() {
                 <Label htmlFor="editEventLocation">Хаяг</Label>
                 <Input
                   id="editEventLocation"
+                  className="text-slate-700 border-amber-200 text-sm font-normal bg-white"
                   value={editEvent.eventLocation}
                   onChange={e => setEditEvent({ ...editEvent, eventLocation: e.target.value })}
                 />
@@ -664,6 +726,7 @@ export default function test() {
                 <Input
                   id="editEventLimit"
                   type="number"
+                  className="text-slate-700 border-amber-200 text-sm font-normal bg-white"
                   value={editEvent.maxParticipants}
                   onChange={e => setEditEvent({ ...editEvent, maxParticipants: Number(e.target.value) })}
                 />
@@ -673,16 +736,17 @@ export default function test() {
                 <Textarea
                   id="editEventDescription"
                   value={editEvent.description}
+                  className="text-slate-700 border-amber-200 text-sm font-normal bg-white"
                   onChange={e => setEditEvent({ ...editEvent, description: e.target.value })}
                 />
               </div>
             </div>
           )}
           <div className="flex gap-3">
-            <Button variant="outline" className="flex-1" onClick={() => setIsEditOpen(false)}>
+            <Button variant="outline" className="flex-1 lex-1 border border-amber-200 text-amber-200 hover:bg-background" onClick={() => { setIsEditOpen(false); setEditEventTypeId(""); }}>
               Буцах
             </Button>
-            <Button className="flex-1 bg-blue-500 hover:bg-blue-600" onClick={handleEditEvent}>
+            <Button className="flex-1 lex-1 border border-amber-200 bg-amber-200 hover:bg-amber-100" onClick={handleEditEvent}>
               Хадгалах
             </Button>
           </div>
