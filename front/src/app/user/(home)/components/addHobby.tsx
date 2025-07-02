@@ -290,7 +290,7 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
         </div>
       </DialogTrigger>
 
-      <DialogContent className="w-[988px] max-w-[90vw] box-border flex flex-col justify-between max-h-[90vh]">
+      <DialogContent className="w-[988px] max-w-[90vw] box-border flex flex-col justify-between max-h-[90vh] bg-white">
         <DialogHeader className="pb-2">
           <DialogTitle className="flex justify-center text-slate-700 text-2xl font-semibold leading-8 py-1">
             Өөрийн дуртай хэдэн ч төрлийн сонирхлыг сонгох боломжтой

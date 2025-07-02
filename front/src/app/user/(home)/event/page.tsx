@@ -86,6 +86,7 @@ export default function test() {
       const response = await axios.get<{ success: boolean; data: Event[]; count: number }>("/api/event");
       if (response.data.success) {
         setEvents(response.data.data);
+        console.log(response.data.data, "participants")
         // Update joined events based on current user's participation
         if (currentUser) {
           const userJoinedEvents = response.data.data
@@ -239,13 +240,13 @@ export default function test() {
   return (
     <div className="min-h-screen w-full">
       {showSuccessBanner && (
-        <div className="fixed w-[375px] h-[100px] top-8 right-8 z-50  border bg-amber-100 rounded-xl shadow-lg px-8 py-4 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
+        <div className="fixed w-[375px] h-[100px] top-8 right-8 z-50  border bg-white shadow-[0px_2px_6px_0px_rgba(255,188,74,0.12)] rounded-xl shadow-lg px-8 py-4 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-yellow-400 w-[23px] h-[28px]">✨</span>
-            <span className="font-medium text-lg text-slate-800">Таны эвент амжилттай үүсгэгдлээ</span>
+            <span className="font-medium text-lg text-slate-800 whitespace-nowrap">Таны эвент амжилттай үүсгэгдлээ</span>
             <span className="text-yellow-400 w-[23px] h-[28px]">✨</span>
           </div>
-          <div className="text-gray-600 text-base">Та хүсэлт хэсгээс хариугаа хянах боломжтой, баярлалаа</div>
+          <div className="text-slate-800 text-sm font-normal whitespace-nowrap">Та хүсэлт хэсгээс хариугаа хянах боломжтой, баярлалаа</div>
         </div>
       )}
       <p className="text-slate-800 text-2xl font-medium text-center py-4 px-6">
@@ -462,18 +463,21 @@ export default function test() {
                             </div>
                             <div className="flex flex-col gap-1">
                               <h3 className="font-semibold text-slate-700 text-2xl">{event.name}</h3>
-                              <p className="text-base text-gray-600">{event.eventType.title}</p>
+                              <p className="text-base text-gray-600">{event.eventType.title} </p>
                             </div>
                           </div>
-                          <Badge
-                            className={
-                              isFull
-                                ? "bg-amber-900 text-background py-1 px-3 rounded-full"
-                                : "bg-amber-900 text-background py-1 px-3 rounded-full"
-                            }
-                          >
-                            {isFull ? "Хүний тоо бүрдсэн" : `${remainingSpots} хүн дутуу`}
-                          </Badge>
+                          <div className="flex flex-col my-auto">
+                            <Badge
+                              className={
+                                isFull
+                                  ? "text-amber-900 bg-amber-100 py-1 px-3 rounded-full"
+                                  : "border border-amber-900 text-amber-900 bg-transparent py-1 px-3 rounded-full"
+                              }
+                            >
+                              {isFull ? "Хүний тоо бүрдсэн" : `${remainingSpots} хүн дутуу`}
+                            </Badge>
+                            <div className="h-10"></div>
+                          </div>
                         </div>
                         <p className="text-base text-slate-600">{event.description}</p>
                         <div>
@@ -499,39 +503,39 @@ export default function test() {
                                   <p>
                                     {
                                       <Dialog open={showParticipants} onOpenChange={setShowParticipants}>
-                                      <DialogTrigger asChild>
-                                        <Button
-                                          className="absolute inset-0 z-50 bg-amber-200 text-amber-900 border border-[#FFD36A] hover:bg-amber-200 hover:text-amber-900 font-semibold rounded-lg"
-                                          variant="outline"
-                                          onClick={() => setShowParticipants(true)}
-                                        >
-                                          Бүртгүүлсэн ажилчдыг харах
-                                        </Button>
-                                      </DialogTrigger>
-                                      <DialogContent className="w-[510px] h-fit px-10 pt-[31px] pb-[74px] bg-background">
-                                        <DialogTitle className="sr-only">Бүртгүүлсэн ажилчид</DialogTitle>
-                                        <div className="flex items-center gap-4 mb-6">
-                                          <div className="bg-[#FFF6D1] p-4 rounded-xl">
-                                            <BookOpenCheck className="text-yellow-700 w-8 h-8" />
-                                          </div>
-                                          <div>
-                                            <h2 className="text-2xl font-bold text-slate-800">{event.name}</h2>
-                                            <p className="text-lg text-slate-600">Эвентэд нэгдсэн хүмүүс</p>
-                                          </div>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                          {event.participantUsers.map((user: any) => (
-                                            <div key={user._id} className="flex items-center border border-yellow-200 rounded-lg p-3 bg-white gap-4">
-                                              <img src={user.image || '/default-avatar.png'} alt={user.name} className="w-16 h-16 rounded-lg object-cover" />
-                                              <div>
-                                                <div className="font-bold text-slate-800">{user.lastName} {user.name}</div>
-                                                <div className="text-slate-500">{user.departmentInfo?.jobTitleInfo?.title || ''}</div>
-                                              </div>
+                                        <DialogTrigger asChild>
+                                          <Button
+                                            className="absolute inset-0 z-50 bg-amber-200 text-amber-900 border border-[#FFD36A] hover:bg-amber-200 hover:text-amber-900 font-semibold rounded-lg"
+                                            variant="outline"
+                                            onClick={() => setShowParticipants(true)}
+                                          >
+                                            Бүртгүүлсэн ажилчдыг харах
+                                          </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="w-[510px] h-fit px-10 pt-[31px] pb-[74px] bg-background">
+                                          <DialogTitle className="sr-only">Бүртгүүлсэн ажилчид</DialogTitle>
+                                          <div className="flex items-center gap-4 mb-6">
+                                            <div className="bg-[#FFF6D1] p-4 rounded-xl">
+                                              <BookOpenCheck className="text-yellow-700 w-8 h-8" />
                                             </div>
-                                          ))}
-                                        </div>
-                                      </DialogContent>
-                                    </Dialog>
+                                            <div>
+                                              <h2 className="text-2xl font-bold text-slate-800">{event.name}</h2>
+                                              <p className="text-lg text-slate-600">Эвентэд нэгдсэн хүмүүс</p>
+                                            </div>
+                                          </div>
+                                          <div className="grid grid-cols-2 gap-4">
+                                            {event.participantUsers.map((user: any) => (
+                                              <div key={user._id} className="w-[205px] h-[76px] flex items-center border border-yellow-200 rounded-lg p-2 bg-white gap-4">
+                                                <img src={user.image || '/default-avatar.png'} alt={user.name} className="w-16 h-16 rounded-lg object-cover" />
+                                                <div>
+                                                  <div className="font-semibold text-slate-700 text-sm">{user.lastName.slice(0,1)}. {user.name}</div>
+                                                  <div className="text-slate-500 font-normal text-sm">{user.departmentInfo?.jobTitleInfo?.title || ''}</div>
+                                                </div>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </DialogContent>
+                                      </Dialog>
                                     }
                                   </p>
                                 </div>
