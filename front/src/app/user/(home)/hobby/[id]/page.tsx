@@ -119,7 +119,56 @@ export default function HobbyInsertPage() {
     }
     getHobbies();
   }, []);
-
+  const badgeColor = [
+    {
+      key : "6857949dba3a1fd08e086653",
+      color : "#E5EFF8"
+    },
+    {
+      key : "685794aeba3a1fd08e086655",
+      color : "#FEF2F2"
+    },
+    {
+      key : "685794c6ba3a1fd08e086657",
+      color : "#FEF9C3"
+    },
+    {
+      key : "68579448ba3a1fd08e08664d",
+      color : "#CCFBF1"
+    },
+    {
+      key : "685794d7ba3a1fd08e086659",
+      color : "#FEE2E2"
+    },
+    {
+      key : "6857950fba3a1fd08e08665f",
+      color : "#F3E8FF"
+    },
+    {
+      key : "68579527ba3a1fd08e086661",
+      color : "#D1FAE5"
+    },
+    {
+      key : "6857953dba3a1fd08e086663",
+      color : "#A7F3D0"
+    },
+    {
+      key : "685794ffba3a1fd08e08665d",
+      color : "#FFE4E6"
+    },
+    {
+      key : "685794e7ba3a1fd08e08665b",
+      color : "#FDE68A"
+    },
+    {
+      key : "6857948aba3a1fd08e086651",
+      color : "#C7C2FE"
+    },
+    {
+      key : "68579470ba3a1fd08e08664f",
+      color : "#FBCFE8"
+    }
+  ]
   useEffect(() => {
     setFilteredUsers(users);
   }, [selectedCategory, users]);
@@ -251,12 +300,16 @@ export default function HobbyInsertPage() {
                         {Array.isArray(user.hobbyInfo)
                           ? (user.hobbyInfo as HobbyInfo[]).slice(0, 2).map((hobby: HobbyInfo) => (
                             <Badge
-                              variant="secondary"
-                              key={hobby._id}
-                              className={`flex w-full rounded-full py-1 px-3 text-xs bg-red-50 font-medium text-slate-800 hover:bg-amber-100 cursor-pointer transition-colors`}
-                            >
-                              {hobby.title}
-                            </Badge>
+                            variant="secondary"
+                            key={hobby._id}
+                            className={`flex w-full rounded-full py-1 px-3 text-xs font-medium text-slate-800 cursor-pointer transition-colors`}
+                            style={{
+                              backgroundColor:
+                                badgeColor.find((b) => b.key === hobby._id)?.color || "#E5E7EB" // fallback color
+                            }}
+                          >
+                            {hobby.title}
+                          </Badge>
                           ))
                           : <div>{(user.hobbyInfo as HobbyInfo)?.title || "Сонирхол байхгүй"}</div>
                         }
