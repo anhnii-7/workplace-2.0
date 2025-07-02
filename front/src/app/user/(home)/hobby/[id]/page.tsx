@@ -162,8 +162,41 @@ export default function HobbyInsertPage() {
   };
 
   return (
-    <div className="min-h-screen w-full">
-      <div className="w-full">
+    <div className="min-h-screen w-full relative">
+          <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363331/greee-1_jcxmpi.png`} 
+            width={171} 
+            height={149} 
+            className="w-[171px] h-[149px] absolute bottom-20 left-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363216/green-2_ktnkvs.png`} 
+            width={240} 
+            height={240} 
+            className="w-[70px] h-[94px] absolute bottom-60 -right-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363167/red-ball_v73ekg.png`} 
+            width={124} 
+            height={124} 
+            className="w-[124px] h-[124px] absolute top-15 -right-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363263/green_z5wo1z.png`} 
+            width={94} 
+            height={100} 
+            className="w-[94px] h-[100px] absolute top-14 -left-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+      <div className="w-full z-20  ">
+        
         <h1 className="text-2xl font-medium text-slate-800 text-center py-4 px-6 mt-[5px]">
           Цайны цагийн сонирхолтой яриа
         </h1>

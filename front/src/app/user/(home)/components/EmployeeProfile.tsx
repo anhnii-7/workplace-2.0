@@ -30,8 +30,8 @@ function EmployeeProfile({ topLeader }: EmployeeProfileProps) {
   }
 
   return (
-    <div>
-      <div className="flex gap-6 justify-center items-center border-b border-b-gray-400 pb-[20px]">
+    <div className="z-50">
+      <div className="flex gap-6 justify-center items-center border-b border-b-gray-400 pb-[20px] z-50">
         <div className="relative">
           <div className="bg-yellow-400 rounded-full w-[30px] h-[30px] absolute -right-4 -top-4 flex justify-center items-center">
             1
