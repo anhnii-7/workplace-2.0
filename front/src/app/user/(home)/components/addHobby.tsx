@@ -282,7 +282,7 @@ export function AddHobbyDialog({ hobbies: propsHobbies, userId: propUserId, onHo
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <div
-          className="w-[268px] h-[288px] flex flex-col gap-2 rounded-3xl bg-amber-50 box-border items-center justify-center cursor-pointer hover:bg-amber-50 transition-colors"
+          className="w-[268px] h-[288px] flex flex-col gap-2 rounded-3xl bg-amber-50 box-border items-center justify-center cursor-pointer hover:bg-amber-50 transition-colors z-20"
           onClick={() => setIsOpen(true)}
         >
           <Plus className="text-amber-900" size={64} />

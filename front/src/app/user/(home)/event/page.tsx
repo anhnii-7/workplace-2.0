@@ -13,7 +13,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EventCard } from "../hobby/[id]/components/EventCard";
-
+import Image from "next/image";
 interface Event {
   _id: string;
   name: string;
@@ -238,21 +238,59 @@ export default function test() {
   };
   console.log(events)
   return (
-    <div className="min-h-screen w-full">
-      {showSuccessBanner && (
-        <div className="fixed w-[375px] h-[100px] top-8 right-8 z-50  border bg-white shadow-[0px_2px_6px_0px_rgba(255,188,74,0.12)] rounded-xl shadow-lg px-8 py-4 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-yellow-400 w-[23px] h-[28px]">✨</span>
-            <span className="font-medium text-lg text-slate-800 whitespace-nowrap">Таны эвент амжилттай үүсгэгдлээ</span>
-            <span className="text-yellow-400 w-[23px] h-[28px]">✨</span>
+    <div className="min-h-screen w-full relative">
+          <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363331/greee-1_jcxmpi.png`} 
+            width={171} 
+            height={149} 
+            className="w-[171px] h-[149px] absolute -bottom-20 left-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363216/green-2_ktnkvs.png`} 
+            width={240} 
+            height={240} 
+            className="w-[70px] h-[94px] absolute bottom-20 -right-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363167/red-ball_v73ekg.png`} 
+            width={124} 
+            height={124} 
+            className="w-[124px] h-[124px] absolute top-25 -right-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363263/green_z5wo1z.png`} 
+            width={94} 
+            height={100} 
+            className="w-[94px] h-[100px] absolute top-14 -left-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+        <div className="fixed w-[350px] h-[80px] top-8 right-8 z-50  border bg-white shadow-[0px_2px_6px_0px_rgba(255,188,74,0.12)] rounded-xl  px-3 py-6 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
+         <div className="flex relative items-center justify-center gap-2">
+             <span className="text-yellow-400 w-[23px] h-[28px] absolute -top-4 -left-2 text-center">✨</span>
+            <span className="font-medium text-[18px] text-slate-800 whitespace-nowrap pl-3">Таны эвент амжилттай үүсгэгдлээ</span>   
+             <span className="text-yellow-400 w-[23px] h-[28px] absolute -top-4 -right-5">✨</span>        
           </div>
-          <div className="text-slate-800 text-sm font-normal whitespace-nowrap">Та хүсэлт хэсгээс хариугаа хянах боломжтой, баярлалаа</div>
         </div>
-      )}
+      {/* {showSuccessBanner && (
+        <div className="fixed w-[375px] h-[80px] top-8 right-8 z-50  border bg-white shadow-[0px_2px_6px_0px_rgba(255,188,74,0.12)] rounded-xl  px-3 py-6 flex flex-col items-start animate-fade-in-up" style={{ minWidth: 340 }}>
+         <div className="flex relative items-center justify-center gap-2">
+             <span className="text-yellow-400 w-[23px] h-[28px] absolute -top-4 -left-2 text-center">✨</span>
+            <span className="font-medium text-[18px] text-slate-800 whitespace-nowrap pl-3">Таны эвент амжилттай үүсгэгдлээ</span>   
+             <span className="text-yellow-400 w-[23px] h-[28px] absolute -top-4 -right-5">✨</span>        
+          </div>
+        </div>
+      )} */}
       <p className="text-slate-800 text-2xl font-medium text-center py-4 px-6">
         Олуулаа илүү хөгжилтэй
       </p>
-      <div className="w-full">
+      <div className="w-ful z-50">
         {/* Hobby filter dropdown */}
         <div className="grid grid-cols-2 gap-5 my-10">
           <Select value={selectedHobby} onValueChange={setSelectedHobby}>
@@ -268,7 +306,7 @@ export default function test() {
           </Select>
           <div></div>
         </div>
-        <div className="flex flex-cols-2 gap-5 mb-5">
+        <div className="flex flex-cols-2 gap-5 mb-5 z-50">
           <Card className="bg-orange-50 border border-orange-200 w-full p-0">
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
@@ -284,7 +322,7 @@ export default function test() {
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-green-50 border border-green-200 w-full p-0">
+          <Card className="bg-green-50 border border-green-200 w-full p-0 z-50">
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
                 <div className="bg-green-100 p-5 rounded-lg">
@@ -453,7 +491,7 @@ export default function test() {
                 const canEdit = currentUser && event.organizer === currentUser.name;
                 const currentParticipants = event.participants.length;
                 return (
-                  <Card key={event._id} className="bg-amber-50 border-none rounded-xl p-0">
+                  <Card key={event._id} className="bg-amber-50 border-none rounded-xl p-0 z-50">
                     <CardContent className="p-6">
                       <div className="space-y-5 ">
                         <div className="flex items-center justify-between">

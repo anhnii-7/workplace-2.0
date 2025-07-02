@@ -11,7 +11,39 @@
     };
 
     return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center h-screen relative">
+          <Image 
+      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363331/greee-1_jcxmpi.png`} 
+      width={171} 
+      height={149} 
+      className="w-[171px] h-[149px] absolute bottom-10 left-10 z-10 " 
+      alt="containerIMG"
+      priority 
+    />
+        <Image 
+      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363216/green-2_ktnkvs.png`} 
+      width={240} 
+      height={240} 
+      className="w-[70px] h-[94px] absolute bottom-40 -right-4 z-10 " 
+      alt="containerIMG"
+      priority 
+    />
+        <Image 
+      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363167/red-ball_v73ekg.png`} 
+      width={124} 
+      height={124} 
+      className="w-[124px] h-[124px] absolute top-15 -right-10 z-10 " 
+      alt="containerIMG"
+      priority 
+    />
+        <Image 
+      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363263/green_z5wo1z.png`} 
+      width={94} 
+      height={100} 
+      className="w-[94px] h-[100px] absolute top-22 -left-10 z-10 " 
+      alt="containerIMG"
+      priority 
+    />
       <motion.div initial={{opacity:0 , y:-100}}  animate={{ opacity: 1, y: 0 }}  transition={{ duration: 0.5 }}   className="w-[1090px] h-[742px] bg-amber-50 rounded-[24px] flex justify-around items-center relative z-20">
                <motion.div 
     initial={{ opacity: 0, scale: -0.5 }}
@@ -20,38 +52,7 @@
       duration: 0.4 ,delay:0.4,
     }}
   >
-    <Image 
-      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363331/greee-1_jcxmpi.png`} 
-      width={171} 
-      height={149} 
-      className="w-[171px] h-[149px] absolute -bottom-20 left-10 z-10 " 
-      alt="containerIMG"
-      priority 
-    />
-        <Image 
-      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363216/green-2_ktnkvs.png`} 
-      width={240} 
-      height={240} 
-      className="w-[70px] h-[94px] absolute bottom-20 -right-10 z-10 " 
-      alt="containerIMG"
-      priority 
-    />
-        <Image 
-      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363167/red-ball_v73ekg.png`} 
-      width={124} 
-      height={124} 
-      className="w-[124px] h-[124px] absolute -top-15 -right-10 z-10 " 
-      alt="containerIMG"
-      priority 
-    />
-        <Image 
-      src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363263/green_z5wo1z.png`} 
-      width={94} 
-      height={100} 
-      className="w-[94px] h-[100px] absolute -top-14 -left-10 z-10 " 
-      alt="containerIMG"
-      priority 
-    />
+
   </motion.div>
         <div>      
             <motion.div   className="relative z-20 flex flex-col gap-[40px]  justify-center items-start">

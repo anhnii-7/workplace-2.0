@@ -43,12 +43,44 @@ export default function WishPage() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center pb-10">
+    <div className="flex flex-col items-center pb-10 relative">
+          <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363331/greee-1_jcxmpi.png`} 
+            width={171} 
+            height={149} 
+            className="w-[171px] h-[149px] absolute -bottom-20 left-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363216/green-2_ktnkvs.png`} 
+            width={240} 
+            height={240} 
+            className="w-[70px] h-[94px] absolute bottom-20 -right-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363167/red-ball_v73ekg.png`} 
+            width={124} 
+            height={124} 
+            className="w-[124px] h-[124px] absolute top-16 -right-22 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363263/green_z5wo1z.png`} 
+            width={94} 
+            height={100} 
+            className="w-[94px] h-[100px] absolute top-20 -left-22 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
       <p className="text-slate-800 text-2xl font-medium text-center py-4 px-6">
        Та дурын сэдвээ сонгоно уу
       </p>
 
-      <div className="grid grid-cols-4 gap-5 mt-15">
+      <div className="grid grid-cols-4 gap-5 mt-15 z-20">
         {loading ? (
           <div className="col-span-4 text-center py-8">
             <p>Хоббинууд ачаалж байна...</p>
@@ -57,7 +89,7 @@ export default function WishPage() {
           hobbies.map((hobby) => {
             return (
               <Link href={`/user/hobby/${hobby._id}`} key={hobby._id}>
-                <Card className="p-0 w-[268px] h-[288px] flex flex-col gap-3 box-border border border-amber-200">
+                <Card className="p-0 w-[268px] h-[288px] flex flex-col gap-3 box-border border border-amber-200 z-30">
                   <div className=" w-full rounded-3xl h-[224px] bg-white overflow-hidden relative">
                     <Image
                       src={hobby?.image}

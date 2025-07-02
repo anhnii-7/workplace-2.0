@@ -196,7 +196,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 </div>
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full bg-amber-200 text-amber-900 hover:bg-amber-300"
                 disabled={isLoading}
               >
                 {isLoading ? 'Signing in...' : 'Sign in'}

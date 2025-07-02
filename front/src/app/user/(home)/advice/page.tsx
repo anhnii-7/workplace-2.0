@@ -294,7 +294,39 @@ export default function WishPage() {
   }
 
   return (
-    <div className="flex gap-6 mt-[40px] p-4 ">
+    <div className="flex gap-6 mt-[40px] p-4 relative">
+          <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363331/greee-1_jcxmpi.png`} 
+            width={171} 
+            height={149} 
+            className="w-[171px] h-[149px] absolute -bottom-20 left-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363216/green-2_ktnkvs.png`} 
+            width={240} 
+            height={240} 
+            className="w-[70px] h-[94px] absolute -bottom-20 -right-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363167/red-ball_v73ekg.png`} 
+            width={124} 
+            height={124} 
+            className="w-[124px] h-[124px] absolute -top-15 -right-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363263/green_z5wo1z.png`} 
+            width={94} 
+            height={100} 
+            className="w-[94px] h-[100px] absolute -top-14 -left-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
       <div className="flex-1 ">
         <div className="flex justify-between items-center mb-6 ">
           <h1
@@ -419,7 +451,7 @@ export default function WishPage() {
       </div>
 
 
-      <div className="w-96 space-y-6">
+      <div className="w-88 space-y-6 z-20">
 
         <Card className="p-6 border-2 border-amber-200">
           <CardHeader>

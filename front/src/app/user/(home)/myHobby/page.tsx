@@ -137,12 +137,44 @@ const MyHobby = () => {
   }
 
   return (
-    <div className="flex flex-col items-center gap-10">
+    <div className="flex flex-col items-center gap-10 relative">
+          <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363331/greee-1_jcxmpi.png`} 
+            width={171} 
+            height={149} 
+            className="w-[171px] h-[149px] absolute -bottom-20 left-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363216/green-2_ktnkvs.png`} 
+            width={240} 
+            height={240} 
+            className="w-[70px] h-[94px] absolute -bottom-10 -right-5 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363167/red-ball_v73ekg.png`} 
+            width={124} 
+            height={124} 
+            className="w-[124px] h-[124px] absolute top-10 -right-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
+              <Image 
+            src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363263/green_z5wo1z.png`} 
+            width={94} 
+            height={100} 
+            className="w-[94px] h-[100px] absolute top-14 -left-10 z-10 " 
+            alt="containerIMG"
+            priority 
+          />
       <h1 className="text-2xl font-normal text-slate-700 text-center py-[14px] px-[24px]">Миний хобби</h1>
 
       <div className="grid grid-cols-4 gap-5 w-full">
         {myHobbies.map((hobby) => (
-          <Card  key={hobby._id} className="p-0 w-[268px] h-[288px] flex flex-col gap-3 box-border border border-amber-200 bg-amber-50">
+          <Card  key={hobby._id} className="p-0 w-[268px] h-[288px] flex flex-col gap-3 box-border border border-amber-200 bg-amber-50 z-50">
             <div className=" w-full rounded-3xl h-[224px] bg-amber-50 overflow-hidden relative">
               <Image
                 src={hobby?.image}
