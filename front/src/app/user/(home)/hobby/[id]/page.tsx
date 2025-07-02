@@ -232,7 +232,7 @@ export default function HobbyInsertPage() {
             src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363167/red-ball_v73ekg.png`} 
             width={124} 
             height={124} 
-            className="w-[124px] h-[124px] absolute top-15 -right-10 z-10 " 
+            className="w-[124px] h-[124px] absolute top-4 -right-10 z-10 " 
             alt="containerIMG"
             priority 
           />
