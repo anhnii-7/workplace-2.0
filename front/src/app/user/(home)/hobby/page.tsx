@@ -64,7 +64,7 @@ export default function WishPage() {
             src={`https://res.cloudinary.com/dbtl9obi3/image/upload/v1751363167/red-ball_v73ekg.png`} 
             width={124} 
             height={124} 
-            className="w-[124px] h-[124px] absolute top-16 -right-22 z-10 " 
+            className="w-[124px] h-[124px] absolute top-2 -right-22 z-10 " 
             alt="containerIMG"
             priority 
           />
